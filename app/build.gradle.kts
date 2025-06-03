@@ -70,4 +70,7 @@ dependencies {
 
     // Glide Compose
     implementation(libs.compose.glide)
+
+    // Material 3 Extended Icons
+    implementation(libs.androidx.material.icons.extended)
 }
