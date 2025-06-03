@@ -62,10 +62,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Retrofit, GSON & Interceptor
+    // Networking
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    implementation(libs.okhttp)
 
     // Compose ViewModel
     implementation(libs.lifecycle.viewmodel.compose)
