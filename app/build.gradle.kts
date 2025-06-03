@@ -73,4 +73,7 @@ dependencies {
 
     // Material 3 Extended Icons
     implementation(libs.androidx.material.icons.extended)
+
+    // JDK Desugaring Libraries
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

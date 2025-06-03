@@ -15,6 +15,7 @@ lifecycleViewmodelCompose = "2.9.0"
 navigationCompose = "2.9.0"
 composeGlide = "1.0.0-beta01"
 materialIconsExtended = "1.7.8"
+desugarJdkLibs = "2.1.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,8 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 compose-glide = { module = "com.github.bumptech.glide:compose", version.ref = "composeGlide" }
 # Material 3 Extended Icons
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+# JDK Desugaring Libraries
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
