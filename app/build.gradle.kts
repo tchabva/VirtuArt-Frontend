@@ -62,5 +62,12 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-        
+    // Compose ViewModel
+    implementation(libs.lifecycle.viewmodel.compose)
+
+    // Compose Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Glide Compose
+    implementation(libs.compose.glide)
 }
