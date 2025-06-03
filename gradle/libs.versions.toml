@@ -11,6 +11,7 @@ lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
 composeBom = "2025.05.01"
 converterGson = "2.9.0"
+paging = "3.3.6"
 retrofit = "2.9.0"
 loggingInterceptor = "3.4.1"
 lifecycleViewmodelCompose = "2.9.0"
@@ -52,6 +53,9 @@ desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+#Paging
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
