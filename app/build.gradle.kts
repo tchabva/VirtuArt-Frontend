@@ -81,4 +81,9 @@ dependencies {
 
     // JDK Desugaring Libraries
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Google Auth Services
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 }
