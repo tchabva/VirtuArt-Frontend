@@ -11,14 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun NavRoot(){
-    val name = rememberNavController()
+fun NavRoot() {
+    val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    Scaffold (
+    Scaffold(
         topBar = { },
-        bottomBar = { }
+        bottomBar = { BottomNav(navController) }
     ) { innerPadding ->
 
         Greeting(
