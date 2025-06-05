@@ -10,14 +10,15 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.ImageSearch
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -49,7 +50,8 @@ fun BottomNav(navController: NavController) {
         exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
     ) {
         NavigationBar(
-            modifier = Modifier.height(80.dp)
+            modifier = Modifier.height(80.dp),
+            containerColor = MaterialTheme.colorScheme.background,
         ) {
             topLevelRoute.forEach { topLevelRoute ->
                 val isSelected =
@@ -99,7 +101,7 @@ private val topLevelRoute = listOf(
         name = "Search",
         route = Tabs.Search,
         icon = { isSelected ->
-            if (isSelected) Icons.Filled.Search else Icons.Outlined.Search
+            if (isSelected) Icons.Filled.ImageSearch else Icons.Outlined.ImageSearch
         }
     ),
     TopLevelRoute(
