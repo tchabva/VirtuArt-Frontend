@@ -31,4 +31,22 @@ fun NavigationGraph(
         snackbarHostState = snackbarHostState,
         coroutineScope = coroutineScope
     )
+
+    searchGraph(
+        navController = navController,
+        snackbarHostState = snackbarHostState,
+        coroutineScope = coroutineScope
+    )
+
+    exhibitionsGraph(
+        navController = navController,
+        snackbarHostState = snackbarHostState,
+        coroutineScope = coroutineScope
+    )
+
+    profileGraph(
+        navController = navController,
+        snackbarHostState = snackbarHostState,
+        coroutineScope = coroutineScope
+    )
 }
