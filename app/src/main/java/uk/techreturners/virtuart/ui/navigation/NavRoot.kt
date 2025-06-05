@@ -1,14 +1,14 @@
 package uk.techreturners.virtuart.ui.navigation
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import uk.techreturners.virtuart.ui.navigation.navgraphs.NavigationGraph
 
 @Composable
 fun NavRoot() {
@@ -18,20 +18,15 @@ fun NavRoot() {
 
     Scaffold(
         topBar = { TopBar(navController) },
-        bottomBar = { BottomNav(navController) }
+        bottomBar = { BottomNav(navController) },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
-
-        Greeting(
-            name = "Android",
-            modifier = Modifier.padding(innerPadding)
+        NavigationGraph(
+            modifier = Modifier,
+            navController = navController,
+            innerPadding =  innerPadding,
+            snackbarHostState = snackbarHostState,
+            coroutineScope = scope
         )
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
