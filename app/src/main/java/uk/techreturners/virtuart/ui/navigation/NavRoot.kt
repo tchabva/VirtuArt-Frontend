@@ -17,7 +17,7 @@ fun NavRoot() {
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = { },
+        topBar = { TopBar(navController) },
         bottomBar = { BottomNav(navController) }
     ) { innerPadding ->
 
