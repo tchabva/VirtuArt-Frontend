@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,6 +14,13 @@ android {
     namespace = "uk.techreturners.virtuart"
     compileSdk = 35
 
+    // Read local.properties
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if(localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+
     defaultConfig {
         applicationId = "uk.techreturners.virtuart"
         minSdk = 24
@@ -19,6 +29,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Inject IP address as String resources
+        resValue("string", "dev_server_ip", localProperties.getProperty("dev.server.ip") ?: "localhost")
+        resValue("string", "local_server_ip", localProperties.getProperty("local.server.ip") ?: "localhost")
     }
 
     buildTypes {
