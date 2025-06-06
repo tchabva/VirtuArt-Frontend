@@ -1,7 +1,6 @@
-package uk.techreturners.virtuart.domain.repository
+package uk.techreturners.virtuart.domain.model
 
 import androidx.credentials.exceptions.GetCredentialException
-import uk.techreturners.virtuart.domain.model.UserData
 
 sealed interface SignInResult {
     data class Success(val userData: UserData) : SignInResult
