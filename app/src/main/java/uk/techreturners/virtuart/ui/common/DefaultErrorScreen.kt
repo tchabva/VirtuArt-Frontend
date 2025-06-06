@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
 import uk.techreturners.virtuart.R
 
 @Composable
-fun DefaultErrorScreen(responseCode: Int, errorMessage: String?) {
+fun DefaultErrorScreen(responseCode: Int?, errorMessage: String?) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -24,7 +24,7 @@ fun DefaultErrorScreen(responseCode: Int, errorMessage: String?) {
             textAlign = TextAlign.Center,
             text = stringResource(
                 R.string.error_occurred,
-                responseCode,
+                responseCode ?: "N/A",
                 errorMessage ?: stringResource(R.string.unknown_error)
             )
         )
@@ -33,7 +33,7 @@ fun DefaultErrorScreen(responseCode: Int, errorMessage: String?) {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultErrorScreenPreview() {
+private fun DefaultErrorScreenPreview() {
     DefaultErrorScreen(
         responseCode = 404,
         errorMessage = ""

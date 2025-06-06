@@ -29,6 +29,6 @@ fun DefaultProgressIndicator(){
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultProgressIndicatorPreview(){
+private fun DefaultProgressIndicatorPreview(){
     DefaultProgressIndicator()
 }
