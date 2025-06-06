@@ -1,11 +1,21 @@
 package uk.techreturners.virtuart.di
 
+import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import uk.techreturners.virtuart.domain.repository.AuthRepository
+import uk.techreturners.virtuart.domain.repository.AuthRepositoryImpl
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
- abstract class RepositoryModule {
+abstract class RepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindsAuthRepository(
+        authRepositoryImpl: AuthRepositoryImpl
+    ): AuthRepository
+
 }
