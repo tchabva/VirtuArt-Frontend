@@ -1,6 +1,8 @@
 package uk.techreturners.virtuart.domain.repository
 
 import android.content.Context
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.ClearCredentialStateRequest.Companion.TYPE_CLEAR_CREDENTIAL_STATE
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
@@ -22,6 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signIn(): SignInResult {
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
+            .setAutoSelectEnabled(true)
             .setServerClientId(context.getString(R.string.web_client_id))
             .build()
 
@@ -55,8 +58,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun signOut() {
+    override suspend fun signOut() {
         currentUser = null
+        credentialManager.clearCredentialState(
+            ClearCredentialStateRequest(
+                TYPE_CLEAR_CREDENTIAL_STATE
+            )
+        )
     }
 
     override fun getSignedInUser(): UserData? {

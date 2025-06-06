@@ -5,6 +5,6 @@ import uk.techreturners.virtuart.domain.model.UserData
 
 interface AuthRepository {
     suspend fun signIn(): SignInResult
-    fun signOut()
+    suspend fun signOut()
     fun getSignedInUser(): UserData?
 }
