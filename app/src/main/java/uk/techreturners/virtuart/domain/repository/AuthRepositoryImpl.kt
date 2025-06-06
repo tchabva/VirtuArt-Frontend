@@ -35,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
             )
 
             val credential = result.credential
-            if (credential is GoogleIdTokenCredential){
+            if (credential is GoogleIdTokenCredential) {
                 val userData = UserData(
                     userId = credential.idToken,
                     email = credential.id,
@@ -44,13 +44,13 @@ class AuthRepositoryImpl @Inject constructor(
                 )
                 currentUser = userData
                 SignInResult.Success(userData)
-            } else{
+            } else {
                 SignInResult.Error(
                     "Sign In Error"
                 )
             }
-        } catch (e: GetCredentialException){
-            SignInResult.Error(e.message?: "Unknown Error")
+        } catch (e: GetCredentialException) {
+            SignInResult.Error(e.message ?: "Unknown Error")
         }
     }
 
@@ -59,6 +59,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getSignedInUser(): UserData? {
-        return currentUser;
+        return currentUser
     }
 }
