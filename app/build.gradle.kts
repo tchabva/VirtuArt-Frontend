@@ -33,6 +33,7 @@ android {
         // Inject IP address as String resources
         resValue("string", "dev_server_ip", localProperties.getProperty("dev.server.ip") ?: "localhost")
         resValue("string", "local_server_ip", localProperties.getProperty("local.server.ip") ?: "localhost")
+        resValue("string", "web_client_id", localProperties.getProperty("web.client.id") ?: "localhost")
     }
 
     buildTypes {
