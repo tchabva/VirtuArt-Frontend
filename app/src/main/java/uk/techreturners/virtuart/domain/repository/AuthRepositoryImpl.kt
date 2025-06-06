@@ -6,13 +6,14 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.domain.model.SignInResult
 import uk.techreturners.virtuart.domain.model.UserData
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val credentialManager: CredentialManager
 ) : AuthRepository {
 
