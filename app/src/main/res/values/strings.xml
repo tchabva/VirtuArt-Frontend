@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">VirtuArt</string>
+    <string name="error_occurred">Error Occurred\nCode: %1$s\n%2$s</string>
+    <string name="unknown_error">Unknown Error</string>
 </resources>
