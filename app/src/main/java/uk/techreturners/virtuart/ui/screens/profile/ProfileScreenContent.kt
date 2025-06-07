@@ -1,5 +1,6 @@
 package uk.techreturners.virtuart.ui.screens.profile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -88,6 +88,7 @@ private fun ProfileScreenSignedIn(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // View Title
         Text(
             text = stringResource(R.string.profile_screen_heading),
             style = MaterialTheme.typography.headlineMedium,
@@ -176,6 +177,7 @@ private fun ProfileScreenSignedIn(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Sign Out button
         OutlinedButton(
             onClick = { signOut() },
             modifier = Modifier
@@ -184,7 +186,8 @@ private fun ProfileScreenSignedIn(
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.error
-            )
+            ),
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.error)
         ) {
             Text(
                 text = stringResource(R.string.sign_out_btn_text),
@@ -218,13 +221,16 @@ private fun ProfileScreenNoUser(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Welcome Text
         Text(
             text = stringResource(R.string.login_page_welcome),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
+        // User Instructions
         Text(
             text = stringResource(R.string.login_screen_instructions),
             style = MaterialTheme.typography.bodyLarge,
@@ -233,12 +239,14 @@ private fun ProfileScreenNoUser(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(
+        // Google Sign In Button
+        OutlinedButton(
             onClick = onSignIn,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -255,10 +263,21 @@ private fun ProfileScreenNoUser(
                 Text(
                     text = stringResource(R.string.google_sign_in_btn),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // New User Info Text
+        Text(
+            text = stringResource(R.string.login_page_new_user_instructions),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

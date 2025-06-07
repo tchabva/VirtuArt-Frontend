@@ -13,4 +13,5 @@
     <string name="google_sign_in_btn">Continue with Google</string>
     <string name="login_page_welcome">Welcome to VirtuArt Exhibition Curator</string>
     <string name="login_screen_instructions">Sign in to create and manage your virtual art exhibitions.</string>
+    <string name="login_page_new_user_instructions">New to VirtuArt? The button above will sign you in or create a new account automatically.</string>
 </resources>
