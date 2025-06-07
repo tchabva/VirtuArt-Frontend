@@ -49,8 +49,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun signOut() {
-        authRepository.signOut()
-        _state.value = State.NoUser
+        viewModelScope.launch {
+            _state.value = State.Loading
+            authRepository.signOut()
+            _state.value = State.NoUser
+        }
     }
 
     private suspend fun emitEvent(event: Event) {
