@@ -33,6 +33,7 @@ android {
         // Inject IP address as String resources
         resValue("string", "dev_server_ip", localProperties.getProperty("dev.server.ip") ?: "localhost")
         resValue("string", "local_server_ip", localProperties.getProperty("local.server.ip") ?: "localhost")
+        resValue("string", "web_client_id", localProperties.getProperty("web.client.id") ?: "localhost")
     }
 
     buildTypes {
@@ -53,7 +54,8 @@ android {
         freeCompilerArgs += listOf(
             "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
             "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-            "-opt-in=androidx.compose.animation.ExperimentalAnimationApi"
+            "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
+            "-opt-in=com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi",
         )
     }
     buildFeatures {

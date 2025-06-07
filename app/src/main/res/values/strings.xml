@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">VirtuArt</string>
+    <string name="error_occurred">Error Occurred\nCode: %1$s\n%2$s</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="profile_screen_heading">Profile</string>
+    <string name="unknown">Unknown</string>
+    <string name="name">Name</string>
+    <string name="user_profile_picture_description">User Profile Picture</string>
+    <string name="email">Email</string>
+    <string name="sign_out_btn_text">Sign Out</string>
+    <string name="app_logo_description">VirtuArt Exhibition Curator Logo</string>
+    <string name="google_logo">Google Logo</string>
+    <string name="google_sign_in_btn">Continue with Google</string>
+    <string name="login_page_welcome">Welcome to VirtuArt Exhibition Curator</string>
+    <string name="login_screen_instructions">Sign in to create and manage your virtual art exhibitions.</string>
+    <string name="login_page_new_user_instructions">New to VirtuArt? The button above will sign you in or create a new account automatically.</string>
 </resources>
