@@ -2,4 +2,10 @@
     <string name="app_name">VirtuArt</string>
     <string name="error_occurred">Error Occurred\nCode: %1$s\n%2$s</string>
     <string name="unknown_error">Unknown Error</string>
+    <string name="profile_screen_heading">Profile</string>
+    <string name="unknown">Unknown</string>
+    <string name="name">Name</string>
+    <string name="user_profile_picture_description">User Profile Picture</string>
+    <string name="email">Email</string>
+    <string name="sign_out_btn_text">Sign Out</string>
 </resources>
