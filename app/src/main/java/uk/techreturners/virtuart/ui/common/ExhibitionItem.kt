@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,8 +29,11 @@ fun ExhibitionItem(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
-        onClick = { onClick(exhibition.id) }
+            .padding(vertical = 4.dp),
+        onClick = { onClick(exhibition.id) },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        )
     ) {
         Row(
             modifier = Modifier
@@ -62,7 +66,6 @@ fun ExhibitionItem(
                     Icons.Default.Delete,
                     contentDescription = "Delete Exhibition",
                     tint = MaterialTheme.colorScheme.error
-
                 )
             }
         }
