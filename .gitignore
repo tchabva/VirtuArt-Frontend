@@ -33,4 +33,4 @@ google-services.json
 *.hprof
 
 # Network Security Config
-src/main/res/xml/network_security_config.xml
+app/src/main/res/xml/network_security_config.xml
