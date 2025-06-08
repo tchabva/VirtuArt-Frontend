@@ -1,6 +1,7 @@
 package uk.techreturners.virtuart.ui.navigation.navgraphs
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -21,7 +22,15 @@ fun NavGraphBuilder.exhibitionsGraph(
         composable<Screens.Exhibitions> {
             ExhibitionsScreen(
                 viewModel = hiltViewModel<ExhibitionsViewModel>(),
-                onSignInClicked = {}
+                navigateToProfileGraph = {
+                    /*
+                    Pop everything up to and including the Profile Screen from the backstack and then
+                    navigate to then navigate to the Profile Screen
+                     */
+                    navController.navigate(Screens.Profile) {
+                        popUpTo(Screens.Artworks) { inclusive = false }
+                    }
+                }
             )
         }
     }

@@ -1,5 +1,6 @@
 package uk.techreturners.virtuart.ui.screens.exhibitions
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,14 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,11 +29,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Exhibition
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
@@ -71,10 +78,7 @@ fun ExhibitionsScreenContent(
         }
 
         ExhibitionsViewModel.State.NoUser -> {
-            Column {
-                Text("NO USER")
-            }
-
+            ExhibitionScreenNoUser(onSignInClick = onSignInClick)
         }
     }
 }
@@ -99,7 +103,7 @@ private fun ExhibitionsScreenLoaded(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "My Exhibitions",
+                text = stringResource(R.string.my_exhibitions_screen_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -113,7 +117,7 @@ private fun ExhibitionsScreenLoaded(
                 Icon(
                     imageVector = Icons.Default.Add,
                     tint = MaterialTheme.colorScheme.surface,
-                    contentDescription = "Create Exhibition Button"
+                    contentDescription = stringResource(R.string.create_exhibition_button_txt)
                 )
             }
         }
@@ -128,7 +132,7 @@ private fun ExhibitionsScreenLoaded(
 
             ) {
                 Text(
-                    text = "No exhibitions yet.\n Create your first exhibition!",
+                    text = stringResource(R.string.no_exhibitions_text),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.headlineSmall,
@@ -152,6 +156,64 @@ private fun ExhibitionsScreenLoaded(
     }
 }
 
+@Composable
+private fun ExhibitionScreenNoUser(
+    onSignInClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // Header Row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.my_exhibitions_screen_title),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            Text(
+                text = stringResource(R.string.no_user_text),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall,
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedButton(
+                onClick = onSignInClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground)
+            ) {
+                Text(
+                    text = "Go To Sign In",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ExhibitionsScreenLoadedPreview() {
@@ -170,4 +232,10 @@ private fun ExhibitionsScreenLoadedPreview() {
         onExhibitionClick = {},
         onDeleteExhibitionClick = {}
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ExhibitionScreenNoUserPreview() {
+    ExhibitionScreenNoUser(onSignInClick = {})
 }
