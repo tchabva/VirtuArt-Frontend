@@ -16,7 +16,7 @@ import uk.techreturners.virtuart.ui.navigation.Screens
 
 interface ExhibitionsApi {
     @GET("exhibitions")
-    suspend fun getAllUserExhibitions(): Response<List<Screens.Exhibitions>>
+    suspend fun getAllUserExhibitions(): Response<List<Exhibition>>
 
     @POST("exhibitions")
     suspend fun createExhibition(@Body createExhibitionRequest: CreateExhibitionRequest):
