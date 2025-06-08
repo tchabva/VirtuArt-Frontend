@@ -14,4 +14,8 @@
     <string name="login_page_welcome">Welcome to VirtuArt Exhibition Curator</string>
     <string name="login_screen_instructions">Sign in to create and manage your virtual art exhibitions.</string>
     <string name="login_page_new_user_instructions">New to VirtuArt? The button above will sign you in or create a new account automatically.</string>
+    <string name="my_exhibitions_screen_title">My Exhibitions</string>
+    <string name="create_exhibition_button_txt">Create Exhibition Button</string>
+    <string name="no_exhibitions_text">No exhibitions yet.\n Create your first exhibition!</string>
+    <string name="no_user_text">You are not signed in.\n Sign in or create an account to create or view your exhibitions</string>
 </resources>
