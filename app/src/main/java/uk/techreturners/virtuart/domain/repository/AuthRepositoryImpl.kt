@@ -52,6 +52,7 @@ class AuthRepositoryImpl @Inject constructor(
                 )
                 currentUser = userData
                 Log.d(TAG, "Sign in successful for user: ${userData.email}")
+                Log.d(TAG, "Sign in successful for user: ${userData.userId}")
                 SignInResult.Success(userData)
             }else {
                 Log.e(TAG, "Unexpected credential type: ${credential.type}")
