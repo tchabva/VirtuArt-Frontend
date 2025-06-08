@@ -6,16 +6,16 @@ data class Exhibition(
     val id: String,
     val title: String,
     val itemCount: Int,
-    val createdAt: LocalDateTime,
-    val updateAt: LocalDateTime
+    val createdAt: String,
+    val updateAt: String
 )
 
 data class ExhibitionDetail(
     val id: String,
     val title: String,
     val description: String,
-    val createdAt: LocalDateTime,
-    val updateAt: LocalDateTime,
+    val createdAt: String,
+    val updateAt: String,
     val exhibitionItems: List<ExhibitionItem>
 )
 
