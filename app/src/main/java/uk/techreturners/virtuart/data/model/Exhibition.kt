@@ -30,7 +30,7 @@ data class ExhibitionItem(
 
 data class CreateExhibitionRequest(
     val title: String,
-    val description: String
+    val description: String?
 )
 
 data class UpdateExhibitionRequest(
