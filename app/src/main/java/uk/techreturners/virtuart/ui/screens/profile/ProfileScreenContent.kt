@@ -265,9 +265,8 @@ private fun ProfileScreenNoUser(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                // Google Logo (you'll need to add this as a drawable resource)
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_google), // You'll need to add this
+                    painter = painterResource(id = R.drawable.ic_google),
                     contentDescription = stringResource(R.string.google_logo),
                     modifier = Modifier.size(20.dp),
                     tint = Color.Unspecified
