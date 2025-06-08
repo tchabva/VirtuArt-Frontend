@@ -27,7 +27,19 @@ class ExhibitionsViewModel @Inject constructor(
     val events: SharedFlow<Event> = _events
 
     init {
-        checkCurrentUer()
+        observeUserState()
+    }
+
+    private fun observeUserState() {
+        viewModelScope.launch {
+            authRepository.userState.collect { user ->
+                if (user == null) {
+                    _state.value = State.NoUser
+                } else {
+                    getAllExhibitions()
+                }
+            }
+        }
     }
 
     private fun getAllExhibitions() {
@@ -52,16 +64,6 @@ class ExhibitionsViewModel @Inject constructor(
                     _state.value = State.Loaded(data = networkResponse.data)
                 }
             }
-        }
-    }
-
-    private fun checkCurrentUer() {
-        _state.value = State.Loading
-        val user = authRepository.getSignedInUser()
-        if (user == null) {
-            _state.value = State.NoUser
-        } else {
-            getAllExhibitions()
         }
     }
 
