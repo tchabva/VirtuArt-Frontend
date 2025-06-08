@@ -3,7 +3,6 @@ package uk.techreturners.virtuart.ui.screens.exhibitions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun ExhibitionsScreen(
@@ -12,7 +11,7 @@ fun ExhibitionsScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect() { event ->
+        viewModel.events.collect { event ->
             when (event) {
                 is ExhibitionsViewModel.Event.AddExhibitionFailed -> {
                     TODO()
