@@ -1,5 +1,6 @@
 package uk.techreturners.virtuart.ui.screens.exhibitions
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import uk.techreturners.virtuart.data.model.CreateExhibitionRequest
 import uk.techreturners.virtuart.data.model.Exhibition
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepository
@@ -67,8 +69,102 @@ class ExhibitionsViewModel @Inject constructor(
         }
     }
 
+    fun onSignInButtonClicked() {
+        viewModelScope.launch {
+            emitEvent(Event.GoToSignInButtonClicked)
+        }
+    }
+
+    fun onSaveExhibitionButtonClicked() {
+        viewModelScope.launch {
+            val cState = _state.value as State.Loaded
+
+            // Validation of input
+            if (cState.exhibitionTitle.isNullOrBlank()) {
+                emitEvent(Event.ExhibitionTitleTextFieldEmpty)
+            } else {
+                // Closes the dialog on clicking save
+                dismissCreateExhibitionDialog()
+
+                var description = cState.exhibitionDescription
+
+                // Will send a null description if data is null or blank
+                if (description.isNullOrBlank()) {
+                    description = null
+                }
+
+                val request = CreateExhibitionRequest(
+                    title = cState.exhibitionTitle!!,
+                    description = description
+                )
+                Log.i(TAG, "New Exhibition Request: $request")
+
+                postCreateExhibitionRequest(request)
+            }
+        }
+    }
+
+    private suspend fun postCreateExhibitionRequest(request: CreateExhibitionRequest) {
+        when (val networkResponse = exhibitionsRepository.createExhibition(request)) {
+            is NetworkResponse.Exception -> {
+                emitEvent(
+                    Event.AddExhibitionNetworkError(
+                        message = networkResponse.exception.message ?: "Unknown Exception Occurred"
+                    )
+                )
+                Log.i(
+                    TAG,
+                    "New Exhibition Request Network Error: ${networkResponse.exception.message}"
+                )
+            }
+
+            is NetworkResponse.Failed -> {
+                emitEvent(
+                    Event.AddExhibitionFailed(
+                        responseCode = networkResponse.code,
+                        message = networkResponse.message ?: "Unknown Exception Occurred"
+                    )
+                )
+                Log.e(
+                    TAG,
+                    "New Exhibition Request Failed: code: ${networkResponse.code}\n${networkResponse.message}"
+                )
+            }
+
+            is NetworkResponse.Success -> {
+                getAllExhibitions()
+                emitEvent(Event.AddExhibitionSuccessful)
+                Log.i(TAG, "Exhibition Posted: ${networkResponse.data}")
+            }
+        }
+    }
+
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
+    }
+
+    fun showCreateExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showCreateExhibitionDialog = true
+        )
+    }
+
+    fun dismissCreateExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showCreateExhibitionDialog = false
+        )
+    }
+
+    fun showDeleteExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showDeleteExhibitionDialog = true
+        )
+    }
+
+    fun dismissDeleteExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showDeleteExhibitionDialog = false
+        )
     }
 
     sealed interface State {
@@ -77,7 +173,11 @@ class ExhibitionsViewModel @Inject constructor(
         data object NoUser : State
 
         data class Loaded(
-            val data: List<Exhibition> = emptyList()
+            val data: List<Exhibition> = emptyList(),
+            val showCreateExhibitionDialog: Boolean = false,
+            val showDeleteExhibitionDialog: Boolean = false,
+            var exhibitionTitle: String? = null,
+            var exhibitionDescription: String? = null
         ) : State
 
         data class Error(val responseCode: Int?, val errorMessage: String) : State
@@ -86,7 +186,14 @@ class ExhibitionsViewModel @Inject constructor(
     }
 
     sealed interface Event {
-        // TODO if required
+        data object GoToSignInButtonClicked : Event
+        data object AddExhibitionSuccessful : Event
+        data class AddExhibitionNetworkError(val message: String) : Event
+        data class AddExhibitionFailed(val responseCode: Int?, val message: String) : Event
+        data object DeleteExhibitionSuccessful : Event
+        data object DeleteExhibitionFailed : Event
+        data object ExhibitionTitleTextFieldEmpty : Event
+        data class ExhibitionItemClicked(val exhibitionId: String) : Event
     }
 
     companion object {
