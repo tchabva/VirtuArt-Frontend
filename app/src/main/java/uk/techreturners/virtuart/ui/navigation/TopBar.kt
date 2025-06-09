@@ -34,7 +34,7 @@ fun TopBar(navController: NavController) {
         currentDestination?.hasRoute(Screens.ViewArtwork::class) == true -> {
             "Artwork Details"
         }
-        currentDestination?.hasRoute(Screens.ViewExhibition::class) == true -> {
+        currentDestination?.hasRoute(Screens.ExhibitionDetail::class) == true -> {
             "Exhibition Details"
         }
         else -> ""
