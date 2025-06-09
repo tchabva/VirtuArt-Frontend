@@ -34,7 +34,7 @@ import uk.techreturners.virtuart.data.model.ExhibitionItem
 fun ExhibitionArtworkItem(
     artwork: ExhibitionItem,
     onClick: (String) -> Unit,
-    onShowDeleteDialog: (String) -> Unit,
+    onShowDeleteDialog: (String, String) -> Unit,
 ) {
     Card(
         onClick = { onClick(artwork.id) },
@@ -90,7 +90,12 @@ fun ExhibitionArtworkItem(
             }
 
             // Will show the show the Dialog with to confirm
-            IconButton(onClick = { onShowDeleteDialog(artwork.id) }) {
+            IconButton(onClick = {
+                onShowDeleteDialog(
+                    artwork.apiId,
+                    artwork.source
+                )
+            }) {
                 Icon(
                     Icons.Default.Delete,
                     contentDescription = stringResource(
@@ -114,9 +119,9 @@ private fun ExhibitionArtworkItemPreview() {
             title = "Sunset Reflections",
             date = "2025-03-15",
             imageUrl = "https://example.com/images/artwork1.jpg",
-            source = "ModernArtAPI"
+            source = "ModernArtAPI",
         ),
         onClick = { },
-        onShowDeleteDialog = { }
+        onShowDeleteDialog = { _, _ -> },
     )
 }
