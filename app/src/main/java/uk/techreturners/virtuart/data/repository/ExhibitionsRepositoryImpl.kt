@@ -1,7 +1,6 @@
 package uk.techreturners.virtuart.data.repository
 
 import android.util.Log
-import android.util.Log.i
 import uk.techreturners.virtuart.data.model.AddArtworkRequest
 import uk.techreturners.virtuart.data.model.CreateExhibitionRequest
 import uk.techreturners.virtuart.data.model.Exhibition
@@ -48,7 +47,7 @@ class ExhibitionsRepositoryImpl @Inject constructor(
             return if (responseCode == 201) {
                 Log.i(TAG, "Successfully Created Exhibition: ${response.body()}")
                 NetworkResponse.Success(response.body()!!)
-            } else{
+            } else {
                 Log.e(TAG, "Failed To Create Exhibition: Code = $responseCode")
                 NetworkResponse.Failed(
                     response.message() ?: "",
@@ -61,8 +60,24 @@ class ExhibitionsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteExhibition(exhibitionId: String): NetworkResponse<Void> {
-        TODO("Not yet implemented")
+    override suspend fun deleteExhibition(exhibitionId: String): NetworkResponse<Unit> {
+        try {
+            val response = api.deleteExhibition(exhibitionId)
+            val responseCode = response.code()
+            return if (responseCode == 204) {
+                Log.i(TAG, "Successfully Deleted Exhibition ID: $exhibitionId")
+                NetworkResponse.Success(Unit)
+            } else {
+                Log.e(TAG, "Failed To Delete Exhibition: Code = $responseCode")
+                NetworkResponse.Failed(
+                    response.message() ?: "",
+                    code = responseCode,
+                )
+            }
+        } catch (e: Throwable) {
+            Log.wtf(TAG, "Network Error", e)
+            return NetworkResponse.Exception(e)
+        }
     }
 
     override suspend fun getExhibitionDetail(exhibitionId: String): NetworkResponse<ExhibitionDetail> {

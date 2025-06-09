@@ -10,7 +10,7 @@ import uk.techreturners.virtuart.data.remote.NetworkResponse
 interface ExhibitionsRepository {
     suspend fun getAllUserExhibitions(): NetworkResponse<List<Exhibition>>
     suspend fun createExhibition(request: CreateExhibitionRequest): NetworkResponse<Exhibition>
-    suspend fun deleteExhibition(exhibitionId: String): NetworkResponse<Void>
+    suspend fun deleteExhibition(exhibitionId: String): NetworkResponse<Unit>
     suspend fun getExhibitionDetail(exhibitionId: String): NetworkResponse<ExhibitionDetail>
     suspend fun addArtworkToExhibition(
         exhibitionId: String,
