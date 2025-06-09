@@ -52,7 +52,7 @@ fun ExhibitionsScreenContent(
     when (state) {
         is ExhibitionsViewModel.State.Error -> {
             DefaultErrorScreen(
-                responseCode = null,
+                responseCode = state.responseCode,
                 errorMessage = state.errorMessage
             )
         }
