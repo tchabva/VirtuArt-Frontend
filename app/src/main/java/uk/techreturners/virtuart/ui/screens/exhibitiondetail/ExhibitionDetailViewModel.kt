@@ -27,6 +27,9 @@ class ExhibitionDetailViewModel @Inject constructor(
         _events.emit(event)
     }
 
+    private var toDeleteArtworkApiId: String? = null
+    private var toDeleteArtworkSource: String? = null
+
     suspend fun getExhibitionDetail(exhibitionId: String) {
         when (val networkResponse = exhibitionsRepository.getExhibitionDetail(exhibitionId)) {
             is NetworkResponse.Exception -> {
@@ -51,6 +54,46 @@ class ExhibitionDetailViewModel @Inject constructor(
                 Log.i(TAG, "ExhibitionDetail retrieved: ${networkResponse.data}")
             }
         }
+    }
+
+    fun showDeleteExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showDeleteExhibitionDialog = true
+        )
+    }
+
+    fun dismissDeleteExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showDeleteExhibitionDialog = false
+        )
+    }
+
+    fun showUpdateExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showUpdateExhibitionDialog = true
+        )
+    }
+
+    fun dismissUpdateExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showUpdateExhibitionDialog = false
+        )
+    }
+
+    fun onShowDeleteArtworkDialog(apiId: String, source: String) {
+        _state.value = (state.value as State.Loaded).copy(
+            showDeleteArtworkDialog = true
+        )
+        toDeleteArtworkApiId = apiId
+        toDeleteArtworkSource = source
+    }
+
+    fun dismissDeleteArtworkDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showDeleteArtworkDialog = true
+        )
+        toDeleteArtworkApiId = null
+        toDeleteArtworkSource = null
     }
 
     sealed interface State {
