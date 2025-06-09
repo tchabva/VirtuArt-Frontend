@@ -30,4 +30,11 @@
     <string name="failed_to_add_exhibition_due_to_network_error">Failed to add exhibition due to network error.\n%1$s</string>
     <string name="failed_to_add_exhibition_http_code_toast_txt">Failed to add exhibition Http Code %1$s.\n%2$s</string>
     <string name="deleted_artwork_from_exhibition">Deleted artwork from exhibition</string>
+    <string name="created">Created</string>
+    <string name="last_updated">Last Updated</string>
+    <string name="artwork_image">Artwork Image</string>
+    <string name="source_colon_text">Source: %1$s</string>
+    <string name="delete_item_content_txt">Delete %1$s}</string>
+    <string name="edit_exhibition_details_icon_txt">Edit exhibition details</string>
+    <string name="artworks_count_txt">Artworks: %1$s</string>
 </resources>

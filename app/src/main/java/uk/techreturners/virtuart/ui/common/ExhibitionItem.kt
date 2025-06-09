@@ -16,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Exhibition
 
 @Composable
@@ -51,7 +53,7 @@ fun ExhibitionItem(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Artworks: ${exhibition.itemCount}",
+                    text = stringResource(R.string.artworks_count_txt, exhibition.itemCount),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
