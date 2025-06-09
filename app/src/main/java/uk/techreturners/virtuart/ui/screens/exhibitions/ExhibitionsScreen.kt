@@ -94,7 +94,7 @@ fun ExhibitionsScreen(
         onExhibitionClick = { },
         onDeleteExhibitionClick = viewModel::deleteExhibition,
         onShowDeleteExhibitionDialog = viewModel::showDeleteExhibitionDialog,
-        onDismissDeleteExhibitionDialog = viewModel::dismissDeleteExhibitionDialog,        
+        onDismissDeleteExhibitionDialog = viewModel::dismissDeleteExhibitionDialog,
         onCreateNewExhibitionConfirmed = viewModel::onCreateExhibitionButtonClicked,
         onCreateNewExhibitionFabClicked = viewModel::showCreateExhibitionDialog,
         onDismissExhibitionDialog = viewModel::dismissCreateExhibitionDialog
