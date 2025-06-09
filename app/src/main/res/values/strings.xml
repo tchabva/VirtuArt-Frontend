@@ -29,4 +29,5 @@
     <string name="failed_to_delete_exhibition_toast_txt">Failed to delete exhibition</string>
     <string name="failed_to_add_exhibition_due_to_network_error">Failed to add exhibition due to network error.\n%1$s</string>
     <string name="failed_to_add_exhibition_http_code_toast_txt">Failed to add exhibition Http Code %1$s.\n%2$s</string>
+    <string name="deleted_artwork_from_exhibition">Deleted artwork from exhibition</string>
 </resources>
