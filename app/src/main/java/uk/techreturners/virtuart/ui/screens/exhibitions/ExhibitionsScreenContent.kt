@@ -98,7 +98,7 @@ private fun ExhibitionsScreenLoaded(
     onCreateNewExhibitionConfirmed: () -> Unit,
     onShowDeleteExhibitionDialog: (String) -> Unit,
 
-) {
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -163,7 +163,7 @@ private fun ExhibitionsScreenLoaded(
             }
         }
     }
-    if (state.showCreateExhibitionDialog){
+    if (state.showCreateExhibitionDialog) {
         CreateExhibitionDialog(
             state = state,
             onDismiss = onDismissCreateExhibitionDialog,
@@ -171,13 +171,13 @@ private fun ExhibitionsScreenLoaded(
         )
     }
 
-    if (state.showDeleteExhibitionDialog){
+    if (state.showDeleteExhibitionDialog) {
         DefaultDeleteItemDialog(
             title = stringResource(R.string.delete_exhibition),
             alertText = stringResource(R.string.delete_exhibition_alert_dialog_txt),
             onDismiss = onDismissDeleteExhibitionDialog,
             onDeleteItemConfirmed = onDeleteExhibitionClick
-        ) 
+        )
     }
 }
 
@@ -259,7 +259,7 @@ private fun ExhibitionsScreenLoadedPreview() {
         onCreateNewExhibitionConfirmed = {},
         onCreateNewExhibitionFabClicked = {},
         onDismissCreateExhibitionDialog = {},
-        onDismissDeleteExhibitionDialog = {  },
+        onDismissDeleteExhibitionDialog = { },
         onShowDeleteExhibitionDialog = {}
     )
 }

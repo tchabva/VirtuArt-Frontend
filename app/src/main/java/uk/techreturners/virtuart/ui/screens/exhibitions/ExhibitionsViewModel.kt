@@ -142,22 +142,22 @@ class ExhibitionsViewModel @Inject constructor(
         }
     }
 
-    fun deleteExhibition(){
+    fun deleteExhibition() {
         viewModelScope.launch {
             val exhibitionId = toDeleteExhibitionId
             // Only proceed if exhibitionId is not null or blank
-            if (exhibitionId.isNullOrBlank()){
+            if (exhibitionId.isNullOrBlank()) {
                 emitEvent(
                     Event.DeleteExhibitionFailed
                 )
                 Log.e(TAG, "No Exhibition Id set for deletion")
                 dismissDeleteExhibitionDialog()
-            }else{
+            } else {
                 dismissDeleteExhibitionDialog()
 
                 _state.value = State.Loading
 
-                when(val networkResponse = exhibitionsRepository.deleteExhibition(exhibitionId)) {
+                when (val networkResponse = exhibitionsRepository.deleteExhibition(exhibitionId)) {
                     is NetworkResponse.Exception -> {
                         emitEvent(
                             Event.DeleteExhibitionFailedNetwork
@@ -167,6 +167,7 @@ class ExhibitionsViewModel @Inject constructor(
                             "Failed to Delete Album Network Error: ${networkResponse.exception.message}"
                         )
                     }
+
                     is NetworkResponse.Failed -> {
                         emitEvent(
                             Event.DeleteExhibitionFailed
@@ -176,6 +177,7 @@ class ExhibitionsViewModel @Inject constructor(
                             "Failed to Delete Album Code: ${networkResponse.code}\n${networkResponse.message}"
                         )
                     }
+
                     is NetworkResponse.Success -> {
                         emitEvent(
                             Event.DeleteExhibitionSuccessful
