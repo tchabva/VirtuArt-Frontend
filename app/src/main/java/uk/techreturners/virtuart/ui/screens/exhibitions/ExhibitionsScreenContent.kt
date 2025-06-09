@@ -10,26 +10,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,7 +40,10 @@ fun ExhibitionsScreenContent(
     state: ExhibitionsViewModel.State,
     onSignInClick: () -> Unit,
     onExhibitionClick: (String) -> Unit,
-    onDeleteExhibitionClick: (String) -> Unit
+    onDeleteExhibitionClick: (String) -> Unit,
+    onDismissExhibitionDialog: () -> Unit,
+    onCreateNewExhibitionFabClicked: () -> Unit,
+    onCreateNewExhibitionConfirmed: () -> Unit
 ) {
 
     when (state) {
@@ -62,7 +58,10 @@ fun ExhibitionsScreenContent(
             ExhibitionsScreenLoaded(
                 state = state,
                 onExhibitionClick = onExhibitionClick,
-                onDeleteExhibitionClick = onDeleteExhibitionClick
+                onDeleteExhibitionClick = onDeleteExhibitionClick,
+                onDismissExhibitionDialog = onDismissExhibitionDialog,
+                onCreateNewExhibitionFabClicked = onCreateNewExhibitionFabClicked,
+                onCreateNewExhibitionConfirmed = onCreateNewExhibitionConfirmed
             )
         }
 
@@ -87,10 +86,12 @@ fun ExhibitionsScreenContent(
 private fun ExhibitionsScreenLoaded(
     state: ExhibitionsViewModel.State.Loaded,
     onExhibitionClick: (String) -> Unit,
-    onDeleteExhibitionClick: (String) -> Unit
-) {
-    var showCreateExhibitionDialog by remember { mutableStateOf(false) }
+    onDeleteExhibitionClick: (String) -> Unit,
+    onDismissExhibitionDialog: () -> Unit,
+    onCreateNewExhibitionFabClicked: () -> Unit,
+    onCreateNewExhibitionConfirmed: () -> Unit
 
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +110,7 @@ private fun ExhibitionsScreenLoaded(
             )
 
             FloatingActionButton(
-                onClick = { showCreateExhibitionDialog = true },
+                onClick = onCreateNewExhibitionFabClicked,
                 modifier = Modifier.size(56.dp),
                 containerColor = MaterialTheme.colorScheme.onSurface,
                 shape = RoundedCornerShape(12.dp),
@@ -124,6 +125,7 @@ private fun ExhibitionsScreenLoaded(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // When there are no Exhibitions displays a message to the user or shows the Exhibitions
         if (state.data.isEmpty()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -153,6 +155,13 @@ private fun ExhibitionsScreenLoaded(
                 }
             }
         }
+    }
+    if (state.showCreateExhibitionDialog){
+        CreateExhibitionDialog(
+            state = state,
+            onDismiss = onDismissExhibitionDialog,
+            onCreateExhibitionRequestConfirmed = onCreateNewExhibitionConfirmed
+        )
     }
 }
 
@@ -230,7 +239,10 @@ private fun ExhibitionsScreenLoadedPreview() {
             )
         ),
         onExhibitionClick = {},
-        onDeleteExhibitionClick = {}
+        onDeleteExhibitionClick = {},
+        onCreateNewExhibitionConfirmed = {},
+        onCreateNewExhibitionFabClicked = {},
+        onDismissExhibitionDialog = {}
     )
 }
 

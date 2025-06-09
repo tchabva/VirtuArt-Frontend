@@ -107,7 +107,7 @@ fun CreateExhibitionDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun CreateExhibitionDialogPreview() {
+private fun CreateExhibitionDialogPreview() {
     CreateExhibitionDialog(
         state = ExhibitionsViewModel.State.Loaded(),
         onDismiss = {},

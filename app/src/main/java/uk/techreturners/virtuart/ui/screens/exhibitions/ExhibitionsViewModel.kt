@@ -75,7 +75,7 @@ class ExhibitionsViewModel @Inject constructor(
         }
     }
 
-    fun onSaveExhibitionButtonClicked() {
+    fun onCreateExhibitionButtonClicked() {
         viewModelScope.launch {
             val cState = _state.value as State.Loaded
 

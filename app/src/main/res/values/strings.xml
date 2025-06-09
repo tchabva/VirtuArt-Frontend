@@ -18,4 +18,6 @@
     <string name="create_exhibition_button_txt">Create Exhibition Button</string>
     <string name="no_exhibitions_text">No exhibitions yet.\n Create your first exhibition!</string>
     <string name="no_user_text">You are not signed in.\n Sign in or create an account to create or view your exhibitions</string>
+    <string name="empty_title_warning_txt">A title\'s are required for Exhibitions!</string>
+    <string name="new_exhibition_created_snacbkar_txt">New Exhibition Created</string>
 </resources>

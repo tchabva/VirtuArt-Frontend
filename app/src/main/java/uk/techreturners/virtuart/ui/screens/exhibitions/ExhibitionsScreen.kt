@@ -1,14 +1,20 @@
 package uk.techreturners.virtuart.ui.screens.exhibitions
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import uk.techreturners.virtuart.R
 
 @Composable
 fun ExhibitionsScreen(
     viewModel: ExhibitionsViewModel,
     navigateToProfileGraph: () -> Unit,
+    exhibitionCreated: (Context) -> Unit
 ) {
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -22,7 +28,7 @@ fun ExhibitionsScreen(
                 }
 
                 ExhibitionsViewModel.Event.AddExhibitionSuccessful -> {
-                    TODO()
+                    exhibitionCreated(context)
                 }
 
                 ExhibitionsViewModel.Event.DeleteExhibitionFailed -> {
@@ -38,7 +44,11 @@ fun ExhibitionsScreen(
                 }
 
                 ExhibitionsViewModel.Event.ExhibitionTitleTextFieldEmpty -> {
-                    TODO()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.empty_title_warning_txt),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ExhibitionsViewModel.Event.GoToSignInButtonClicked -> {
@@ -54,6 +64,9 @@ fun ExhibitionsScreen(
         state = state.value,
         onSignInClick = viewModel::onSignInButtonClicked,
         onExhibitionClick = { },
-        onDeleteExhibitionClick = { }
+        onDeleteExhibitionClick = { },
+        onCreateNewExhibitionConfirmed = viewModel::onCreateExhibitionButtonClicked,
+        onCreateNewExhibitionFabClicked = viewModel::showCreateExhibitionDialog,
+        onDismissExhibitionDialog = viewModel::dismissCreateExhibitionDialog
     )
 }
