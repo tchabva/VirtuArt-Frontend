@@ -39,7 +39,7 @@ fun ExhibitionDetailCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = exhibition.description,
+                text = exhibition.description ?: stringResource(R.string.no_description_txt),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -66,16 +66,18 @@ fun ExhibitionDetailCard(
 
                 // Last Updated Information Column
                 Column {
-                    Text(
-                        text = stringResource(R.string.last_updated),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = exhibition.updateAt.substring(0, 10),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if(!exhibition.updateAt.isNullOrBlank()){
+                        Text(
+                            text = stringResource(R.string.last_updated),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = exhibition.updateAt.substring(0, 10),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }

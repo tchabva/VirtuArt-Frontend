@@ -5,8 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.collect
-import uk.techreturners.virtuart.ui.screens.exhibitions.ExhibitionsViewModel
 
 @Composable
 fun ExhibitionDetailScreen(
@@ -66,6 +64,15 @@ fun ExhibitionDetailScreen(
 
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-    ExhibitionDetailScreenContent(state.value)
-
+    ExhibitionDetailScreenContent(
+        state.value,
+        onShowDeleteExhibitionDialog = {},
+        onDismissDeleteExhibitionDialog = {},
+        onDeleteExhibition = {},
+        onShowDeleteArtworkDialog = viewModel::onShowDeleteArtworkDialog,
+        onDismissDeleteArtworkDialog = {},
+        onShowEditExhibitionDialog = {},
+        onDismissEditExhibitionDialog = {},
+        onUpdateExhibitionClick = {}
+    )
 }

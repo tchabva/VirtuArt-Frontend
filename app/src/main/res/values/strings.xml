@@ -37,4 +37,6 @@
     <string name="delete_item_content_txt">Delete %1$s}</string>
     <string name="edit_exhibition_details_icon_txt">Edit exhibition details</string>
     <string name="artworks_count_txt">Artworks: %1$s</string>
+    <string name="no_artworks_in_this_exhibition_yet">No artworks in this exhibition yet.</string>
+    <string name="no_description_txt">Exhibition does not have a description</string>
 </resources>
