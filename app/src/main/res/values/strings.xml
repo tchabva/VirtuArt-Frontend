@@ -26,4 +26,7 @@
     <string name="delete_exhibition_alert_dialog_txt">Are you sure you want to delete this Exhibition? It will be deleted permanently!</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="failed_to_delete_exhibition_toast_txt">Failed to delete exhibition</string>
+    <string name="failed_to_add_exhibition_due_to_network_error">Failed to add exhibition due to network error.\n%1$s</string>
+    <string name="failed_to_add_exhibition_http_code_toast_txt">Failed to add exhibition Http Code %1$s.\n%2$s</string>
 </resources>

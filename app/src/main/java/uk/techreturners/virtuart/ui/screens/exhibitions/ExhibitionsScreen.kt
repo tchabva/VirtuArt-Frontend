@@ -21,11 +21,26 @@ fun ExhibitionsScreen(
         viewModel.events.collect { event ->
             when (event) {
                 is ExhibitionsViewModel.Event.AddExhibitionFailed -> {
-                    TODO()
+                    Toast.makeText(
+                        context,
+                        context.getString(
+                            R.string.failed_to_add_exhibition_http_code_toast_txt,
+                            event.responseCode.toString(),
+                            event.message
+                        ),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is ExhibitionsViewModel.Event.AddExhibitionNetworkError -> {
-                    TODO()
+                    Toast.makeText(
+                        context,
+                        context.getString(
+                            R.string.failed_to_add_exhibition_due_to_network_error,
+                            event.message
+                        ),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ExhibitionsViewModel.Event.AddExhibitionSuccessful -> {
@@ -35,7 +50,7 @@ fun ExhibitionsScreen(
                 ExhibitionsViewModel.Event.DeleteExhibitionFailed -> {
                     Toast.makeText(
                         context,
-                        "Failed to delete exhibition",
+                        context.getString(R.string.failed_to_delete_exhibition_toast_txt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
