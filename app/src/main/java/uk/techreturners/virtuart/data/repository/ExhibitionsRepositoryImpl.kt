@@ -81,7 +81,23 @@ class ExhibitionsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getExhibitionDetail(exhibitionId: String): NetworkResponse<ExhibitionDetail> {
-        TODO("Not yet implemented")
+        try {
+            val response = api.getExhibitionDetail(exhibitionId)
+            val responseCode = response.code()
+            return if (responseCode == 200) {
+                Log.i(TAG, "Successfully Retrieved Exhibition ID: $exhibitionId")
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                Log.e(TAG, "Failed To Retrieve Exhibition: Code = $responseCode")
+                NetworkResponse.Failed(
+                    response.message() ?: "",
+                    code = responseCode,
+                )
+            }
+        } catch (e: Throwable) {
+            Log.wtf(TAG, "Network Error", e)
+            return NetworkResponse.Exception(e)
+        }
     }
 
     override suspend fun addArtworkToExhibition(
