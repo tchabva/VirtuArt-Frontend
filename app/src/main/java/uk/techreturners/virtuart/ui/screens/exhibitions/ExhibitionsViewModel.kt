@@ -194,6 +194,13 @@ class ExhibitionsViewModel @Inject constructor(
         }
     }
 
+    fun onExhibitionItemClicked(exhibitionId: String) {
+        viewModelScope.launch {
+            emitEvent(Event.ExhibitionItemClicked(exhibitionId))
+        }
+        Log.i(TAG, "ExhibitionItem Clicked ID: $exhibitionId")
+    }
+
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
     }

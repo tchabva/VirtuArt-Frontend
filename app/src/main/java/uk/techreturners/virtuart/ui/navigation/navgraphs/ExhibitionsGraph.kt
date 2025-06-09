@@ -49,6 +49,9 @@ fun NavGraphBuilder.exhibitionsGraph(
                             message = context.getString(R.string.deleted_exhibition_successfully)
                         )
                     }
+                },
+                onExhibitionItemClick = { exhibitionId ->
+                    navController.navigate(Screens.ExhibitionDetail(exhibitionId))
                 }
             )
         }
