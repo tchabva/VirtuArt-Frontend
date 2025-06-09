@@ -19,5 +19,11 @@
     <string name="no_exhibitions_text">No exhibitions yet.\n Create your first exhibition!</string>
     <string name="no_user_text">You are not signed in.\n Sign in or create an account to create or view your exhibitions</string>
     <string name="empty_title_warning_txt">A title\'s are required for Exhibitions!</string>
-    <string name="new_exhibition_created_snacbkar_txt">New Exhibition Created</string>
+    <string name="new_exhibition_created_snackbar_txt">New Exhibition Created</string>
+    <string name="delete_exhibition_network_txt">Failed to delete exhibition due to network error</string>
+    <string name="deleted_exhibition_successfully">Deleted exhibition successfully</string>
+    <string name="delete_exhibition">Delete Exhibition</string>
+    <string name="delete_exhibition_alert_dialog_txt">Are you sure you want to delete this Exhibition? It will be deleted permanently!</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

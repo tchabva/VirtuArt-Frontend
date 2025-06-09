@@ -12,7 +12,8 @@ import uk.techreturners.virtuart.R
 fun ExhibitionsScreen(
     viewModel: ExhibitionsViewModel,
     navigateToProfileGraph: () -> Unit,
-    exhibitionCreated: (Context) -> Unit
+    exhibitionCreated: (Context) -> Unit,
+    exhibitionDeleted: (Context) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -32,11 +33,15 @@ fun ExhibitionsScreen(
                 }
 
                 ExhibitionsViewModel.Event.DeleteExhibitionFailed -> {
-                    TODO()
+                    Toast.makeText(
+                        context,
+                        "Failed to delete exhibition",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ExhibitionsViewModel.Event.DeleteExhibitionSuccessful -> {
-                    TODO()
+                    exhibitionDeleted(context)
                 }
 
                 is ExhibitionsViewModel.Event.ExhibitionItemClicked -> {
@@ -54,6 +59,14 @@ fun ExhibitionsScreen(
                 ExhibitionsViewModel.Event.GoToSignInButtonClicked -> {
                     navigateToProfileGraph()
                 }
+
+                ExhibitionsViewModel.Event.DeleteExhibitionFailedNetwork -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.delete_exhibition_network_txt),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -64,7 +77,9 @@ fun ExhibitionsScreen(
         state = state.value,
         onSignInClick = viewModel::onSignInButtonClicked,
         onExhibitionClick = { },
-        onDeleteExhibitionClick = { },
+        onDeleteExhibitionClick = viewModel::deleteExhibition,
+        onShowDeleteExhibitionDialog = viewModel::showDeleteExhibitionDialog,
+        onDismissDeleteExhibitionDialog = viewModel::dismissDeleteExhibitionDialog,        
         onCreateNewExhibitionConfirmed = viewModel::onCreateExhibitionButtonClicked,
         onCreateNewExhibitionFabClicked = viewModel::showCreateExhibitionDialog,
         onDismissExhibitionDialog = viewModel::dismissCreateExhibitionDialog

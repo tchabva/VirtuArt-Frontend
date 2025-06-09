@@ -32,6 +32,8 @@ class ExhibitionsViewModel @Inject constructor(
         observeUserState()
     }
 
+    private var toDeleteExhibitionId: String? = null
+
     private fun observeUserState() {
         viewModelScope.launch {
             authRepository.userState.collect { user ->
@@ -73,6 +75,7 @@ class ExhibitionsViewModel @Inject constructor(
         viewModelScope.launch {
             emitEvent(Event.GoToSignInButtonClicked)
         }
+        Log.i(TAG, "SignInButton clicked")
     }
 
     fun onCreateExhibitionButtonClicked() {
@@ -139,6 +142,56 @@ class ExhibitionsViewModel @Inject constructor(
         }
     }
 
+    fun deleteExhibition(){
+        viewModelScope.launch {
+            val exhibitionId = toDeleteExhibitionId
+            // Only proceed if exhibitionId is not null or blank
+            if (exhibitionId.isNullOrBlank()){
+                emitEvent(
+                    Event.DeleteExhibitionFailed
+                )
+                Log.e(TAG, "No Exhibition Id set for deletion")
+                dismissDeleteExhibitionDialog()
+            }else{
+                dismissDeleteExhibitionDialog()
+
+                _state.value = State.Loading
+
+                when(val networkResponse = exhibitionsRepository.deleteExhibition(exhibitionId)) {
+                    is NetworkResponse.Exception -> {
+                        emitEvent(
+                            Event.DeleteExhibitionFailedNetwork
+                        )
+                        Log.e(
+                            TAG,
+                            "Failed to Delete Album Network Error: ${networkResponse.exception.message}"
+                        )
+                    }
+                    is NetworkResponse.Failed -> {
+                        emitEvent(
+                            Event.DeleteExhibitionFailed
+                        )
+                        Log.e(
+                            TAG,
+                            "Failed to Delete Album Code: ${networkResponse.code}\n${networkResponse.message}"
+                        )
+                    }
+                    is NetworkResponse.Success -> {
+                        emitEvent(
+                            Event.DeleteExhibitionSuccessful
+                        )
+                        Log.e(
+                            TAG,
+                            "Deleted Album Id: $exhibitionId"
+                        )
+                    }
+                }
+                getAllExhibitions()
+                toDeleteExhibitionId = null
+            }
+        }
+    }
+
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
     }
@@ -155,16 +208,18 @@ class ExhibitionsViewModel @Inject constructor(
         )
     }
 
-    fun showDeleteExhibitionDialog() {
+    fun showDeleteExhibitionDialog(exhibitionId: String) {
         _state.value = (state.value as State.Loaded).copy(
             showDeleteExhibitionDialog = true
         )
+        toDeleteExhibitionId = exhibitionId
     }
 
     fun dismissDeleteExhibitionDialog() {
         _state.value = (state.value as State.Loaded).copy(
             showDeleteExhibitionDialog = false
         )
+        toDeleteExhibitionId = null
     }
 
     sealed interface State {
@@ -191,6 +246,7 @@ class ExhibitionsViewModel @Inject constructor(
         data class AddExhibitionNetworkError(val message: String) : Event
         data class AddExhibitionFailed(val responseCode: Int?, val message: String) : Event
         data object DeleteExhibitionSuccessful : Event
+        data object DeleteExhibitionFailedNetwork : Event
         data object DeleteExhibitionFailed : Event
         data object ExhibitionTitleTextFieldEmpty : Event
         data class ExhibitionItemClicked(val exhibitionId: String) : Event

@@ -1,8 +1,6 @@
 package uk.techreturners.virtuart.ui.navigation.navgraphs
 
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.internal.checkOffsetAndCount
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.ui.navigation.Screens
 import uk.techreturners.virtuart.ui.navigation.Tabs
@@ -38,7 +35,14 @@ fun NavGraphBuilder.exhibitionsGraph(
                 exhibitionCreated = { context ->
                     coroutineScope.launch {
                         snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.new_exhibition_created_snacbkar_txt)
+                            message = context.getString(R.string.new_exhibition_created_snackbar_txt)
+                        )
+                    }
+                },
+                exhibitionDeleted = { context ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.deleted_exhibition_successfully)
                         )
                     }
                 }

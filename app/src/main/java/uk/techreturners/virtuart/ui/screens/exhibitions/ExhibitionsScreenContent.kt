@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Exhibition
+import uk.techreturners.virtuart.ui.common.DefaultDeleteItemDialog
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.ExhibitionItem
@@ -40,10 +41,12 @@ fun ExhibitionsScreenContent(
     state: ExhibitionsViewModel.State,
     onSignInClick: () -> Unit,
     onExhibitionClick: (String) -> Unit,
-    onDeleteExhibitionClick: (String) -> Unit,
+    onDeleteExhibitionClick: () -> Unit,
     onDismissExhibitionDialog: () -> Unit,
     onCreateNewExhibitionFabClicked: () -> Unit,
-    onCreateNewExhibitionConfirmed: () -> Unit
+    onCreateNewExhibitionConfirmed: () -> Unit,
+    onShowDeleteExhibitionDialog: (String) -> Unit,
+    onDismissDeleteExhibitionDialog: () -> Unit,
 ) {
 
     when (state) {
@@ -59,9 +62,11 @@ fun ExhibitionsScreenContent(
                 state = state,
                 onExhibitionClick = onExhibitionClick,
                 onDeleteExhibitionClick = onDeleteExhibitionClick,
-                onDismissExhibitionDialog = onDismissExhibitionDialog,
+                onDismissCreateExhibitionDialog = onDismissExhibitionDialog,
                 onCreateNewExhibitionFabClicked = onCreateNewExhibitionFabClicked,
-                onCreateNewExhibitionConfirmed = onCreateNewExhibitionConfirmed
+                onCreateNewExhibitionConfirmed = onCreateNewExhibitionConfirmed,
+                onDismissDeleteExhibitionDialog = onDismissDeleteExhibitionDialog,
+                onShowDeleteExhibitionDialog = onShowDeleteExhibitionDialog
             )
         }
 
@@ -86,10 +91,12 @@ fun ExhibitionsScreenContent(
 private fun ExhibitionsScreenLoaded(
     state: ExhibitionsViewModel.State.Loaded,
     onExhibitionClick: (String) -> Unit,
-    onDeleteExhibitionClick: (String) -> Unit,
-    onDismissExhibitionDialog: () -> Unit,
+    onDeleteExhibitionClick: () -> Unit,
+    onDismissCreateExhibitionDialog: () -> Unit,
+    onDismissDeleteExhibitionDialog: () -> Unit,
     onCreateNewExhibitionFabClicked: () -> Unit,
-    onCreateNewExhibitionConfirmed: () -> Unit
+    onCreateNewExhibitionConfirmed: () -> Unit,
+    onShowDeleteExhibitionDialog: (String) -> Unit,
 
 ) {
     Column(
@@ -150,7 +157,7 @@ private fun ExhibitionsScreenLoaded(
                     ExhibitionItem(
                         exhibition = exhibition,
                         onClick = onExhibitionClick,
-                        onDeleteItemClick = onDeleteExhibitionClick
+                        onDeleteItemClick = onShowDeleteExhibitionDialog
                     )
                 }
             }
@@ -159,9 +166,18 @@ private fun ExhibitionsScreenLoaded(
     if (state.showCreateExhibitionDialog){
         CreateExhibitionDialog(
             state = state,
-            onDismiss = onDismissExhibitionDialog,
+            onDismiss = onDismissCreateExhibitionDialog,
             onCreateExhibitionRequestConfirmed = onCreateNewExhibitionConfirmed
         )
+    }
+
+    if (state.showDeleteExhibitionDialog){
+        DefaultDeleteItemDialog(
+            title = stringResource(R.string.delete_exhibition),
+            alertText = stringResource(R.string.delete_exhibition_alert_dialog_txt),
+            onDismiss = onDismissDeleteExhibitionDialog,
+            onDeleteItemConfirmed = onDeleteExhibitionClick
+        ) 
     }
 }
 
@@ -242,7 +258,9 @@ private fun ExhibitionsScreenLoadedPreview() {
         onDeleteExhibitionClick = {},
         onCreateNewExhibitionConfirmed = {},
         onCreateNewExhibitionFabClicked = {},
-        onDismissExhibitionDialog = {}
+        onDismissCreateExhibitionDialog = {},
+        onDismissDeleteExhibitionDialog = {  },
+        onShowDeleteExhibitionDialog = {}
     )
 }
 

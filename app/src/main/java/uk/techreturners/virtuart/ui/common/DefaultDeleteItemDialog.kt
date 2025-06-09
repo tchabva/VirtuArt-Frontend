@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
 
-// The Dialog Alert for deleting albums
+// The Dialog Alert for deleting items
 @Composable
 fun DefaultDeleteItemDialog(
     title: String,
