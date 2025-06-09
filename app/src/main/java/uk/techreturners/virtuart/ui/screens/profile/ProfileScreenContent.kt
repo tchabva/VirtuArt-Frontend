@@ -2,6 +2,7 @@ package uk.techreturners.virtuart.ui.screens.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +45,7 @@ import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.domain.model.UserData
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
+import uk.techreturners.virtuart.ui.theme.VirtuArtTheme
 
 
 @Composable
@@ -202,6 +207,8 @@ private fun ProfileScreenSignedIn(
 private fun ProfileScreenNoUser(
     onSignIn: () -> Unit
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -210,9 +217,15 @@ private fun ProfileScreenNoUser(
         verticalArrangement = Arrangement.Center
     ) {
 
+        val logo = if (isDarkTheme) {
+            painterResource(R.drawable.ic_launcher_foreground_white)
+        } else {
+            painterResource(R.drawable.ic_launcher_foreground)
+        }
+
         // App Logo
         Image(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
+            painter = logo,
             contentDescription = stringResource(R.string.app_logo_description),
             modifier = Modifier
                 .size(200.dp),
@@ -252,9 +265,8 @@ private fun ProfileScreenNoUser(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                // Google Logo (you'll need to add this as a drawable resource)
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_google), // You'll need to add this
+                    painter = painterResource(id = R.drawable.ic_google),
                     contentDescription = stringResource(R.string.google_logo),
                     modifier = Modifier.size(20.dp),
                     tint = Color.Unspecified

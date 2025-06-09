@@ -10,6 +10,8 @@ import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.domain.model.SignInResult
 import uk.techreturners.virtuart.domain.model.UserData
@@ -20,7 +22,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val credentialManager: CredentialManager
 ) : AuthRepository {
 
-    private var currentUser: UserData? = null
+    private val _userState: MutableStateFlow<UserData?> = MutableStateFlow(null)
+    override val userState: StateFlow<UserData?> = _userState
 
     override suspend fun signIn(): SignInResult {
         try {
@@ -50,8 +53,10 @@ class AuthRepositoryImpl @Inject constructor(
                     displayName = googleIdTokenCredential.displayName,
                     profilePicture = googleIdTokenCredential.profilePictureUri?.toString()
                 )
-                currentUser = userData
+
                 Log.d(TAG, "Sign in successful for user: ${userData.email}")
+                Log.d(TAG, "Sign in successful for user: ${userData.userId}")
+                _userState.value = userData
                 SignInResult.Success(userData)
             }else {
                 Log.e(TAG, "Unexpected credential type: ${credential.type}")
@@ -67,7 +72,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
-        currentUser = null
+        _userState.value = null
         credentialManager.clearCredentialState(
             ClearCredentialStateRequest(
                 TYPE_CLEAR_CREDENTIAL_STATE
@@ -76,7 +81,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getSignedInUser(): UserData? {
-        return currentUser
+        return userState.value
     }
 
     companion object {

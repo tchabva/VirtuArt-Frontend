@@ -17,7 +17,7 @@ android {
     // Read local.properties
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
-    if(localPropertiesFile.exists()) {
+    if (localPropertiesFile.exists()) {
         localProperties.load(FileInputStream(localPropertiesFile))
     }
 
@@ -31,9 +31,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Inject IP address as String resources
-        resValue("string", "dev_server_ip", localProperties.getProperty("dev.server.ip") ?: "localhost")
-        resValue("string", "local_server_ip", localProperties.getProperty("local.server.ip") ?: "localhost")
-        resValue("string", "web_client_id", localProperties.getProperty("web.client.id") ?: "localhost")
+        resValue(
+            "string",
+            "web_client_id",
+            localProperties.getProperty("web.client.id") ?: "localhost"
+        )
+        resValue(
+            "string",
+            "base_url_backend_wireless",
+            localProperties.getProperty("base.url.backend.wireless")
+                ?: "http://10.0.2.2:8080/api/v1/"
+        )
     }
 
     buildTypes {

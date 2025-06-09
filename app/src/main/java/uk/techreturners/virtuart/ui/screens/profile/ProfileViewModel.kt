@@ -25,7 +25,7 @@ class ProfileViewModel @Inject constructor(
     val events: SharedFlow<Event> = _events
 
     init {
-        checkCurrentUser()
+        observeUserState()
     }
 
     fun signIn() {
@@ -39,13 +39,18 @@ class ProfileViewModel @Inject constructor(
                 is SignInResult.Success -> {
                     _state.value = State.SignedIn(signInResult.userData)
                 }
+                // TODO address the error management more thoroughly
             }
         }
     }
 
-    private fun checkCurrentUser() {
-        val user = authRepository.getSignedInUser()
-        if (user == null) _state.value = State.NoUser else _state.value = State.SignedIn(user)
+    private fun observeUserState() {
+        viewModelScope.launch {
+            authRepository.userState.collect { user ->
+                if (user == null) _state.value = State.NoUser else
+                    _state.value = State.SignedIn(user)
+            }
+        }
     }
 
     fun signOut() {
