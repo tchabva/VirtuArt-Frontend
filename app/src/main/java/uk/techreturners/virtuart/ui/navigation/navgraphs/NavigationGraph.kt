@@ -1,6 +1,7 @@
 package uk.techreturners.virtuart.ui.navigation.navgraphs
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -18,7 +19,8 @@ fun NavigationGraph(
     startDestination: Any = Tabs.Artworks,
     innerPadding: PaddingValues,
     snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    setTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
 ) = NavHost(
     modifier = modifier.padding(innerPadding),
     navController = navController,
@@ -41,7 +43,8 @@ fun NavigationGraph(
     exhibitionsGraph(
         navController = navController,
         snackbarHostState = snackbarHostState,
-        coroutineScope = coroutineScope
+        coroutineScope = coroutineScope,
+        setTopBarActions = setTopBarActions
     )
 
     profileGraph(

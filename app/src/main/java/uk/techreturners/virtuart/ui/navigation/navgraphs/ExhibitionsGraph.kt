@@ -1,7 +1,17 @@
 package uk.techreturners.virtuart.ui.navigation.navgraphs
 
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -21,7 +31,8 @@ import uk.techreturners.virtuart.ui.screens.exhibitions.ExhibitionsViewModel
 fun NavGraphBuilder.exhibitionsGraph(
     navController: NavController,
     snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    setTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     navigation<Tabs.Exhibitions>(startDestination = Screens.Exhibitions) {
         composable<Screens.Exhibitions> {
@@ -60,6 +71,32 @@ fun NavGraphBuilder.exhibitionsGraph(
             val exhibitionDetail: Screens.ExhibitionDetail = backstackEntry.toRoute()
             val viewModel = hiltViewModel<ExhibitionDetailViewModel>()
 
+            // Sets the actions for the TopAppBar while this screen is active
+            DisposableEffect(viewModel) {
+                setTopBarActions {
+                    IconButton(
+                        onClick = viewModel::showUpdateExhibitionDialog
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = stringResource(R.string.edit_exhibition_details_icon_txt)
+                        )
+                    }
+                    IconButton(
+                        onClick = viewModel::showDeleteExhibitionDialog
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(R.string.delete_exhibition),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+                onDispose {
+                    setTopBarActions {}
+                }
+            }
+
             // Whenever the exhibitionId variable changes this method will be invoked
             LaunchedEffect(exhibitionDetail.exhibitionId) {
                 viewModel.getExhibitionDetail(exhibitionId = exhibitionDetail.exhibitionId)
@@ -84,7 +121,7 @@ fun NavGraphBuilder.exhibitionsGraph(
                             message = context.getString(R.string.deleted_artwork_from_exhibition)
                         )
                     }
-                }
+                },
             )
         }
     }
