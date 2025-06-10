@@ -13,9 +13,9 @@ data class Exhibition(
 data class ExhibitionDetail(
     val id: String,
     val title: String,
-    val description: String,
+    val description: String?,
     val createdAt: String,
-    val updateAt: String,
+    val updateAt: String?,
     val exhibitionItems: List<ExhibitionItem>
 )
 

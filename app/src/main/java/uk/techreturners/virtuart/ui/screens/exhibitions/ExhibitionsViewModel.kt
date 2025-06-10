@@ -71,6 +71,15 @@ class ExhibitionsViewModel @Inject constructor(
         }
     }
 
+    fun refreshExhibitions() {
+        // Only refresh if we have a user and are currently in a loaded state
+        if (state.value is State.Loaded || state.value is State.Error || state.value is State.NetworkError) {
+            getAllExhibitions()
+            Log.i(TAG, "RefreshExhibitions method invoked")
+        }
+    }
+
+
     fun onSignInButtonClicked() {
         viewModelScope.launch {
             emitEvent(Event.GoToSignInButtonClicked)
@@ -164,7 +173,8 @@ class ExhibitionsViewModel @Inject constructor(
                         )
                         Log.e(
                             TAG,
-                            "Failed to Delete Album Network Error: ${networkResponse.exception.message}"
+                            "Failed to delete exhibition," +
+                                    " Network Error: ${networkResponse.exception.message}"
                         )
                     }
 
@@ -174,7 +184,8 @@ class ExhibitionsViewModel @Inject constructor(
                         )
                         Log.e(
                             TAG,
-                            "Failed to Delete Album Code: ${networkResponse.code}\n${networkResponse.message}"
+                            "Failed to to delete exhibition" +
+                                    " Code: ${networkResponse.code}\n${networkResponse.message}"
                         )
                     }
 
@@ -184,7 +195,7 @@ class ExhibitionsViewModel @Inject constructor(
                         )
                         Log.e(
                             TAG,
-                            "Deleted Album Id: $exhibitionId"
+                            "Deleted Exhibition Id: $exhibitionId"
                         )
                     }
                 }
@@ -192,6 +203,13 @@ class ExhibitionsViewModel @Inject constructor(
                 toDeleteExhibitionId = null
             }
         }
+    }
+
+    fun onExhibitionItemClicked(exhibitionId: String) {
+        viewModelScope.launch {
+            emitEvent(Event.ExhibitionItemClicked(exhibitionId))
+        }
+        Log.i(TAG, "ExhibitionItem Clicked ID: $exhibitionId")
     }
 
     private suspend fun emitEvent(event: Event) {
@@ -215,6 +233,26 @@ class ExhibitionsViewModel @Inject constructor(
             showDeleteExhibitionDialog = true
         )
         toDeleteExhibitionId = exhibitionId
+    }
+
+    fun updateExhibitionTitle(newString: String) {
+        _state.value = (state.value as State.Loaded).copy(
+            exhibitionTitle = newString
+        )
+        Log.i(
+            TAG,
+            "Exhibition title updated: ${(state.value as State.Loaded).exhibitionTitle}"
+        )
+    }
+
+    fun updateExhibitionDescription(newString: String) {
+        _state.value = (state.value as State.Loaded).copy(
+            exhibitionDescription = newString
+        )
+        Log.i(
+            TAG,
+            "Exhibition description updated: ${(state.value as State.Loaded).exhibitionDescription}"
+        )
     }
 
     fun dismissDeleteExhibitionDialog() {
@@ -255,6 +293,6 @@ class ExhibitionsViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "ProfileViewModel"
+        private const val TAG = "ExhibitionsViewModel"
     }
 }

@@ -18,7 +18,7 @@
     <string name="create_exhibition_button_txt">Create Exhibition Button</string>
     <string name="no_exhibitions_text">No exhibitions yet.\n Create your first exhibition!</string>
     <string name="no_user_text">You are not signed in.\n Sign in or create an account to create or view your exhibitions</string>
-    <string name="empty_title_warning_txt">A title\'s are required for Exhibitions!</string>
+    <string name="empty_title_warning_txt">A title is required to create an Exhibitions!</string>
     <string name="new_exhibition_created_snackbar_txt">New Exhibition Created</string>
     <string name="delete_exhibition_network_txt">Failed to delete exhibition due to network error</string>
     <string name="deleted_exhibition_successfully">Deleted exhibition successfully</string>
@@ -29,4 +29,24 @@
     <string name="failed_to_delete_exhibition_toast_txt">Failed to delete exhibition</string>
     <string name="failed_to_add_exhibition_due_to_network_error">Failed to add exhibition due to network error.\n%1$s</string>
     <string name="failed_to_add_exhibition_http_code_toast_txt">Failed to add exhibition Http Code %1$s.\n%2$s</string>
+    <string name="deleted_artwork_from_exhibition">Deleted artwork from exhibition</string>
+    <string name="created">Created</string>
+    <string name="last_updated">Last Updated</string>
+    <string name="artwork_image">Artwork Image</string>
+    <string name="source_colon_text">Source: %1$s</string>
+    <string name="delete_item_content_txt">Delete %1$s}</string>
+    <string name="edit_exhibition_details_icon_txt">Edit exhibition details</string>
+    <string name="artworks_count_txt">Artworks: %1$s</string>
+    <string name="no_artworks_in_this_exhibition_yet">No artworks in this exhibition yet.</string>
+    <string name="no_description_txt">Exhibition does not have a description</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="new_exhibition">New Exhibition</string>
+    <string name="there_are_no_changes_to_update">There are no changes to update!</string>
+    <string name="exhibition_details_updated_success_txt">Exhibition details updated successfully</string>
+    <string name="update_exhibition">Update Exhibition</string>
+    <string name="update">Update</string>
+    <string name="failed_to_delete_artwork_from_the_exhibition">Failed to delete artwork from the exhibition</string>
 </resources>

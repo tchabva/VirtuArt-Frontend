@@ -14,6 +14,7 @@ fun ExhibitionsScreen(
     navigateToProfileGraph: () -> Unit,
     exhibitionCreated: (Context) -> Unit,
     exhibitionDeleted: (Context) -> Unit,
+    onExhibitionItemClick: (String) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -60,7 +61,7 @@ fun ExhibitionsScreen(
                 }
 
                 is ExhibitionsViewModel.Event.ExhibitionItemClicked -> {
-                    TODO()
+                    onExhibitionItemClick(event.exhibitionId)
                 }
 
                 ExhibitionsViewModel.Event.ExhibitionTitleTextFieldEmpty -> {
@@ -91,12 +92,14 @@ fun ExhibitionsScreen(
     ExhibitionsScreenContent(
         state = state.value,
         onSignInClick = viewModel::onSignInButtonClicked,
-        onExhibitionClick = { },
+        onExhibitionClick = viewModel::onExhibitionItemClicked,
         onDeleteExhibitionClick = viewModel::deleteExhibition,
         onShowDeleteExhibitionDialog = viewModel::showDeleteExhibitionDialog,
         onDismissDeleteExhibitionDialog = viewModel::dismissDeleteExhibitionDialog,
         onCreateNewExhibitionConfirmed = viewModel::onCreateExhibitionButtonClicked,
         onCreateNewExhibitionFabClicked = viewModel::showCreateExhibitionDialog,
-        onDismissExhibitionDialog = viewModel::dismissCreateExhibitionDialog
+        onDismissExhibitionDialog = viewModel::dismissCreateExhibitionDialog,
+        updateTitle = viewModel::updateExhibitionTitle,
+        updateDescription = viewModel::updateExhibitionDescription
     )
 }

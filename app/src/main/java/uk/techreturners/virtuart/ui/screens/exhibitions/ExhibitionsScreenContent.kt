@@ -33,6 +33,7 @@ import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Exhibition
 import uk.techreturners.virtuart.ui.common.DefaultDeleteItemDialog
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
+import uk.techreturners.virtuart.ui.common.DefaultExhibitionEditorDialog
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.ExhibitionItem
 
@@ -47,12 +48,14 @@ fun ExhibitionsScreenContent(
     onCreateNewExhibitionConfirmed: () -> Unit,
     onShowDeleteExhibitionDialog: (String) -> Unit,
     onDismissDeleteExhibitionDialog: () -> Unit,
+    updateTitle: (String) -> Unit,
+    updateDescription: (String) -> Unit
 ) {
 
     when (state) {
         is ExhibitionsViewModel.State.Error -> {
             DefaultErrorScreen(
-                responseCode = null,
+                responseCode = state.responseCode,
                 errorMessage = state.errorMessage
             )
         }
@@ -66,7 +69,9 @@ fun ExhibitionsScreenContent(
                 onCreateNewExhibitionFabClicked = onCreateNewExhibitionFabClicked,
                 onCreateNewExhibitionConfirmed = onCreateNewExhibitionConfirmed,
                 onDismissDeleteExhibitionDialog = onDismissDeleteExhibitionDialog,
-                onShowDeleteExhibitionDialog = onShowDeleteExhibitionDialog
+                onShowDeleteExhibitionDialog = onShowDeleteExhibitionDialog,
+                updateTitle = updateTitle,
+                updateDescription = updateDescription,
             )
         }
 
@@ -97,8 +102,10 @@ private fun ExhibitionsScreenLoaded(
     onCreateNewExhibitionFabClicked: () -> Unit,
     onCreateNewExhibitionConfirmed: () -> Unit,
     onShowDeleteExhibitionDialog: (String) -> Unit,
+    updateTitle: (String) -> Unit,
+    updateDescription: (String) -> Unit
 
-    ) {
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -164,10 +171,15 @@ private fun ExhibitionsScreenLoaded(
         }
     }
     if (state.showCreateExhibitionDialog) {
-        CreateExhibitionDialog(
-            state = state,
+        DefaultExhibitionEditorDialog(
             onDismiss = onDismissCreateExhibitionDialog,
-            onCreateExhibitionRequestConfirmed = onCreateNewExhibitionConfirmed
+            onCreateExhibitionRequestConfirmed = onCreateNewExhibitionConfirmed,
+            exhibitionTitle = state.exhibitionTitle ?: "",
+            exhibitionDescription = state.exhibitionTitle ?: "",
+            dialogTitle = stringResource(R.string.new_exhibition),
+            confirmButtonText = stringResource(R.string.create),
+            updateTitle = updateTitle,
+            updateDescription = updateDescription,
         )
     }
 
@@ -260,7 +272,9 @@ private fun ExhibitionsScreenLoadedPreview() {
         onCreateNewExhibitionFabClicked = {},
         onDismissCreateExhibitionDialog = {},
         onDismissDeleteExhibitionDialog = { },
-        onShowDeleteExhibitionDialog = {}
+        onShowDeleteExhibitionDialog = {},
+        updateTitle = {},
+        updateDescription = {}
     )
 }
 

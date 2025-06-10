@@ -81,7 +81,23 @@ class ExhibitionsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getExhibitionDetail(exhibitionId: String): NetworkResponse<ExhibitionDetail> {
-        TODO("Not yet implemented")
+        try {
+            val response = api.getExhibitionDetail(exhibitionId)
+            val responseCode = response.code()
+            return if (responseCode == 200) {
+                Log.i(TAG, "Successfully Retrieved Exhibition ID: $exhibitionId")
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                Log.e(TAG, "Failed To Retrieve Exhibition: Code = $responseCode")
+                NetworkResponse.Failed(
+                    response.message() ?: "",
+                    code = responseCode,
+                )
+            }
+        } catch (e: Throwable) {
+            Log.wtf(TAG, "Network Error", e)
+            return NetworkResponse.Exception(e)
+        }
     }
 
     override suspend fun addArtworkToExhibition(
@@ -95,15 +111,55 @@ class ExhibitionsRepositoryImpl @Inject constructor(
         exhibitionId: String,
         apiId: String,
         source: String
-    ): NetworkResponse<Void> {
-        TODO("Not yet implemented")
+    ): NetworkResponse<Unit> {
+        try {
+            val response = api.deleteArtworkFromExhibition(
+                exhibitionId = exhibitionId,
+                apiId = apiId,
+                source = source
+            )
+            val responseCode = response.code()
+            return if (responseCode == 204) {
+                Log.i(TAG, "Successfully Deleted Artwork $apiId from Exhibition ID: $exhibitionId")
+                NetworkResponse.Success(Unit)
+            } else {
+                Log.e(TAG, "Failed To Delete Artwork from Exhibition: Code = $responseCode")
+                NetworkResponse.Failed(
+                    response.message() ?: "",
+                    code = responseCode,
+                )
+            }
+        } catch (e: Throwable) {
+            Log.wtf(TAG, "Network Error", e)
+            return NetworkResponse.Exception(e)
+        }
     }
 
     override suspend fun updateExhibitionDetails(
         exhibitionId: String,
         request: UpdateExhibitionRequest
     ): NetworkResponse<Exhibition> {
-        TODO("Not yet implemented")
+        try {
+            val response = api.updateExhibitionDetails(
+                exhibitionId = exhibitionId,
+                updateExhibitionRequest = request
+            )
+            val responseCode = response.code()
+
+            return if (responseCode == 200) {
+                Log.i(TAG, "Successfully updated Exhibition: ${response.body()}")
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                Log.e(TAG, "Failed To updated Exhibition: Code = $responseCode")
+                NetworkResponse.Failed(
+                    response.message() ?: "",
+                    code = responseCode,
+                )
+            }
+        } catch (e: Throwable) {
+            Log.wtf(TAG, "Network Error", e)
+            return NetworkResponse.Exception(e)
+        }
     }
 
     companion object {
