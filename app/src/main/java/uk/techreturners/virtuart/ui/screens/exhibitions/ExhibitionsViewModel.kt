@@ -164,7 +164,8 @@ class ExhibitionsViewModel @Inject constructor(
                         )
                         Log.e(
                             TAG,
-                            "Failed to Delete Album Network Error: ${networkResponse.exception.message}"
+                            "Failed to delete exhibition," +
+                                    " Network Error: ${networkResponse.exception.message}"
                         )
                     }
 
@@ -174,7 +175,8 @@ class ExhibitionsViewModel @Inject constructor(
                         )
                         Log.e(
                             TAG,
-                            "Failed to Delete Album Code: ${networkResponse.code}\n${networkResponse.message}"
+                            "Failed to to delete exhibition" +
+                                    " Code: ${networkResponse.code}\n${networkResponse.message}"
                         )
                     }
 
@@ -184,7 +186,7 @@ class ExhibitionsViewModel @Inject constructor(
                         )
                         Log.e(
                             TAG,
-                            "Deleted Album Id: $exhibitionId"
+                            "Deleted Exhibition Id: $exhibitionId"
                         )
                     }
                 }
