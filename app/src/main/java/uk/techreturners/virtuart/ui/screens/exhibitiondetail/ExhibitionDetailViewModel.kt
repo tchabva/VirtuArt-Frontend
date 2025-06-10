@@ -69,6 +69,7 @@ class ExhibitionDetailViewModel @Inject constructor(
 
             when (val networkResponse = exhibitionsRepository.deleteExhibition(exhibitionId)) {
                 is NetworkResponse.Exception -> {
+                    _state.value = stateHolder.copy() // return previous state
                     emitEvent(
                         Event.DeleteExhibitionFailedNetwork
                     )
@@ -80,6 +81,7 @@ class ExhibitionDetailViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.Failed -> {
+                    _state.value = stateHolder.copy() // return previous state
                     emitEvent(
                         Event.DeleteExhibitionFailed
                     )
@@ -100,7 +102,6 @@ class ExhibitionDetailViewModel @Inject constructor(
                     )
                 }
             }
-
         }
     }
 
