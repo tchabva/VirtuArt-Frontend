@@ -35,9 +35,21 @@ fun NavGraphBuilder.exhibitionsGraph(
     setTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     navigation<Tabs.Exhibitions>(startDestination = Screens.Exhibitions) {
-        composable<Screens.Exhibitions> {
+        composable<Screens.Exhibitions> { backStackEntry ->
+            val viewModel = hiltViewModel<ExhibitionsViewModel>()
+
+            // Checks if we are returning from ExhibitionDetail and a refresh is required
+            LaunchedEffect(backStackEntry) {
+                val savedStateHandle = backStackEntry.savedStateHandle
+                val shouldRefresh = savedStateHandle.get<Boolean>("refresh_exhibitions") ?: false
+                if (shouldRefresh) {
+                    viewModel.refreshExhibitions()
+                    savedStateHandle.remove<Boolean>("refresh_exhibitions")
+                }
+            }
+
             ExhibitionsScreen(
-                viewModel = hiltViewModel<ExhibitionsViewModel>(),
+                viewModel = viewModel,
                 navigateToProfileGraph = {
                     /*
                     Pop everything up to and including the Profile Screen from the backstack and then
@@ -124,6 +136,22 @@ fun NavGraphBuilder.exhibitionsGraph(
                 },
                 onDeletedExhibitionConfirmed = {
                     viewModel.deleteExhibition(exhibitionDetail.exhibitionId)
+                },
+                exhibitionDetailsUpdated = { context ->
+                    // Set flag for refreshing the Exhibitions when navigating back
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "refresh_exhibitions",
+                        true
+                    )
+
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.exhibition_details_updated_success_txt)
+                        )
+                    }
+                },
+                exhibitionUpdateRequest = {
+                    viewModel.onUpdateExhibitionButtonClicked(exhibitionId = exhibitionDetail.exhibitionId)
                 },
             )
         }

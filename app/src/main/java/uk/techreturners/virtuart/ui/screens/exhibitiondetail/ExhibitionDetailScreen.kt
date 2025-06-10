@@ -13,7 +13,9 @@ fun ExhibitionDetailScreen(
     viewModel: ExhibitionDetailViewModel,
     exhibitionDeleted: (Context) -> Unit,
     artworkDeleted: (Context) -> Unit,
-    onDeletedExhibitionConfirmed: () -> Unit
+    onDeletedExhibitionConfirmed: () -> Unit,
+    exhibitionDetailsUpdated: (Context) -> Unit,
+    exhibitionUpdateRequest: () -> Unit
 
 ) {
     val context = LocalContext.current
@@ -21,15 +23,15 @@ fun ExhibitionDetailScreen(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is ExhibitionDetailViewModel.Event.ArtworkDeletedFailed -> {
+                is ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeletedFailed -> {
                     TODO()
                 }
 
-                is ExhibitionDetailViewModel.Event.ArtworkDeletedNetworkError -> {
+                is ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeletedNetworkError -> {
                     TODO()
                 }
 
-                ExhibitionDetailViewModel.Event.ArtworkDeletedSuccessfully -> {
+                ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeletedSuccessfully -> {
                     TODO()
                 }
 
@@ -54,26 +56,41 @@ fun ExhibitionDetailScreen(
                 }
 
                 ExhibitionDetailViewModel.Event.ExhibitionDetailsUpdateFailed -> {
-                    TODO()
+                    Toast.makeText(
+                        context,
+                        "Failed to update Exhibition",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ExhibitionDetailViewModel.Event.ExhibitionDetailsUpdatedSuccessfully -> {
-                    TODO()
+                    exhibitionDetailsUpdated(context)
                 }
 
-                is ExhibitionDetailViewModel.Event.ExhibitionItemClicked -> {
+                is ExhibitionDetailViewModel.Event.ExhibitionArtworkItemClicked -> {
                     TODO()
                 }
 
                 ExhibitionDetailViewModel.Event.ExhibitionTitleTextFieldEmpty -> {
-                    TODO()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.empty_title_warning_txt),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ExhibitionDetailViewModel.Event.DeleteExhibitionConfirmed -> {
                     onDeletedExhibitionConfirmed()
                 }
-            }
 
+                ExhibitionDetailViewModel.Event.ExhibitionDetailsUnchanged -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.there_are_no_changes_to_update),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
 
@@ -84,9 +101,10 @@ fun ExhibitionDetailScreen(
         onDismissDeleteExhibitionDialog = viewModel::dismissDeleteExhibitionDialog,
         onDeleteExhibitionConfirmed = viewModel::onDeleteExhibitionConfirmed,
         onShowDeleteArtworkDialog = viewModel::onShowDeleteArtworkDialog,
-        onDismissDeleteArtworkDialog = {},
-        onShowEditExhibitionDialog = {},
-        onDismissEditExhibitionDialog = {},
-        onUpdateExhibitionClick = {}
+        onDismissDeleteArtworkDialog = viewModel::dismissDeleteArtworkItemDialog,
+        onDismissEditExhibitionDialog = viewModel::dismissUpdateExhibitionDialog,
+        onUpdateExhibitionClick = exhibitionUpdateRequest,
+        updateExhibitionTitle = viewModel::updateExhibitionTitle,
+        updateExhibitionDescription = viewModel::updateExhibitionDescription
     )
 }

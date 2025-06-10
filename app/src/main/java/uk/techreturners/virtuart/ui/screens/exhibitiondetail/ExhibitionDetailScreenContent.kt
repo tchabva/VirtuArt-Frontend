@@ -21,6 +21,7 @@ import uk.techreturners.virtuart.data.model.ExhibitionDetail
 import uk.techreturners.virtuart.data.model.ExhibitionItem
 import uk.techreturners.virtuart.ui.common.DefaultDeleteItemDialog
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
+import uk.techreturners.virtuart.ui.common.DefaultExhibitionEditorDialog
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 
 @Composable
@@ -30,9 +31,10 @@ fun ExhibitionDetailScreenContent(
     onDeleteExhibitionConfirmed: () -> Unit,
     onShowDeleteArtworkDialog: (String, String) -> Unit,
     onDismissDeleteArtworkDialog: () -> Unit,
-    onShowEditExhibitionDialog: () -> Unit,
     onDismissEditExhibitionDialog: () -> Unit,
-    onUpdateExhibitionClick: (String) -> Unit,
+    onUpdateExhibitionClick: () -> Unit,
+    updateExhibitionTitle: (String) -> Unit,
+    updateExhibitionDescription: (String) -> Unit
 ) {
     when (state) {
         is ExhibitionDetailViewModel.State.Error -> {
@@ -50,11 +52,11 @@ fun ExhibitionDetailScreenContent(
                 onDismissDeleteExhibitionDialog = onDismissDeleteExhibitionDialog,
                 onShowDeleteArtworkDialog = onShowDeleteArtworkDialog,
                 onDismissDeleteArtworkDialog = onDismissDeleteArtworkDialog,
-                onShowEditExhibitionDialog = { TODO() },
-                onDismissEditExhibitionDialog = { TODO() },
-                onUpdateExhibitionClick = { TODO() },
+                onDismissEditExhibitionDialog = onDismissEditExhibitionDialog,
+                onUpdateExhibitionClick = onUpdateExhibitionClick,
+                updateExhibitionTitle = updateExhibitionTitle,
+                updateExhibitionDescription = updateExhibitionDescription,
             )
-
         }
 
         ExhibitionDetailViewModel.State.Loading -> {
@@ -78,9 +80,10 @@ private fun ExhibitionDetailScreenLoaded(
     onDismissDeleteExhibitionDialog: () -> Unit,
     onShowDeleteArtworkDialog: (String, String) -> Unit,
     onDismissDeleteArtworkDialog: () -> Unit,
-    onShowEditExhibitionDialog: () -> Unit,
     onDismissEditExhibitionDialog: () -> Unit,
-    onUpdateExhibitionClick: (String) -> Unit,
+    onUpdateExhibitionClick: () -> Unit,
+    updateExhibitionTitle: (String) -> Unit,
+    updateExhibitionDescription: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -126,7 +129,16 @@ private fun ExhibitionDetailScreenLoaded(
     }
 
     if (state.showUpdateExhibitionDialog) {
-
+        DefaultExhibitionEditorDialog(
+            exhibitionTitle = state.exhibitionTitle!!,
+            exhibitionDescription = state.exhibitionDescription,
+            dialogTitle = stringResource(R.string.update_exhibition),
+            confirmButtonText = stringResource(R.string.update),
+            onDismiss = onDismissEditExhibitionDialog,
+            onCreateExhibitionRequestConfirmed = onUpdateExhibitionClick,
+            updateTitle = updateExhibitionTitle,
+            updateDescription = updateExhibitionDescription
+        )
     }
 
     if (state.showDeleteExhibitionDialog) {
@@ -179,8 +191,9 @@ private fun ExhibitionDetailScreenLoadedPreview() {
         onDismissDeleteExhibitionDialog = { },
         onShowDeleteArtworkDialog = { _, _ -> },
         onDismissDeleteArtworkDialog = { },
-        onShowEditExhibitionDialog = { },
         onDismissEditExhibitionDialog = { },
-        onUpdateExhibitionClick = { }
+        onUpdateExhibitionClick = { },
+        updateExhibitionTitle = { },
+        updateExhibitionDescription = { },
     )
 }

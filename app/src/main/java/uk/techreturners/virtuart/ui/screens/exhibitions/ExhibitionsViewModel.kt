@@ -71,6 +71,15 @@ class ExhibitionsViewModel @Inject constructor(
         }
     }
 
+    fun refreshExhibitions() {
+        // Only refresh if we have a user and are currently in a loaded state
+        if (state.value is State.Loaded || state.value is State.Error || state.value is State.NetworkError) {
+            getAllExhibitions()
+            Log.i(TAG, "RefreshExhibitions method invoked")
+        }
+    }
+
+
     fun onSignInButtonClicked() {
         viewModelScope.launch {
             emitEvent(Event.GoToSignInButtonClicked)

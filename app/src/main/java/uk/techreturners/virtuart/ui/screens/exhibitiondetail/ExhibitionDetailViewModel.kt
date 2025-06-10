@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import uk.techreturners.virtuart.data.model.ExhibitionDetail
+import uk.techreturners.virtuart.data.model.UpdateExhibitionRequest
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepository
 import javax.inject.Inject
@@ -103,6 +104,83 @@ class ExhibitionDetailViewModel @Inject constructor(
         }
     }
 
+    fun onUpdateExhibitionButtonClicked(exhibitionId: String) {
+        viewModelScope.launch {
+            val cState = state.value as State.Loaded
+            var title = cState.exhibitionTitle
+            var description = cState.exhibitionDescription
+
+            // Validation
+            if (title.isNullOrBlank()) {
+                emitEvent(Event.ExhibitionTitleTextFieldEmpty)
+            }else if (description == null && title.trim() == cState.data.title) {
+                emitEvent(Event.ExhibitionDetailsUnchanged)
+            }else if (title.trim() == cState.data.title && description != null &&
+                description.trim() == cState.data.description
+            ) {
+                emitEvent(Event.ExhibitionDetailsUnchanged)
+            } else {
+                dismissUpdateExhibitionDialog()
+
+                if (description.isNullOrBlank() || description == cState.data.description) {
+                    description = null
+                }
+
+                if (title == cState.data.title) {
+                    title = null
+                }
+
+                val request = UpdateExhibitionRequest(
+                    title = title,
+                    description = description
+                )
+
+                Log.i(TAG, "Update Exhibition Request: $request")
+
+                updateExhibitionDetails(
+                    exhibitionId = exhibitionId,
+                    request = request
+                )
+            }
+        }
+    }
+
+    private suspend fun updateExhibitionDetails(
+        exhibitionId: String,
+        request: UpdateExhibitionRequest
+    ) {
+        when (val networkResponse = exhibitionsRepository.updateExhibitionDetails(
+            exhibitionId = exhibitionId,
+            request = request
+        )) {
+            is NetworkResponse.Exception<*> -> {
+                emitEvent(
+                    Event.ExhibitionDetailsUpdateFailed
+                )
+                Log.i(
+                    TAG,
+                    "Update Exhibition Request Network Error: ${networkResponse.exception.message}"
+                )
+            }
+
+            is NetworkResponse.Failed<*> -> {
+                emitEvent(
+                    Event.ExhibitionDetailsUpdateFailed
+                )
+                Log.e(
+                    TAG,
+                    "Update Exhibition Request Failed: code: ${networkResponse.code}\n${networkResponse.message}"
+                )
+            }
+
+            is NetworkResponse.Success<*> -> {
+                getExhibitionDetail(exhibitionId)
+                emitEvent(Event.ExhibitionDetailsUpdatedSuccessfully)
+                Log.i(TAG, "Exhibition Updated: ${networkResponse.data}")
+            }
+        }
+    }
+
     fun onDeleteExhibitionConfirmed() {
         viewModelScope.launch {
             emitEvent(
@@ -130,11 +208,33 @@ class ExhibitionDetailViewModel @Inject constructor(
         _state.value = (state.value as State.Loaded).copy(
             showUpdateExhibitionDialog = true
         )
+        Log.i(TAG, "updateExhibition button clicked")
     }
 
     fun dismissUpdateExhibitionDialog() {
         _state.value = (state.value as State.Loaded).copy(
             showUpdateExhibitionDialog = false
+        )
+        Log.i(TAG, "updateExhibition Dialog dismissed")
+    }
+
+    fun updateExhibitionTitle(newString: String) {
+        _state.value = (state.value as State.Loaded).copy(
+            exhibitionTitle = newString
+        )
+        Log.i(
+            TAG,
+            "Exhibition title updated: ${(state.value as State.Loaded).exhibitionTitle}"
+        )
+    }
+
+    fun updateExhibitionDescription(newString: String) {
+        _state.value = (state.value as State.Loaded).copy(
+            exhibitionDescription = newString
+        )
+        Log.i(
+            TAG,
+            "Exhibition description updated: ${(state.value as State.Loaded).exhibitionDescription}"
         )
     }
 
@@ -146,7 +246,7 @@ class ExhibitionDetailViewModel @Inject constructor(
         toDeleteArtworkSource = source
     }
 
-    fun dismissDeleteArtworkDialog() {
+    fun dismissDeleteArtworkItemDialog() {
         _state.value = (state.value as State.Loaded).copy(
             showDeleteArtworkDialog = true
         )
@@ -162,8 +262,8 @@ class ExhibitionDetailViewModel @Inject constructor(
             val showUpdateExhibitionDialog: Boolean = false,
             val showDeleteExhibitionDialog: Boolean = false,
             val showDeleteArtworkDialog: Boolean = false,
-            var exhibitionTitle: String? = null,
-            var exhibitionDescription: String? = null
+            var exhibitionTitle: String? = data.title,
+            var exhibitionDescription: String? = data.description
         ) : State
 
         data class Error(val responseCode: Int?, val errorMessage: String) : State
@@ -172,17 +272,19 @@ class ExhibitionDetailViewModel @Inject constructor(
     }
 
     sealed interface Event {
-        data object ArtworkDeletedSuccessfully : Event
-        data class ArtworkDeletedNetworkError(val message: String) : Event
-        data class ArtworkDeletedFailed(val responseCode: Int?, val message: String) : Event
         data object DeleteExhibitionConfirmed : Event
         data object DeleteExhibitionSuccessful : Event
         data object DeleteExhibitionFailedNetwork : Event
         data object DeleteExhibitionFailed : Event
         data object ExhibitionTitleTextFieldEmpty : Event
+        data object ExhibitionDetailsUnchanged : Event
         data object ExhibitionDetailsUpdatedSuccessfully : Event
         data object ExhibitionDetailsUpdateFailed : Event
-        data class ExhibitionItemClicked(val exhibitionId: String) : Event
+        data class ExhibitionArtworkItemClicked(val apiId: String, val source: String) : Event
+        data object ExhibitionArtworkItemDeletedSuccessfully : Event
+        data class ExhibitionArtworkItemDeletedNetworkError(val message: String) : Event
+        data class ExhibitionArtworkItemDeletedFailed(val responseCode: Int?, val message: String) :
+            Event
     }
 
     companion object {
