@@ -119,7 +119,27 @@ class ExhibitionsRepositoryImpl @Inject constructor(
         exhibitionId: String,
         request: UpdateExhibitionRequest
     ): NetworkResponse<Exhibition> {
-        TODO("Not yet implemented")
+        try {
+            val response = api.updateExhibitionDetails(
+                exhibitionId = exhibitionId,
+                updateExhibitionRequest = request
+            )
+            val responseCode = response.code()
+
+            return if (responseCode == 200) {
+                Log.i(TAG, "Successfully updated Exhibition: ${response.body()}")
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                Log.e(TAG, "Failed To updated Exhibition: Code = $responseCode")
+                NetworkResponse.Failed(
+                    response.message() ?: "",
+                    code = responseCode,
+                )
+            }
+        } catch (e: Throwable) {
+            Log.wtf(TAG, "Network Error", e)
+            return NetworkResponse.Exception(e)
+        }
     }
 
     companion object {
