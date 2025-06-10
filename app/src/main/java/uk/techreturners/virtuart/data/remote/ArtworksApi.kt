@@ -25,5 +25,4 @@ interface ArtworksApi {
 
     @POST("artworks/search/aic")
     suspend fun searchAicApi(@Body searchQuery: AicApiElasticSearchQuery): Response<PaginatedArtworkResults>
-
 }
