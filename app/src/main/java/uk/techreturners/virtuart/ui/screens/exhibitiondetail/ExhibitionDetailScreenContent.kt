@@ -34,7 +34,8 @@ fun ExhibitionDetailScreenContent(
     onDismissEditExhibitionDialog: () -> Unit,
     onUpdateExhibitionClick: () -> Unit,
     updateExhibitionTitle: (String) -> Unit,
-    updateExhibitionDescription: (String) -> Unit
+    updateExhibitionDescription: (String) -> Unit,
+    onDeleteArtworkItemConfirmed: () -> Unit
 ) {
     when (state) {
         is ExhibitionDetailViewModel.State.Error -> {
@@ -56,6 +57,7 @@ fun ExhibitionDetailScreenContent(
                 onUpdateExhibitionClick = onUpdateExhibitionClick,
                 updateExhibitionTitle = updateExhibitionTitle,
                 updateExhibitionDescription = updateExhibitionDescription,
+                onDeleteArtworkItemConfirmed = onDeleteArtworkItemConfirmed,
             )
         }
 
@@ -83,7 +85,8 @@ private fun ExhibitionDetailScreenLoaded(
     onDismissEditExhibitionDialog: () -> Unit,
     onUpdateExhibitionClick: () -> Unit,
     updateExhibitionTitle: (String) -> Unit,
-    updateExhibitionDescription: (String) -> Unit
+    updateExhibitionDescription: (String) -> Unit,
+    onDeleteArtworkItemConfirmed: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -151,7 +154,12 @@ private fun ExhibitionDetailScreenLoaded(
     }
 
     if (state.showDeleteArtworkDialog) {
-
+        DefaultDeleteItemDialog(
+            title = "Delete Artwork From Exhibition",
+            alertText = "Are you sure that you want to remove this artwork from the exhibition?",
+            onDismiss = onDismissDeleteArtworkDialog,
+            onDeleteItemConfirmed = onDeleteArtworkItemConfirmed
+        )
     }
 }
 
@@ -195,5 +203,6 @@ private fun ExhibitionDetailScreenLoadedPreview() {
         onUpdateExhibitionClick = { },
         updateExhibitionTitle = { },
         updateExhibitionDescription = { },
+        onDeleteArtworkItemConfirmed = { },
     )
 }

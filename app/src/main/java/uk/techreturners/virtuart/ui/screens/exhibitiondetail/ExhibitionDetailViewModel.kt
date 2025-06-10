@@ -113,9 +113,9 @@ class ExhibitionDetailViewModel @Inject constructor(
             // Validation
             if (title.isNullOrBlank()) {
                 emitEvent(Event.ExhibitionTitleTextFieldEmpty)
-            }else if (description == null && title.trim() == cState.data.title) {
+            } else if (description == null && title.trim() == cState.data.title) {
                 emitEvent(Event.ExhibitionDetailsUnchanged)
-            }else if (title.trim() == cState.data.title && description != null &&
+            } else if (title.trim() == cState.data.title && description != null &&
                 description.trim() == cState.data.description
             ) {
                 emitEvent(Event.ExhibitionDetailsUnchanged)
@@ -181,6 +181,65 @@ class ExhibitionDetailViewModel @Inject constructor(
         }
     }
 
+    fun deleteArtworkFromExhibition(exhibitionId: String) {
+        viewModelScope.launch {
+            val apiId = toDeleteArtworkApiId
+            val source = toDeleteArtworkSource
+
+            if (apiId.isNullOrBlank() || source.isNullOrBlank()) {
+                emitEvent(
+                    Event.DeleteExhibitionArtworkItemFailed
+                )
+                Log.wtf(TAG, "ApiId $apiId or Source $source variable is null")
+                dismissDeleteArtworkItemDialog()
+            } else {
+                dismissUpdateExhibitionDialog()
+
+                _state.value = State.Loading
+
+                when (val networkResponse =
+                    exhibitionsRepository.deleteArtworkFromExhibition(
+                        exhibitionId = exhibitionId,
+                        apiId = apiId,
+                        source = source
+                    )) {
+                    is NetworkResponse.Exception -> {
+                        emitEvent(
+                            Event.DeleteExhibitionArtworkItemNetworkError
+                        )
+                        Log.e(
+                            TAG,
+                            "Failed to delete artwork from exhibition," +
+                                    " Network Error: ${networkResponse.exception.message}"
+                        )
+                    }
+
+                    is NetworkResponse.Failed -> {
+                        emitEvent(
+                            Event.DeleteExhibitionArtworkItemFailed
+                        )
+                        Log.e(
+                            TAG,
+                            "Failed to to delete artwork from exhibition" +
+                                    " Code: ${networkResponse.code}\n${networkResponse.message}"
+                        )
+                    }
+
+                    is NetworkResponse.Success -> {
+                        emitEvent(
+                            Event.DeleteExhibitionArtworkItemSuccessful
+                        )
+                        Log.e(
+                            TAG,
+                            "Deleted artwork apiId: $apiId, source: $source from exhibition Id: $exhibitionId"
+                        )
+                    }
+                }
+            }
+            getExhibitionDetail(exhibitionId = exhibitionId) // Reload the updated ExhibitionDetail
+        }
+    }
+
     fun onDeleteExhibitionConfirmed() {
         viewModelScope.launch {
             emitEvent(
@@ -188,6 +247,15 @@ class ExhibitionDetailViewModel @Inject constructor(
             )
         }
         Log.i(TAG, "onDeleteExhibitionConfirmed button clicked")
+    }
+
+    fun onDeleteArtworkFromExhibitionConfirmed() {
+        viewModelScope.launch {
+            emitEvent(
+                Event.ExhibitionArtworkItemDeleteConfirmed
+            )
+        }
+        Log.i(TAG, "onDeleteArtworkFromExhibitionConfirmed button clicked")
     }
 
     fun showDeleteExhibitionDialog() {
@@ -248,7 +316,7 @@ class ExhibitionDetailViewModel @Inject constructor(
 
     fun dismissDeleteArtworkItemDialog() {
         _state.value = (state.value as State.Loaded).copy(
-            showDeleteArtworkDialog = true
+            showDeleteArtworkDialog = false
         )
         toDeleteArtworkApiId = null
         toDeleteArtworkSource = null
@@ -281,10 +349,10 @@ class ExhibitionDetailViewModel @Inject constructor(
         data object ExhibitionDetailsUpdatedSuccessfully : Event
         data object ExhibitionDetailsUpdateFailed : Event
         data class ExhibitionArtworkItemClicked(val apiId: String, val source: String) : Event
-        data object ExhibitionArtworkItemDeletedSuccessfully : Event
-        data class ExhibitionArtworkItemDeletedNetworkError(val message: String) : Event
-        data class ExhibitionArtworkItemDeletedFailed(val responseCode: Int?, val message: String) :
-            Event
+        data object ExhibitionArtworkItemDeleteConfirmed : Event
+        data object DeleteExhibitionArtworkItemSuccessful : Event
+        data object DeleteExhibitionArtworkItemNetworkError : Event
+        data object DeleteExhibitionArtworkItemFailed : Event
     }
 
     companion object {

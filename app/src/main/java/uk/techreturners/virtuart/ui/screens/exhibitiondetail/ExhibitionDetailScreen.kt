@@ -15,24 +15,32 @@ fun ExhibitionDetailScreen(
     artworkDeleted: (Context) -> Unit,
     onDeletedExhibitionConfirmed: () -> Unit,
     exhibitionDetailsUpdated: (Context) -> Unit,
-    exhibitionUpdateRequest: () -> Unit
-
+    exhibitionUpdateRequest: () -> Unit,
+    deleteArtworkFromExhibition: () -> Unit
 ) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeletedFailed -> {
-                    TODO()
+                is ExhibitionDetailViewModel.Event.DeleteExhibitionArtworkItemFailed -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.failed_to_delete_artwork_from_the_exhibition),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
-                is ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeletedNetworkError -> {
-                    TODO()
+                is ExhibitionDetailViewModel.Event.DeleteExhibitionArtworkItemNetworkError -> {
+                    Toast.makeText(
+                        context,
+                        "Failed to delete artwork from exhibition due to network error",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
-                ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeletedSuccessfully -> {
-                    TODO()
+                ExhibitionDetailViewModel.Event.DeleteExhibitionArtworkItemSuccessful -> {
+                    artworkDeleted(context)
                 }
 
                 ExhibitionDetailViewModel.Event.DeleteExhibitionFailed -> {
@@ -90,6 +98,10 @@ fun ExhibitionDetailScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeleteConfirmed -> {
+                    deleteArtworkFromExhibition()
+                }
             }
         }
     }
@@ -105,6 +117,7 @@ fun ExhibitionDetailScreen(
         onDismissEditExhibitionDialog = viewModel::dismissUpdateExhibitionDialog,
         onUpdateExhibitionClick = exhibitionUpdateRequest,
         updateExhibitionTitle = viewModel::updateExhibitionTitle,
-        updateExhibitionDescription = viewModel::updateExhibitionDescription
+        updateExhibitionDescription = viewModel::updateExhibitionDescription,
+        onDeleteArtworkItemConfirmed = viewModel::onDeleteArtworkFromExhibitionConfirmed
     )
 }

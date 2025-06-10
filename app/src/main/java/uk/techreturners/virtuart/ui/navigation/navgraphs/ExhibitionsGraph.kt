@@ -153,6 +153,9 @@ fun NavGraphBuilder.exhibitionsGraph(
                 exhibitionUpdateRequest = {
                     viewModel.onUpdateExhibitionButtonClicked(exhibitionId = exhibitionDetail.exhibitionId)
                 },
+                deleteArtworkFromExhibition = {
+                    viewModel.deleteArtworkFromExhibition(exhibitionId = exhibitionDetail.exhibitionId)
+                },
             )
         }
     }
