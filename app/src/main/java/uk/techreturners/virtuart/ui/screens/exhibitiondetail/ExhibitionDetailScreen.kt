@@ -11,8 +11,9 @@ fun ExhibitionDetailScreen(
     viewModel: ExhibitionDetailViewModel,
     exhibitionDeleted: (Context) -> Unit,
     artworkDeleted: (Context) -> Unit,
+    onDeletedExhibitionConfirmed: () -> Unit
 
-    ) {
+) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -27,7 +28,7 @@ fun ExhibitionDetailScreen(
                 }
 
                 ExhibitionDetailViewModel.Event.ArtworkDeletedSuccessfully -> {
-                    TODO()
+
                 }
 
                 ExhibitionDetailViewModel.Event.DeleteExhibitionFailed -> {
@@ -39,7 +40,7 @@ fun ExhibitionDetailScreen(
                 }
 
                 ExhibitionDetailViewModel.Event.DeleteExhibitionSuccessful -> {
-                    TODO()
+                    exhibitionDeleted(context)
                 }
 
                 ExhibitionDetailViewModel.Event.ExhibitionDetailsUpdateFailed -> {
@@ -57,6 +58,10 @@ fun ExhibitionDetailScreen(
                 ExhibitionDetailViewModel.Event.ExhibitionTitleTextFieldEmpty -> {
                     TODO()
                 }
+
+                ExhibitionDetailViewModel.Event.DeleteExhibitionConfirmed -> {
+                    onDeletedExhibitionConfirmed()
+                }
             }
 
         }
@@ -66,9 +71,8 @@ fun ExhibitionDetailScreen(
 
     ExhibitionDetailScreenContent(
         state.value,
-        onShowDeleteExhibitionDialog = {},
-        onDismissDeleteExhibitionDialog = {},
-        onDeleteExhibition = {},
+        onDismissDeleteExhibitionDialog = viewModel::dismissDeleteExhibitionDialog,
+        onDeleteExhibitionConfirmed = viewModel::onDeleteExhibitionConfirmed,
         onShowDeleteArtworkDialog = viewModel::onShowDeleteArtworkDialog,
         onDismissDeleteArtworkDialog = {},
         onShowEditExhibitionDialog = {},

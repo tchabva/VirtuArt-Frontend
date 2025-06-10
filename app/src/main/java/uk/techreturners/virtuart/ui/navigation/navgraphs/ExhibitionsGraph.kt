@@ -122,6 +122,9 @@ fun NavGraphBuilder.exhibitionsGraph(
                         )
                     }
                 },
+                onDeletedExhibitionConfirmed = {
+                    viewModel.deleteExhibition(exhibitionDetail.exhibitionId)
+                },
             )
         }
     }

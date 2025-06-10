@@ -2,14 +2,18 @@ package uk.techreturners.virtuart.ui.screens.exhibitiondetail
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import uk.techreturners.virtuart.data.model.ExhibitionDetail
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepository
+import uk.techreturners.virtuart.ui.screens.exhibitions.ExhibitionsViewModel
+import uk.techreturners.virtuart.ui.screens.exhibitions.ExhibitionsViewModel.Companion
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,16 +60,71 @@ class ExhibitionDetailViewModel @Inject constructor(
         }
     }
 
+    fun deleteExhibition(exhibitionId: String) {
+        viewModelScope.launch {
+            dismissDeleteExhibitionDialog() // Dismiss the dialog
+            // Hold the current state in memory
+            val stateHolder: State.Loaded = (state.value as State.Loaded).copy()
+            _state.value = State.Loading //
+
+            when (val networkResponse = exhibitionsRepository.deleteExhibition(exhibitionId)) {
+                is NetworkResponse.Exception -> {
+                    emitEvent(
+                        Event.DeleteExhibitionFailedNetwork
+                    )
+                    Log.e(
+                        TAG,
+                        "Failed to delete exhibition," +
+                                " Network Error: ${networkResponse.exception.message}"
+                    )
+                }
+
+                is NetworkResponse.Failed -> {
+                    emitEvent(
+                        Event.DeleteExhibitionFailed
+                    )
+                    Log.e(
+                        TAG,
+                        "Failed to to delete exhibition" +
+                                " Code: ${networkResponse.code}\n${networkResponse.message}"
+                    )
+                }
+
+                is NetworkResponse.Success -> {
+                    emitEvent(
+                        Event.DeleteExhibitionSuccessful
+                    )
+                    Log.e(
+                        TAG,
+                        "Deleted Exhibition Id: $exhibitionId"
+                    )
+                }
+            }
+
+        }
+    }
+
+    fun onDeleteExhibitionConfirmed() {
+        viewModelScope.launch {
+            emitEvent(
+                Event.DeleteExhibitionConfirmed
+            )
+        }
+        Log.i(TAG, "onDeleteExhibitionConfirmed button clicked")
+    }
+
     fun showDeleteExhibitionDialog() {
         _state.value = (state.value as State.Loaded).copy(
             showDeleteExhibitionDialog = true
         )
+        Log.i(TAG, "showDeleteExhibitionDialog button clicked")
     }
 
     fun dismissDeleteExhibitionDialog() {
         _state.value = (state.value as State.Loaded).copy(
             showDeleteExhibitionDialog = false
         )
+        Log.i(TAG, "dismissDeleteExhibitionDialog button clicked")
     }
 
     fun showUpdateExhibitionDialog() {
@@ -117,6 +176,7 @@ class ExhibitionDetailViewModel @Inject constructor(
         data object ArtworkDeletedSuccessfully : Event
         data class ArtworkDeletedNetworkError(val message: String) : Event
         data class ArtworkDeletedFailed(val responseCode: Int?, val message: String) : Event
+        data object DeleteExhibitionConfirmed : Event
         data object DeleteExhibitionSuccessful : Event
         data object DeleteExhibitionFailedNetwork : Event
         data object DeleteExhibitionFailed : Event

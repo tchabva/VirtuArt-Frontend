@@ -19,15 +19,15 @@ import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.ExhibitionDetail
 import uk.techreturners.virtuart.data.model.ExhibitionItem
+import uk.techreturners.virtuart.ui.common.DefaultDeleteItemDialog
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 
 @Composable
 fun ExhibitionDetailScreenContent(
     state: ExhibitionDetailViewModel.State,
-    onShowDeleteExhibitionDialog: () -> Unit,
     onDismissDeleteExhibitionDialog: () -> Unit,
-    onDeleteExhibition: (String) -> Unit,
+    onDeleteExhibitionConfirmed: () -> Unit,
     onShowDeleteArtworkDialog: (String, String) -> Unit,
     onDismissDeleteArtworkDialog: () -> Unit,
     onShowEditExhibitionDialog: () -> Unit,
@@ -46,11 +46,10 @@ fun ExhibitionDetailScreenContent(
             ExhibitionDetailScreenLoaded(
                 state = state,
                 onArtworkClick = { TODO() },
-                onShowDeleteExhibitionDialog = { TODO() },
-                onDismissDeleteExhibitionDialog = { TODO() },
-                onDeleteExhibition = { TODO() },
+                onDeleteExhibitionConfirmed = onDeleteExhibitionConfirmed,
+                onDismissDeleteExhibitionDialog = onDismissDeleteExhibitionDialog,
                 onShowDeleteArtworkDialog = onShowDeleteArtworkDialog,
-                onDismissDeleteArtworkDialog = { TODO() },
+                onDismissDeleteArtworkDialog = onDismissDeleteArtworkDialog,
                 onShowEditExhibitionDialog = { TODO() },
                 onDismissEditExhibitionDialog = { TODO() },
                 onUpdateExhibitionClick = { TODO() },
@@ -75,9 +74,8 @@ fun ExhibitionDetailScreenContent(
 private fun ExhibitionDetailScreenLoaded(
     state: ExhibitionDetailViewModel.State.Loaded,
     onArtworkClick: (String) -> Unit,
-    onShowDeleteExhibitionDialog: () -> Unit,
+    onDeleteExhibitionConfirmed: () -> Unit,
     onDismissDeleteExhibitionDialog: () -> Unit,
-    onDeleteExhibition: (String) -> Unit,
     onShowDeleteArtworkDialog: (String, String) -> Unit,
     onDismissDeleteArtworkDialog: () -> Unit,
     onShowEditExhibitionDialog: () -> Unit,
@@ -126,6 +124,23 @@ private fun ExhibitionDetailScreenLoaded(
             }
         }
     }
+
+    if (state.showUpdateExhibitionDialog) {
+
+    }
+
+    if (state.showDeleteExhibitionDialog) {
+        DefaultDeleteItemDialog(
+            title = stringResource(R.string.delete_exhibition),
+            alertText = stringResource(R.string.delete_exhibition_alert_dialog_txt),
+            onDismiss = onDismissDeleteExhibitionDialog,
+            onDeleteItemConfirmed = onDeleteExhibitionConfirmed
+        )
+    }
+
+    if (state.showDeleteArtworkDialog) {
+
+    }
 }
 
 @Preview(showBackground = true)
@@ -160,9 +175,8 @@ private fun ExhibitionDetailScreenLoadedPreview() {
             )
         ),
         onArtworkClick = { },
-        onShowDeleteExhibitionDialog = { },
+        onDeleteExhibitionConfirmed = { },
         onDismissDeleteExhibitionDialog = { },
-        onDeleteExhibition = { },
         onShowDeleteArtworkDialog = { _, _ -> },
         onDismissDeleteArtworkDialog = { },
         onShowEditExhibitionDialog = { },
