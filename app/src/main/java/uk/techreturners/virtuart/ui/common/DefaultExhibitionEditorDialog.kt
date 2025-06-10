@@ -1,4 +1,4 @@
-package uk.techreturners.virtuart.ui.screens.exhibitions
+package uk.techreturners.virtuart.ui.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -21,24 +21,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import uk.techreturners.virtuart.R
 
 @Composable
-fun CreateExhibitionDialog(
-    state: ExhibitionsViewModel.State.Loaded,
+fun DefaultExhibitionEditorDialog(
+    exhibitionTitle: String,
+    exhibitionDescription: String?,
+    dialogTitle: String,
+    confirmButtonText: String,
     onDismiss: () -> Unit,
-    onCreateExhibitionRequestConfirmed: () -> Unit
+    onCreateExhibitionRequestConfirmed: () -> Unit,
+    updateTitle: (String) -> Unit,
+    updateDescription: (String) -> Unit
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(exhibitionTitle) }
+    var description by remember { mutableStateOf(exhibitionDescription) }
 
     AlertDialog(
         icon = { Icons.Default.Warning },
         title = {
-            Text(text = "Create New Exhibition")
+            Text(text = dialogTitle)
         },
         text = {
             Column {
@@ -46,9 +53,9 @@ fun CreateExhibitionDialog(
                     value = title,
                     onValueChange = {
                         title = it
-                        state.exhibitionTitle = title
+                        updateTitle(it)
                     },
-                    label = { Text("Title") },
+                    label = { Text(stringResource(R.string.title)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Words
@@ -58,12 +65,12 @@ fun CreateExhibitionDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
-                    value = description,
+                    value = description ?: "",
                     onValueChange = {
                         description = it
-                        state.exhibitionDescription = description
+                        updateDescription(it)
                     },
-                    label = { Text("Description") },
+                    label = { Text(stringResource(R.string.description)) },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3,
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -88,7 +95,7 @@ fun CreateExhibitionDialog(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground)
             ) {
                 Text(
-                    text = "Create",
+                    text = confirmButtonText,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.surface
@@ -105,7 +112,7 @@ fun CreateExhibitionDialog(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.error)
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.cancel),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.error
@@ -117,10 +124,15 @@ fun CreateExhibitionDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun CreateExhibitionDialogPreview() {
-    CreateExhibitionDialog(
-        state = ExhibitionsViewModel.State.Loaded(),
+private fun DefaultExhibitionEditorDialogPreview() {
+    DefaultExhibitionEditorDialog(
         onDismiss = {},
-        onCreateExhibitionRequestConfirmed = {}
+        onCreateExhibitionRequestConfirmed = {},
+        exhibitionTitle = "",
+        exhibitionDescription = "",
+        dialogTitle = "Dialog Title",
+        confirmButtonText = "Confirm Button",
+        updateTitle = {},
+        updateDescription = {},
     )
 }

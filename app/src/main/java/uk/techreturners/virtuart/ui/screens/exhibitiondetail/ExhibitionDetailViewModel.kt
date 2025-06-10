@@ -12,8 +12,6 @@ import kotlinx.coroutines.launch
 import uk.techreturners.virtuart.data.model.ExhibitionDetail
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepository
-import uk.techreturners.virtuart.ui.screens.exhibitions.ExhibitionsViewModel
-import uk.techreturners.virtuart.ui.screens.exhibitions.ExhibitionsViewModel.Companion
 import javax.inject.Inject
 
 @HiltViewModel

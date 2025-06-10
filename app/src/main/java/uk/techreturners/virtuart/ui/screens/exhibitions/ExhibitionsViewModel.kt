@@ -226,6 +226,26 @@ class ExhibitionsViewModel @Inject constructor(
         toDeleteExhibitionId = exhibitionId
     }
 
+    fun updateExhibitionTitle(newString: String) {
+        _state.value = (state.value as State.Loaded).copy(
+            exhibitionTitle = newString
+        )
+        Log.i(
+            TAG,
+            "Exhibition title updated: ${(state.value as State.Loaded).exhibitionTitle}"
+        )
+    }
+
+    fun updateExhibitionDescription(newString: String) {
+        _state.value = (state.value as State.Loaded).copy(
+            exhibitionDescription = newString
+        )
+        Log.i(
+            TAG,
+            "Exhibition description updated: ${(state.value as State.Loaded).exhibitionDescription}"
+        )
+    }
+
     fun dismissDeleteExhibitionDialog() {
         _state.value = (state.value as State.Loaded).copy(
             showDeleteExhibitionDialog = false

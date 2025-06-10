@@ -39,4 +39,9 @@
     <string name="artworks_count_txt">Artworks: %1$s</string>
     <string name="no_artworks_in_this_exhibition_yet">No artworks in this exhibition yet.</string>
     <string name="no_description_txt">Exhibition does not have a description</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="new_exhibition">New Exhibition</string>
 </resources>
