@@ -21,7 +21,7 @@ interface ExhibitionsRepository {
         exhibitionId: String,
         apiId: String,
         source: String
-    ): NetworkResponse<Void>
+    ): NetworkResponse<Unit>
 
     suspend fun updateExhibitionDetails(
         exhibitionId: String,
