@@ -1,14 +1,18 @@
 package uk.techreturners.virtuart.ui.navigation.navgraphs
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import kotlinx.coroutines.CoroutineScope
 import uk.techreturners.virtuart.ui.navigation.Screens
 import uk.techreturners.virtuart.ui.navigation.Tabs
+import uk.techreturners.virtuart.ui.screens.artworkdetail.ArtworkDetailScreen
+import uk.techreturners.virtuart.ui.screens.artworkdetail.ArtworkDetailViewModel
 import uk.techreturners.virtuart.ui.screens.artworks.ArtworksScreen
 import uk.techreturners.virtuart.ui.screens.artworks.ArtworksViewModel
 
@@ -32,5 +36,21 @@ fun NavGraphBuilder.artworksGraph(
                 }
             )
         }
+    }
+
+    composable<Screens.ArtworkDetail> { backStackEntry ->
+        val artworkDetail: Screens.ArtworkDetail = backStackEntry.toRoute()
+        val viewModel = hiltViewModel<ArtworkDetailViewModel>()
+
+        LaunchedEffect(artworkDetail.artworkId, artworkDetail.source) {
+            viewModel.getArtwork(
+                artworkId = artworkDetail.artworkId,
+                source = artworkDetail.source
+            )
+        }
+
+        ArtworkDetailScreen(
+            viewModel = viewModel
+        )
     }
 }
