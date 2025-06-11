@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,6 +40,7 @@ import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.ui.common.ArtworkItem
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
+import uk.techreturners.virtuart.ui.common.PaginationControls
 
 @Composable
 fun ArtworksScreenContent(
@@ -56,7 +58,9 @@ fun ArtworksScreenContent(
             ArtworksScreenLoaded(
                 state = state,
                 showPageSizeDialog = {},
-                onArtworkClick = { _, _ -> }
+                onArtworkClick = { _, _ -> },
+                onPreviousClick = {},
+                onNextClick = {}
             )
 
         }
@@ -82,7 +86,9 @@ fun ArtworksScreenContent(
 private fun ArtworksScreenLoaded(
     state: ArtworksViewModel.State.Loaded,
     showPageSizeDialog: () -> Unit,
-    onArtworkClick: (String, String) -> Unit
+    onArtworkClick: (String, String) -> Unit,
+    onPreviousClick: () -> Unit,
+    onNextClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -119,7 +125,7 @@ private fun ArtworksScreenLoaded(
                             imageVector = Icons.Default.Settings,
                             contentDescription = stringResource(R.string.google_logo),
                             modifier = Modifier.size(20.dp),
-                            tint = Color.Unspecified
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
@@ -175,6 +181,18 @@ private fun ArtworksScreenLoaded(
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Pagination Controls
+                PaginationControls(
+                    currentPage = paginatedArtworkResults.currentPage,
+                    totalPages = paginatedArtworkResults.totalPages,
+                    hasPrevious = paginatedArtworkResults.hasPrevious,
+                    hasNext = paginatedArtworkResults.hasNext,
+                    onPreviousClick = onPreviousClick,
+                    onNextClick = onNextClick,
+                )
             }
         }
     }
@@ -291,7 +309,9 @@ private fun ArtworksScreenLoadedPreview() {
             showDeleteArtworkDialog = false
         ),
         showPageSizeDialog = { },
-        onArtworkClick = { _, _ -> }
+        onArtworkClick = { _, _ -> },
+        onPreviousClick = {},
+        onNextClick = {},
     )
 }
 
