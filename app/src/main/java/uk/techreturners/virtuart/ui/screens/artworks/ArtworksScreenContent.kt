@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -70,6 +70,10 @@ fun ArtworksScreenContent(
                 responseCode = null,
                 errorMessage = state.errorMessage
             )
+        }
+
+        ArtworksViewModel.State.PageLoading -> {
+
         }
     }
 }
@@ -157,10 +161,10 @@ private fun ArtworksScreenLoaded(
             }
         } else {
             state.data.let { paginatedArtworkResults ->
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                LazyVerticalStaggeredGrid (
+                    columns = StaggeredGridCells.Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalItemSpacing = 8.dp,
                     modifier = Modifier.weight(1f)
                 ) {
                     items(paginatedArtworkResults.data) { artwork ->
@@ -173,6 +177,62 @@ private fun ArtworksScreenLoaded(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ArtworksScreenPageLoading(){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // Header Row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.artworks),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // TODO Page Size Button
+                OutlinedButton(
+                    modifier = Modifier.wrapContentWidth(),
+                    onClick = {  },
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground),
+                    enabled = false
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.google_logo),
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "",
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                // TODO source button
+            }
+        }
+        DefaultProgressIndicator()
     }
 }
 
@@ -233,4 +293,10 @@ private fun ArtworksScreenLoadedPreview() {
         showPageSizeDialog = { },
         onArtworkClick = { _, _ -> }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ArtworksScreenPageLoadingPreview(){
+    ArtworksScreenPageLoading()
 }

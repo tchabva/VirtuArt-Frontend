@@ -72,6 +72,8 @@ class ArtworksViewModel @Inject constructor(
     sealed interface State {
         data object Loading : State
 
+        data object PageLoading : State
+
         data class Loaded(
             val data: PaginatedArtworkResults,
             val showUpdateExhibitionDialog: Boolean = false,
