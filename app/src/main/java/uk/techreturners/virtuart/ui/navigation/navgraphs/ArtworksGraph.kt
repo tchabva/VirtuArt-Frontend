@@ -17,11 +17,19 @@ fun NavGraphBuilder.artworksGraph(
     snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope
 ) {
-    navigation< Tabs.Artworks>(startDestination = Screens.Artworks) {
+    navigation<Tabs.Artworks>(startDestination = Screens.Artworks) {
         composable<Screens.Artworks> {
             ArtworksScreen(
                 viewModel = hiltViewModel<ArtworksViewModel>(),
-                onArtworkItemClicked = {  }
+                onArtworkItemClicked = { artworkId, source ->
+                    // Navigates to the ArtworkDetail Screen with the artworkId and source
+                    navController.navigate(
+                        Screens.ArtworkDetail(
+                            artworkId = artworkId,
+                            source = source
+                        )
+                    )
+                }
             )
         }
     }

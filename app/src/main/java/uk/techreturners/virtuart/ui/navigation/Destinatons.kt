@@ -34,19 +34,19 @@ sealed interface Screens {
     data object Profile : Screens
 
     @Serializable
-    data class ViewArtwork(val artworkId: String) : Screens
+    data class ArtworkDetail(val artworkId: String, val source: String) : Screens
 
     @Serializable
     data class ExhibitionDetail(val exhibitionId: String) : Screens
 
     companion object {
         val screensWithoutBottomNav = listOf(
-            ViewArtwork::class,
+            ArtworkDetail::class,
             ExhibitionDetail::class
         )
 
         val screensWithTopAppBar = listOf(
-            ViewArtwork::class,
+            ArtworkDetail::class,
             ExhibitionDetail::class
         )
     }

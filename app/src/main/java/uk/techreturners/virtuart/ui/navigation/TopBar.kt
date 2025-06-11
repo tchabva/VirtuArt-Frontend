@@ -38,7 +38,7 @@ fun TopBar(
 
     // Determines what the title of the TopAppBar will be
     val title = when {
-        currentDestination?.hasRoute(Screens.ViewArtwork::class) == true -> {
+        currentDestination?.hasRoute(Screens.ArtworkDetail::class) == true -> {
             "Artwork Details"
         }
 
