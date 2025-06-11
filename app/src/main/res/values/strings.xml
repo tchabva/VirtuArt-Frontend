@@ -50,4 +50,11 @@
     <string name="update">Update</string>
     <string name="failed_to_delete_artwork_from_the_exhibition">Failed to delete artwork from the exhibition</string>
     <string name="artworks">Artworks</string>
+    <string name="source">Source: %1$s</string>
+    <string name="details">Details</string>
+    <string name="date">Date</string>
+    <string name="medium">Medium</string>
+    <string name="origin">Origin</string>
+    <string name="category">Category</string>
+    <string name="museum">Museum</string>
 </resources>

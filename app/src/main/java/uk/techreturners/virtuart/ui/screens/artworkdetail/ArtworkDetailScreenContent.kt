@@ -1,14 +1,35 @@
 package uk.techreturners.virtuart.ui.screens.artworkdetail
 
+import androidx.collection.mutableOrderedScatterSetOf
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.GlideSubcomposition
+import com.bumptech.glide.integration.compose.placeholder
+import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Artwork
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
@@ -48,11 +69,202 @@ private fun ArtworkDetailScreenLoaded(
 ) {
     Column(
         Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize(),
     ) {
-        Text(text = artwork.toString())
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Main Artwork Image
+            item {
+                ArtworkImageCard(artwork)
+            }
+
+            // Artwork Information
+            item {
+                ArtworkInfoCard(artwork)
+            }
+
+            // Artwork Details
+            item {
+                ArtworkDetailsCard(artwork)
+            }
+
+            // Description
+            if (!artwork.description.isNullOrBlank()) {
+                item {
+                    ArtworkDescriptionCard(
+                        // Remove all HTML tags
+                        description = artwork.description.replace(
+                            regex = Regex(pattern = "<[^>]*>"),
+                            replacement = ""
+                        )
+                    )
+                }
+            }
+        }
     }
+}
+
+
+@Composable
+private fun ArtworkImageCard(artwork: Artwork) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        GlideImage(
+            model = artwork.imageUrl,
+            contentDescription = artwork.title,
+            loading = placeholder(R.drawable.ic_placeholder_artwork),
+            failure = placeholder(R.drawable.ic_placeholder_artwork),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(4f / 3f),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+@Composable
+private fun ArtworkInfoCard(artwork: Artwork) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = artwork.title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            if (!artwork.artist.isNullOrBlank()) {
+                Text(
+                    text = artwork.artist,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = stringResource(R.string.source, artwork.sourceMuseum),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ArtworkDetailsCard(artwork: Artwork) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.details),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+
+            ArtworkDetailRow(stringResource(R.string.date), artwork.date)
+            ArtworkDetailRow(stringResource(R.string.medium), artwork.displayMedium)
+            ArtworkDetailRow(stringResource(R.string.origin), artwork.origin)
+            ArtworkDetailRow(stringResource(R.string.category), artwork.category)
+            ArtworkDetailRow(stringResource(R.string.museum), artwork.sourceMuseum)
+        }
+    }
+}
+
+@Composable
+private fun ArtworkDetailRow(label: String, value: String?) {
+    if (!value.isNullOrBlank()) {
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.weight(2f)
+                )
+            }
+
+            // Don't add divider after last item
+            if (label != stringResource(R.string.museum)) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ArtworkDescriptionCard(description: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.description),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
+            )
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun ArtworkDetailScreenLoadedPreview() {
+    ArtworkDetailScreenLoaded(
+        artwork = Artwork(
+            id = "art001",
+            title = "The Starry Night",
+            artist = "Vincent van Gogh",
+            date = "1889",
+            displayMedium = "Oil on canvas",
+            imageUrl = "https://example.com/images/starry-night.jpg",
+            altImageUrls = listOf(
+                "https://example.com/images/starry-night-detail1.jpg",
+                "https://example.com/images/starry-night-detail2.jpg"
+            ),
+            description = "A swirling night sky over a quiet village, painted during van Gogh's stay in a mental asylum.",
+            origin = "Saint-Rémy-de-Provence, France",
+            category = "Post-Impressionism",
+            sourceMuseum = "Museum of Modern Art"
+        )
+    )
 }

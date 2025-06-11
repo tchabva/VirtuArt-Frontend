@@ -4,13 +4,13 @@ data class Artwork(
     val id: String,
     val title: String,
     val artist: String?,
-    val date: String,
+    val date: String?,
     val displayMedium: String?,
     val imageUrl: String?,
     val altImageUrls: List<String>,
-    val description: String,
+    val description: String?,
     val origin: String?,
-    val category: String,
+    val category: String?,
     val sourceMuseum: String,
 )
 
