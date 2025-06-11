@@ -57,4 +57,6 @@
     <string name="origin">Origin</string>
     <string name="category">Category</string>
     <string name="museum">Museum</string>
+    <string name="additional_images_content_description">Additional images of %1$s</string>
+    <string name="additional_images">Additional Images</string>
 </resources>

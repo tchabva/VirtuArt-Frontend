@@ -1,6 +1,5 @@
 package uk.techreturners.virtuart.ui.screens.artworkdetail
 
-import androidx.collection.mutableOrderedScatterSetOf
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,12 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Image
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.GlideSubcomposition
 import com.bumptech.glide.integration.compose.placeholder
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Artwork
@@ -101,6 +99,13 @@ private fun ArtworkDetailScreenLoaded(
                             replacement = ""
                         )
                     )
+                }
+            }
+
+            // Additional Images
+            if (artwork.altImageUrls.isNotEmpty()) {
+                item {
+                    AdditionalImagesCard(artwork)
                 }
             }
         }
@@ -245,6 +250,40 @@ fun ArtworkDescriptionCard(description: String) {
     }
 }
 
+@Composable
+fun AdditionalImagesCard(artwork: Artwork) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.additional_images),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(artwork.altImageUrls) { imageUrl ->
+                    GlideImage(
+                        model = imageUrl,
+                        contentDescription = stringResource(
+                            R.string.additional_images_content_description,
+                            artwork.title
+                        ),
+                        modifier = Modifier
+                            .size(168.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
