@@ -19,7 +19,8 @@ data class ArtworkResult(
     val title: String,
     val artistTitle: String?,
     val date: String?,
-    val imageURL: String
+    val imageURL: String,
+    val source: String // TODO on backend
 )
 
 data class PaginatedArtworkResults(
