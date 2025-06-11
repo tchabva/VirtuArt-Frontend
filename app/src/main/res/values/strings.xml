@@ -49,4 +49,5 @@
     <string name="update_exhibition">Update Exhibition</string>
     <string name="update">Update</string>
     <string name="failed_to_delete_artwork_from_the_exhibition">Failed to delete artwork from the exhibition</string>
+    <string name="artworks">Artworks</string>
 </resources>

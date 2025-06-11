@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import uk.techreturners.virtuart.data.repository.ArtworksRepository
+import uk.techreturners.virtuart.data.repository.ArtworksRepositoryImpl
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepository
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepositoryImpl
 import uk.techreturners.virtuart.domain.repository.AuthRepository
@@ -25,4 +27,10 @@ abstract class RepositoryModule {
     abstract fun bindsExhibitionsRepository(
         exhibitionsRepositoryImpl: ExhibitionsRepositoryImpl
     ): ExhibitionsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsArtistsRepository(
+        artworksRepositoryImpl: ArtworksRepositoryImpl
+    ): ArtworksRepository
 }

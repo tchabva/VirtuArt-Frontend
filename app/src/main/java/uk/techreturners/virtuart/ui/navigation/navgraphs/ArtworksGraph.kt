@@ -1,6 +1,7 @@
 package uk.techreturners.virtuart.ui.navigation.navgraphs
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -9,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import uk.techreturners.virtuart.ui.navigation.Screens
 import uk.techreturners.virtuart.ui.navigation.Tabs
 import uk.techreturners.virtuart.ui.screens.artworks.ArtworksScreen
+import uk.techreturners.virtuart.ui.screens.artworks.ArtworksViewModel
 
 fun NavGraphBuilder.artworksGraph(
     navController: NavController,
@@ -17,7 +19,10 @@ fun NavGraphBuilder.artworksGraph(
 ) {
     navigation< Tabs.Artworks>(startDestination = Screens.Artworks) {
         composable<Screens.Artworks> {
-            ArtworksScreen()
+            ArtworksScreen(
+                viewModel = hiltViewModel<ArtworksViewModel>(),
+                onArtworkItemClicked = {  }
+            )
         }
     }
 }

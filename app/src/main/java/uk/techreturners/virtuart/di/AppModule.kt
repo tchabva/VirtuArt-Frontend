@@ -13,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import uk.techreturners.virtuart.R
+import uk.techreturners.virtuart.data.remote.ArtworksApi
 import uk.techreturners.virtuart.data.remote.ExhibitionsApi
 import uk.techreturners.virtuart.domain.repository.AuthRepository
 import javax.inject.Singleton
@@ -82,5 +83,20 @@ object AppModule {
             .client(okHttpClient)
             .build()
             .create(ExhibitionsApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesArtworksApi(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient
+    ): ArtworksApi {
+        return Retrofit
+            .Builder()
+            .baseUrl(context.getString(R.string.base_url_backend_wireless))
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(ArtworksApi::class.java)
     }
 }
