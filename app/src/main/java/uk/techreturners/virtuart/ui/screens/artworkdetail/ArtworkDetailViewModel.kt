@@ -23,10 +23,6 @@ class ArtworkDetailViewModel @Inject constructor(
     private val exhibitionsRepository: ExhibitionsRepository
 ) : ViewModel() {
 
-    init {
-        observeUserState()
-    }
-
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     val state: StateFlow<State> = _state
 
@@ -73,10 +69,23 @@ class ArtworkDetailViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.Success -> {
-                    _state.value = State.Loaded(
-                        data = networkResponse.data
-                    )
-                    Log.i(TAG, "ExhibitionDetail retrieved: ${networkResponse.data}")
+                    authRepository.userState.collect { user ->
+                        if (user == null) {
+                            _state.value = State.Loaded(
+                                data = networkResponse.data
+                            )
+                        } else {
+                            _state.value = State.Loaded(
+                                data = networkResponse.data,
+                                isUserSignedIn = true
+                            )
+                        }
+                        Log.i(
+                            TAG,
+                            "ExhibitionDetail retrieved: ${networkResponse.data}" +
+                                    "\nisUserSignedIn: ${(state.value as State.Loaded).isUserSignedIn}"
+                        )
+                    }
                 }
             }
         }
@@ -99,7 +108,7 @@ class ArtworkDetailViewModel @Inject constructor(
     }
 
     sealed interface Event {
-       // TODO
+        // TODO
     }
 
     companion object {
