@@ -17,7 +17,7 @@ interface ArtworksApi {
         @Query("page") page: String?
     ): Response<PaginatedArtworkResults>
 
-    @GET("artworks/{source/{id}")
+    @GET("artworks/{source}/{id}")
     suspend fun getArtworkById(
         @Path("source") source: String,
         @Path("id") artworkId: String
