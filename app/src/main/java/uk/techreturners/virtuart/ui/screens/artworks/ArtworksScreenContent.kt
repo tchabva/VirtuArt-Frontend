@@ -46,8 +46,8 @@ fun ArtworksScreenContent(
     artworks: LazyPagingItems<ArtworkResult>,
     onArtworkClick: (String, String) -> Unit
 ) {
-    when {
-        artworks.loadState.refresh is LoadState.Error -> {
+    when (artworks.loadState.refresh) {
+        is LoadState.Error -> {
             val e = artworks.loadState.refresh as LoadState.Error
             DefaultErrorScreen(
                 responseCode = null,
@@ -55,7 +55,7 @@ fun ArtworksScreenContent(
             )
         }
 
-        artworks.loadState.refresh is LoadState.Loading -> {
+        is LoadState.Loading -> {
             ArtworksScreenPageLoading()
         }
 
@@ -63,11 +63,9 @@ fun ArtworksScreenContent(
             ArtworksScreenLoaded(
                 artworks = artworks,
                 showPageSizeDialog = {},
-                onArtworkClick = { _, _ -> }
+                onArtworkClick = onArtworkClick
             )
         }
-
-
     }
 }
 
@@ -153,31 +151,32 @@ private fun ArtworksScreenLoaded(
                 }
             }
         } else {
-            
             LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Fixed(2),
+                columns = StaggeredGridCells.Adaptive(150.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalItemSpacing = 8.dp,
                 modifier = Modifier.weight(1f)
             ) {
                 items(
                     count = artworks.itemCount,
-                    key = { index -> 
+                    key = { index ->
                         artworks.peek(index)?.id ?: ""
                     }
                 ) { index ->
                     val artwork = artworks[index]
                     if (artwork != null)
-                    ArtworkItem(
-                        artwork = artwork,
-                        onClick = onArtworkClick,
-                    )
+                        ArtworkItem(
+                            artwork = artwork,
+                            onClick = onArtworkClick,
+                        )
                 }
 
                 // Handle loading state for appending new items
                 if (artworks.loadState.append is LoadState.Loading) {
                     item {
-                        Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)) {
                             DefaultProgressIndicator()
                         }
                     }
