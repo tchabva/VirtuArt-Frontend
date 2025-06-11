@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.data.model.Exhibition
 
 @Composable
-private fun AddToExhibitionItem(
+internal fun AddToExhibitionItem(
     exhibition: Exhibition,
     onItemClicked: (String) -> Unit
 ) {
