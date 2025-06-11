@@ -41,7 +41,8 @@ fun PaginationControls(
                 .fillMaxWidth()
                 .weight(1f),
             shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface)
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
+            enabled = hasPrevious
         ) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous")
             Text(
@@ -64,12 +65,13 @@ fun PaginationControls(
         Spacer(modifier = Modifier.width(16.dp))
 
         OutlinedButton(
-            onClick = onPreviousClick,
+            onClick = onNextClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
             shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface)
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
+            enabled = hasNext
         ) {
 
             Text(
