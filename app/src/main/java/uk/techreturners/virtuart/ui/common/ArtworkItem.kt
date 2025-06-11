@@ -21,11 +21,10 @@ import uk.techreturners.virtuart.data.model.ArtworkResult
 fun ArtworkItem(
     artwork: ArtworkResult,
     onClick: (String, String) -> Unit,
-    source: String
 ) {
 
     Card(
-        onClick = { onClick(artwork.id, source) },
+        onClick = { onClick(artwork.id, artwork.source) },
         modifier = Modifier.fillMaxWidth()
     ) {
         Column {
@@ -90,9 +89,9 @@ private fun ArtworkItemPreview() {
             title = "Girl with a Pearl Earring",
             artistTitle = "Johannes Vermeer",
             date = "1665",
-            imageURL = "https://example.com/girl-with-pearl-earring.jpg"
+            imageURL = "https://example.com/girl-with-pearl-earring.jpg",
+            source = "aic"
         ),
         onClick = {_,_ ->},
-        source = "AIC",
     )
 }

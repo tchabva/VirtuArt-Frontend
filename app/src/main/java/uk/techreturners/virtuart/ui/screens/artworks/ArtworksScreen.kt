@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
 fun ArtworksScreen(
@@ -15,5 +16,8 @@ fun ArtworksScreen(
 
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-    ArtworksScreenContent(state = state.value)
+    ArtworksScreenContent(
+        artworks = viewModel.artworks.collectAsLazyPagingItems(),
+        onArtworkClick = { _,_ -> }
+    )
 }

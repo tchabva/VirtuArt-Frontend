@@ -3,12 +3,16 @@ package uk.techreturners.virtuart.ui.screens.artworks
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import uk.techreturners.virtuart.data.model.ArtworkResult
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ArtworksRepository
@@ -25,45 +29,47 @@ class ArtworksViewModel @Inject constructor(
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
 
-    init {
-        viewModelScope.launch {
-            getAicArtworks(null, null)
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            getAicArtworks("25", null)
+//        }
+//    }
 
-    suspend fun getAicArtworks(limit: String?, page: String?) {
-        _state.value = State.Loading
-        when (val networkResponse = repository.getAicArtworks(limit = limit, page = page)) {
-            is NetworkResponse.Exception -> {
-                _state.value = State.NetworkError(
-                    errorMessage = networkResponse.exception.message ?: "Network Error"
-                )
-                Log.e(TAG, "Network Error: ${networkResponse.exception.message}")
-            }
+//    suspend fun getAicArtworks(limit: String?, page: String?) {
+//        _state.value = State.Loading
+//        when (val networkResponse = repository.getAicArtworks(limit = limit, page = page)) {
+//            is NetworkResponse.Exception -> {
+//                _state.value = State.NetworkError(
+//                    errorMessage = networkResponse.exception.message ?: "Network Error"
+//                )
+//                Log.e(TAG, "Network Error: ${networkResponse.exception.message}")
+//            }
+//
+//            is NetworkResponse.Failed -> {
+//                _state.value = State.Error(
+//                    errorMessage = networkResponse.message ?: "Unknown Error",
+//                    responseCode = networkResponse.code
+//                )
+//                Log.e(
+//                    TAG,
+//                    "Failed to load artworks code: ${networkResponse.code}" +
+//                            "Message: ${networkResponse.message}"
+//                )
+//            }
+//
+//            is NetworkResponse.Success -> {
+//                _state.value = State.Loaded(
+//                    data = networkResponse.data
+//                )
+//                Log.e(
+//                    TAG,
+//                    "Successfully retrieved artworks ${networkResponse.data.data}"
+//                )
+//            }
+//        }
+//    }
 
-            is NetworkResponse.Failed -> {
-                _state.value = State.Error(
-                    errorMessage = networkResponse.message ?: "Unknown Error",
-                    responseCode = networkResponse.code
-                )
-                Log.e(
-                    TAG,
-                    "Failed to load artworks code: ${networkResponse.code}" +
-                            "Message: ${networkResponse.message}"
-                )
-            }
-
-            is NetworkResponse.Success -> {
-                _state.value = State.Loaded(
-                    data = networkResponse.data
-                )
-                Log.e(
-                    TAG,
-                    "Successfully retrieved artworks ${networkResponse.data.data}"
-                )
-            }
-        }
-    }
+    val artworks: Flow<PagingData<ArtworkResult>> = repository.getArtworks().cachedIn(viewModelScope)
 
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
