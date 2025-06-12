@@ -64,7 +64,7 @@ fun ExhibitionArtworkItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = artwork.title,
+                    text = artwork.title ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -72,7 +72,7 @@ fun ExhibitionArtworkItem(
                 )
 
                 //  TODO possibly add artist variable to ExhibitionItem
-                if (artwork.date.isNotBlank()) {
+                if (!artwork.date.isNullOrBlank()) {
                     Text(
                         text = artwork.date,
                         style = MaterialTheme.typography.bodyMedium,
@@ -100,7 +100,7 @@ fun ExhibitionArtworkItem(
                     Icons.Default.Delete,
                     contentDescription = stringResource(
                         R.string.delete_item_content_txt,
-                        artwork.title
+                        artwork.title ?: ""
                     ),
                     tint = MaterialTheme.colorScheme.error
                 )
