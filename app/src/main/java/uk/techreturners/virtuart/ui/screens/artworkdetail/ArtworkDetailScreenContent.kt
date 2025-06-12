@@ -1,5 +1,6 @@
 package uk.techreturners.virtuart.ui.screens.artworkdetail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,9 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,7 +37,11 @@ import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 
 @Composable
 fun ArtworkDetailScreenContent(
-    state: ArtworkDetailViewModel.State
+    state: ArtworkDetailViewModel.State,
+    onShowAddToExhibitionDialog: () -> Unit,
+    dismissAddToExhibitionDialog: () -> Unit,
+    onAddToExhibition: (String) -> Unit
+
 ) {
     when (state) {
         is ArtworkDetailViewModel.State.Error -> {
@@ -45,7 +52,12 @@ fun ArtworkDetailScreenContent(
         }
 
         is ArtworkDetailViewModel.State.Loaded -> {
-            ArtworkDetailScreenLoaded(artwork = state.data)
+            ArtworkDetailScreenLoaded(
+                state = state,
+                onShowAddToExhibitionDialog = onShowAddToExhibitionDialog,
+                dismissAddToExhibitionDialog = dismissAddToExhibitionDialog,
+                onAddToExhibition = onAddToExhibition
+            )
         }
 
         ArtworkDetailViewModel.State.Loading -> {
@@ -63,7 +75,10 @@ fun ArtworkDetailScreenContent(
 
 @Composable
 private fun ArtworkDetailScreenLoaded(
-    artwork: Artwork
+    state: ArtworkDetailViewModel.State.Loaded,
+    onShowAddToExhibitionDialog: () -> Unit,
+    dismissAddToExhibitionDialog: () -> Unit,
+    onAddToExhibition: (String) -> Unit
 ) {
     Column(
         Modifier
@@ -76,25 +91,25 @@ private fun ArtworkDetailScreenLoaded(
         ) {
             // Main Artwork Image
             item {
-                ArtworkImageCard(artwork)
+                ArtworkImageCard(state.data)
             }
 
             // Artwork Information
             item {
-                ArtworkInfoCard(artwork)
+                ArtworkInfoCard(state.data)
             }
 
             // Artwork Details
             item {
-                ArtworkDetailsCard(artwork)
+                ArtworkDetailsCard(state.data)
             }
 
             // Description
-            if (!artwork.description.isNullOrBlank()) {
+            if (!state.data.description.isNullOrBlank()) {
                 item {
                     ArtworkDescriptionCard(
                         // Remove all HTML tags
-                        description = artwork.description.replace(
+                        description = state.data.description.replace(
                             regex = Regex(pattern = "<[^>]*>"),
                             replacement = ""
                         )
@@ -103,12 +118,41 @@ private fun ArtworkDetailScreenLoaded(
             }
 
             // Additional Images
-            if (artwork.altImageUrls.isNotEmpty()) {
+            if (state.data.altImageUrls.isNotEmpty()) {
                 item {
-                    AdditionalImagesCard(artwork)
+                    AdditionalImagesCard(state.data)
+                }
+            }
+
+            // If user is signed in show Add To Exhibition Button
+            if (state.isUserSignedIn) {
+                item {
+                    OutlinedButton(
+                        onClick = onShowAddToExhibitionDialog,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface)
+                    ) {
+                        Text(
+                            text = "Add To Exhibition",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
         }
+    }
+
+    if (state.showAddToExhibitionDialog) {
+        AddToExhibitionDialog(
+            exhibitions = state.exhibitions,
+            onDismiss = dismissAddToExhibitionDialog,
+            onAddToExhibition = onAddToExhibition
+        )
     }
 }
 
@@ -289,21 +333,26 @@ fun AdditionalImagesCard(artwork: Artwork) {
 @Composable
 private fun ArtworkDetailScreenLoadedPreview() {
     ArtworkDetailScreenLoaded(
-        artwork = Artwork(
-            id = "art001",
-            title = "The Starry Night",
-            artist = "Vincent van Gogh",
-            date = "1889",
-            displayMedium = "Oil on canvas",
-            imageUrl = "https://example.com/images/starry-night.jpg",
-            altImageUrls = listOf(
-                "https://example.com/images/starry-night-detail1.jpg",
-                "https://example.com/images/starry-night-detail2.jpg"
-            ),
-            description = "A swirling night sky over a quiet village, painted during van Gogh's stay in a mental asylum.",
-            origin = "Saint-Rémy-de-Provence, France",
-            category = "Post-Impressionism",
-            sourceMuseum = "Museum of Modern Art"
-        )
+        onShowAddToExhibitionDialog = {},
+        dismissAddToExhibitionDialog = {},
+        onAddToExhibition = { _-> },
+        state = ArtworkDetailViewModel.State.Loaded(
+            data = Artwork(
+                id = "art001",
+                title = "The Starry Night",
+                artist = "Vincent van Gogh",
+                date = "1889",
+                displayMedium = "Oil on canvas",
+                imageUrl = "https://example.com/images/starry-night.jpg",
+                altImageUrls = listOf(
+                    "https://example.com/images/starry-night-detail1.jpg",
+                    "https://example.com/images/starry-night-detail2.jpg"
+                ),
+                description = "A swirling night sky over a quiet village, painted during van Gogh's stay in a mental asylum.",
+                origin = "Saint-Rémy-de-Provence, France",
+                category = "Post-Impressionism",
+                sourceMuseum = "Museum of Modern Art"
+            )
+        ),
     )
 }

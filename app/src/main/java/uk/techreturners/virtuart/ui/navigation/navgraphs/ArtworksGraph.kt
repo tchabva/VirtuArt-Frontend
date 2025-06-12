@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.ui.navigation.Screens
 import uk.techreturners.virtuart.ui.navigation.Tabs
 import uk.techreturners.virtuart.ui.screens.artworkdetail.ArtworkDetailScreen
@@ -50,7 +52,21 @@ fun NavGraphBuilder.artworksGraph(
         }
 
         ArtworkDetailScreen(
-            viewModel = viewModel
+            viewModel = viewModel,
+            onAddArtworkToExhibition = { exhibitionId ->
+                viewModel.addArtworkToExhibition(
+                    exhibitionId = exhibitionId,
+                    artworkId = artworkDetail.artworkId,
+                    source = artworkDetail.source
+                )
+            },
+            addArtworkToExhibitionSuccessful = { context ->
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.added_artwork_to_exhibition)
+                    )
+                }
+            }
         )
     }
 }
