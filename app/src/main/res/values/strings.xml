@@ -50,4 +50,18 @@
     <string name="update">Update</string>
     <string name="failed_to_delete_artwork_from_the_exhibition">Failed to delete artwork from the exhibition</string>
     <string name="artworks">Artworks</string>
+    <string name="source">Source: %1$s</string>
+    <string name="details">Details</string>
+    <string name="date">Date</string>
+    <string name="medium">Medium</string>
+    <string name="origin">Origin</string>
+    <string name="category">Category</string>
+    <string name="museum">Museum</string>
+    <string name="additional_images_content_description">Additional images of %1$s</string>
+    <string name="additional_images">Additional Images</string>
+    <string name="select_an_exhibition">Select an Exhibition:</string>
+    <string name="failed_to_add_artwork_to_exhibit_toast_txt">Failed to add artwork to exhibition</string>
+    <string name="the_artwork_is_already_in_the_exhibition">The artwork is already in the exhibition</string>
+    <string name="failed_to_get_the_users_exhibitions">Failed to get the user\'s exhibitions</string>
+    <string name="added_artwork_to_exhibition">Added artwork to exhibition</string>
 </resources>

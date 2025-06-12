@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -46,8 +47,8 @@ fun ArtworksScreenContent(
     artworks: LazyPagingItems<ArtworkResult>,
     onArtworkClick: (String, String) -> Unit
 ) {
-    when {
-        artworks.loadState.refresh is LoadState.Error -> {
+    when (artworks.loadState.refresh) {
+        is LoadState.Error -> {
             val e = artworks.loadState.refresh as LoadState.Error
             DefaultErrorScreen(
                 responseCode = null,
@@ -55,7 +56,7 @@ fun ArtworksScreenContent(
             )
         }
 
-        artworks.loadState.refresh is LoadState.Loading -> {
+        is LoadState.Loading -> {
             ArtworksScreenPageLoading()
         }
 
@@ -63,11 +64,9 @@ fun ArtworksScreenContent(
             ArtworksScreenLoaded(
                 artworks = artworks,
                 showPageSizeDialog = {},
-                onArtworkClick = { _, _ -> }
+                onArtworkClick = onArtworkClick
             )
         }
-
-
     }
 }
 
@@ -153,31 +152,32 @@ private fun ArtworksScreenLoaded(
                 }
             }
         } else {
-            
             LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Fixed(2),
+                columns = StaggeredGridCells.Adaptive(150.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalItemSpacing = 8.dp,
                 modifier = Modifier.weight(1f)
             ) {
+                // Artworks
                 items(
                     count = artworks.itemCount,
-                    key = { index -> 
-                        artworks.peek(index)?.id ?: ""
-                    }
                 ) { index ->
                     val artwork = artworks[index]
                     if (artwork != null)
-                    ArtworkItem(
-                        artwork = artwork,
-                        onClick = onArtworkClick,
-                    )
+                        ArtworkItem(
+                            artwork = artwork,
+                            onClick = onArtworkClick,
+                        )
                 }
 
                 // Handle loading state for appending new items
                 if (artworks.loadState.append is LoadState.Loading) {
-                    item {
-                        Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
                             DefaultProgressIndicator()
                         }
                     }
@@ -243,70 +243,6 @@ fun ArtworksScreenPageLoading() {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//private fun ArtworksScreenLoadedPreview() {
-//    ArtworksScreenLoaded(
-//        state = ArtworksViewModel.State.Loaded(
-//            data = PaginatedArtworkResults(
-//                totalItems = 10,
-//                pageSize = 5,
-//                totalPages = 2,
-//                currentPage = 1,
-//                hasNext = true,
-//                hasPrevious = false,
-//                data = listOf(
-//                    ArtworkResult(
-//                        id = "1",
-//                        title = "Starry Night",
-//                        artistTitle = "Vincent van Gogh",
-//                        date = "1889",
-//                        imageURL = "https://example.com/starry-night.jpg",
-//                        source = "aic"
-//                    ),
-//                    ArtworkResult(
-//                        id = "2",
-//                        title = "The Persistence of Memory",
-//                        artistTitle = "Salvador Dalí",
-//                        date = "1931",
-//                        imageURL = "https://example.com/persistence-of-memory.jpg",
-//                        source = "aic"
-//                    ),
-//                    ArtworkResult(
-//                        id = "3",
-//                        title = "Mona Lisa",
-//                        artistTitle = "Leonardo da Vinci",
-//                        date = "1503",
-//                        imageURL = "https://example.com/mona-lisa.jpg",
-//                        source = "aic"
-//                    ),
-//                    ArtworkResult(
-//                        id = "4",
-//                        title = "The Scream",
-//                        artistTitle = "Edvard Munch",
-//                        date = "1893",
-//                        imageURL = "https://example.com/the-scream.jpg",
-//                        source = "aic"
-//                    ),
-//                    ArtworkResult(
-//                        id = "5",
-//                        title = "Girl with a Pearl Earring",
-//                        artistTitle = "Johannes Vermeer",
-//                        date = "1665",
-//                        imageURL = "https://example.com/girl-with-pearl-earring.jpg",
-//                        source = "aic"
-//                    )
-//                )
-//            ),
-//            showUpdateExhibitionDialog = false,
-//            showDeleteExhibitionDialog = false,
-//            showDeleteArtworkDialog = false
-//        ),
-//        showPageSizeDialog = { },
-//        onArtworkClick = { _, _ -> },
-//        artworks =,
-//    )
-//}
 
 @Preview(showBackground = true)
 @Composable

@@ -24,7 +24,7 @@ fun ArtworkItem(
 ) {
 
     Card(
-        onClick = { onClick(artwork.id, artwork.source) },
+        onClick = { onClick(artwork.id, "aic") },
         modifier = Modifier.fillMaxWidth()
     ) {
         Column {

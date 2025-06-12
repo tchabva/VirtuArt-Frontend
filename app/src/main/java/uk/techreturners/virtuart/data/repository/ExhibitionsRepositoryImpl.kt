@@ -104,7 +104,35 @@ class ExhibitionsRepositoryImpl @Inject constructor(
         exhibitionId: String,
         request: AddArtworkRequest
     ): NetworkResponse<Exhibition> {
-        TODO("Not yet implemented")
+        try {
+            val response = api.addArtworkToExhibition(
+                exhibitionId = exhibitionId,
+                addArtworkRequest = request
+            )
+            val responseCode = response.code()
+
+            return if (responseCode == 200) {
+                Log.i(
+                    TAG,
+                    "Successfully added Artwork ${request.apiId} to Exhibition $exhibitionId" +
+                            "\n: ${response.body()}"
+                )
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                Log.e(
+                    TAG,
+                    "Failed to add Artwork to Exhibition\n: Code = $responseCode" +
+                            "\n${response.message()}"
+                )
+                NetworkResponse.Failed(
+                    response.message() ?: "",
+                    code = responseCode,
+                )
+            }
+        } catch (e: Throwable) {
+            Log.wtf(TAG, "Network Error", e)
+            return NetworkResponse.Exception(e)
+        }
     }
 
     override suspend fun deleteArtworkFromExhibition(

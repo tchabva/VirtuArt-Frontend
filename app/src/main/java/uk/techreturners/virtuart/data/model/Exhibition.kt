@@ -22,9 +22,9 @@ data class ExhibitionDetail(
 data class ExhibitionItem(
     val id: String,
     val apiId: String,
-    val title: String,
-    val date: String,
-    val imageUrl: String,
+    val title: String?,
+    val date: String?,
+    val imageUrl: String?,
     val source: String
 )
 
@@ -40,5 +40,5 @@ data class UpdateExhibitionRequest(
 
 data class AddArtworkRequest(
     val apiId: String,
-    val source: String
+    val source: String,
 )
