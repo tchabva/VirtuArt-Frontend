@@ -2,10 +2,13 @@ package uk.techreturners.virtuart.ui.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,11 +33,13 @@ fun DefaultPageSizeButton(
 ) {
     OutlinedButton(
         modifier = Modifier.wrapContentWidth(),
+        contentPadding = PaddingValues(8.dp),
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground)
     ) {
         Row(
+            modifier = Modifier.wrapContentSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -46,7 +51,7 @@ fun DefaultPageSizeButton(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "$pageSize/page",
+                text = stringResource(R.string.per_page_btn_txt, pageSize),
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

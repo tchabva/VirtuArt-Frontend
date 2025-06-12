@@ -2,6 +2,7 @@ package uk.techreturners.virtuart.ui.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -32,6 +33,7 @@ fun DefaultSourceButton(
 ) {
     OutlinedButton(
         modifier = Modifier.wrapContentWidth(),
+        contentPadding = PaddingValues(4.dp),
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground)
