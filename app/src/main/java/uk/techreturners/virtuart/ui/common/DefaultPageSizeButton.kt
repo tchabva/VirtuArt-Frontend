@@ -27,7 +27,7 @@ import uk.techreturners.virtuart.R
 fun DefaultPageSizeButton(
     onClick: () -> Unit,
     pageSize: Int
-){
+) {
     OutlinedButton(
         modifier = Modifier.wrapContentWidth(),
         onClick = onClick,
@@ -57,7 +57,7 @@ fun DefaultPageSizeButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun DefaultPageSizeButtonPreview(){
+private fun DefaultPageSizeButtonPreview() {
     DefaultPageSizeButton(
         onClick = {},
         pageSize = 4

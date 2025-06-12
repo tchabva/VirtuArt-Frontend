@@ -41,6 +41,7 @@ import uk.techreturners.virtuart.data.model.ArtworkResult
 import uk.techreturners.virtuart.ui.common.ArtworkItem
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
+import uk.techreturners.virtuart.ui.common.DefaultSourceButton
 
 @Composable
 fun ArtworksScreenContent(
@@ -96,32 +97,6 @@ private fun ArtworksScreenLoaded(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // TODO Page Size Button
-                OutlinedButton(
-                    modifier = Modifier.wrapContentWidth(),
-                    onClick = showPageSizeDialog,
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.google_logo),
-                            modifier = Modifier.size(20.dp),
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "20/page",
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
                 // TODO source button
             }
         }
@@ -209,34 +184,11 @@ fun ArtworksScreenPageLoading() {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // TODO Page Size Button
-                OutlinedButton(
-                    modifier = Modifier.wrapContentWidth(),
-                    onClick = { },
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground),
-                    enabled = false
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.google_logo),
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "",
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
                 // TODO source button
+                DefaultSourceButton(
+                    onClick = {},
+                    source = "AIC"
+                )
             }
         }
         DefaultProgressIndicator()
