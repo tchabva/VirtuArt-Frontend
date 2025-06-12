@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import uk.techreturners.virtuart.data.model.AddArtworkRequest
 import uk.techreturners.virtuart.data.model.Artwork
+import uk.techreturners.virtuart.data.model.Exhibition
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ArtworksRepository
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepository
@@ -31,19 +33,6 @@ class ArtworkDetailViewModel @Inject constructor(
 
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
-    }
-
-    private fun observeUserState() {
-        viewModelScope.launch {
-            authRepository.userState.collect { user ->
-                if (user != null) {
-                    if (state.value is State.Loaded) {
-                        _state.value = (state.value as State.Loaded).copy(isUserSignedIn = true)
-                    }
-                    Log.i(TAG, "isUserSigned has been updated: ${_state.value}")
-                }
-            }
-        }
     }
 
     fun getArtwork(artworkId: String, source: String) {
@@ -75,9 +64,11 @@ class ArtworkDetailViewModel @Inject constructor(
                                 data = networkResponse.data
                             )
                         } else {
+                            val exhibitions = getUserExhibitions()
                             _state.value = State.Loaded(
                                 data = networkResponse.data,
-                                isUserSignedIn = true
+                                isUserSignedIn = true,
+                                exhibitions = exhibitions
                             )
                         }
                         Log.i(
@@ -91,15 +82,128 @@ class ArtworkDetailViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getUserExhibitions(): List<Exhibition> {
+        var exhibitions: List<Exhibition> = emptyList()
+        when (val networkResponse = exhibitionsRepository.getAllUserExhibitions()) {
+            is NetworkResponse.Exception -> {
+                emitEvent(
+                    Event.FailedToRetrieveUserExhibitions
+                )
+                Log.e(
+                    TAG,
+                    "Failed to retrieve user's exhibitions:" + networkResponse.exception.message
+                )
+            }
+
+            is NetworkResponse.Failed -> {
+                emitEvent(
+                    Event.FailedToRetrieveUserExhibitions
+                )
+                Log.e(
+                    TAG,
+                    "Failed to retrieve user's exhibitions:\n" +
+                            "code: ${networkResponse.code}\n" +
+                            networkResponse.message
+                )
+            }
+
+            is NetworkResponse.Success -> {
+                Log.i(
+                    TAG,
+                    "Successfully retrieved user's exhibitions:\n" +
+                            networkResponse.data
+                )
+                exhibitions = networkResponse.data
+            }
+        }
+        return exhibitions
+    }
+
+    fun addArtworkToExhibition(exhibitionId: String, artworkId: String, source: String) {
+        viewModelScope.launch {
+            dismissShowAddToExhibitionDialog()
+            val request = AddArtworkRequest(apiId = artworkId, source = source)
+            when (val networkResponse = exhibitionsRepository.addArtworkToExhibition(
+                exhibitionId = exhibitionId,
+                request = request
+            )) {
+                is NetworkResponse.Exception -> {
+                    emitEvent(
+                        Event.AddToExhibitionFailed
+                    )
+                    Log.e(
+                        TAG,
+                        "Failed to add artwork to user's exhibition:" + networkResponse.exception.message
+                    )
+                }
+
+                is NetworkResponse.Failed -> {
+                    if (networkResponse.code == 409) {
+                        emitEvent(
+                            Event.ArtworkAlreadyInExhibition
+                        )
+                        Log.e(
+                            TAG,
+                            "Artwork already exists in the user's exhibition:\n" +
+                                    "code: ${networkResponse.code}" +
+                                    "\n${networkResponse.message}"
+                        )
+                    } else {
+                        emitEvent(
+                            Event.AddToExhibitionFailed
+                        )
+                        Log.e(
+                            TAG,
+                            "Artwork already exists in the user's exhibition:\n" +
+                                    "code: ${networkResponse.code}" +
+                                    "\n${networkResponse.message}"
+                        )
+                    }
+                }
+
+                is NetworkResponse.Success -> {
+                    emitEvent(
+                        Event.AddToExhibitionSuccessful
+                    )
+                    Log.e(
+                        TAG,
+                        "Artwork added to user's exhibition"
+                    )
+                }
+            }
+            getUserExhibitions() // Update the User Exhibitions
+        }
+    }
+
+    fun onAddArtworkToExhibitionItemClicked(exhibitionId: String) {
+        viewModelScope.launch {
+            emitEvent(
+                Event.OnAddToExhibitionClicked(exhibitionId)
+            )
+        }
+        Log.i(TAG, "Exhibition Item $exhibitionId clicked")
+    }
+
+    fun onShowAddToExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showAddToExhibitionDialog = true
+        )
+    }
+
+    fun dismissShowAddToExhibitionDialog() {
+        _state.value = (state.value as State.Loaded).copy(
+            showAddToExhibitionDialog = false
+        )
+    }
+
     sealed interface State {
         data object Loading : State
-
-        // TODO Exhibition state where you can remove the Artwork from an exhibition as well
 
         data class Loaded(
             val data: Artwork,
             val showAddToExhibitionDialog: Boolean = false,
             val isUserSignedIn: Boolean = false,
+            val exhibitions: List<Exhibition> = emptyList()
         ) : State
 
         data class Error(val responseCode: Int?, val errorMessage: String) : State
@@ -108,7 +212,11 @@ class ArtworkDetailViewModel @Inject constructor(
     }
 
     sealed interface Event {
-        // TODO
+        data object FailedToRetrieveUserExhibitions : Event
+        data class OnAddToExhibitionClicked(val exhibitionId: String) : Event
+        data object AddToExhibitionSuccessful : Event
+        data object AddToExhibitionFailed : Event
+        data object ArtworkAlreadyInExhibition : Event
     }
 
     companion object {
