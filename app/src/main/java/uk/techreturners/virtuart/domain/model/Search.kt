@@ -7,5 +7,12 @@ data class AicAdvancedSearchQuery(
     val category: String?,
     val relevance: String?,
     val sort: String?,
-    val limit: String?
+    val limit: String?,
+    val source: String
+)
+
+data class BasicQuery(
+    val query: String,
+    val limit: String?,
+    val source: String
 )
