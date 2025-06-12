@@ -60,8 +60,8 @@ class SearchViewModel @Inject constructor(
     private suspend fun advancedSearchQuery(/*advancedSearchQuery: AicAdvancedSearchQuery*/) {
         _state.value = (state.value as State.Search).copy(isSearching = true)
 
-        val query = mapOf(
-            "query" to mapOf(
+        val elasticSearchQuery = AicApiElasticSearchQuery(
+            query = mapOf(
                 "bool" to mapOf(
                     "must" to listOf(
                         mapOf("match" to mapOf("artist_title" to "Monet")),
@@ -69,14 +69,14 @@ class SearchViewModel @Inject constructor(
                     )
                 )
             ),
-            "sort" to listOf(
+            sort= listOf(
                 mapOf("title.keyword" to mapOf("order" to "desc"))
             ),
-            "size" to 10,
-            "page" to 1
+            size = 10,
+            page = 1
         )
 
-        val elasticSearchQuery = AicApiElasticSearchQuery(body = query)
+        Log.i(TAG, "Elastic Search Query:\n$elasticSearchQuery")
 
         when(val networkResponse = artworksRepository.searchAicApi(elasticSearchQuery)){
             is NetworkResponse.Exception -> {
