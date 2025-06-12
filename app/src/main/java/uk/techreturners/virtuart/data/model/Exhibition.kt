@@ -40,6 +40,5 @@ data class UpdateExhibitionRequest(
 
 data class AddArtworkRequest(
     val apiId: String,
-    val title: String
     val source: String,
 )
