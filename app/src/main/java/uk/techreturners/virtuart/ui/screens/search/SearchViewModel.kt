@@ -28,11 +28,6 @@ class SearchViewModel @Inject constructor(
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
 
-    init {
-        viewModelScope.launch {
-            advancedSearchQuery()
-        }
-    }
 
     fun searchArtworks() {
         val cState = (state.value as State.Search).copy()
@@ -69,7 +64,7 @@ class SearchViewModel @Inject constructor(
                     )
                 )
             ),
-            sort= listOf(
+            sort = listOf(
                 mapOf("title.keyword" to mapOf("order" to "desc"))
             ),
             size = 10,
@@ -78,13 +73,14 @@ class SearchViewModel @Inject constructor(
 
         Log.i(TAG, "Elastic Search Query:\n$elasticSearchQuery")
 
-        when(val networkResponse = artworksRepository.searchAicApi(elasticSearchQuery)){
+        when (val networkResponse = artworksRepository.searchAicApi(elasticSearchQuery)) {
             is NetworkResponse.Exception -> {
                 _state.value = State.NetworkError(
                     errorMessage = networkResponse.exception.message ?: "Unknown Error"
                 )
                 Log.e(TAG, "Network Error: ${networkResponse.exception.message}")
             }
+
             is NetworkResponse.Failed -> {
                 _state.value = State.Error(
                     responseCode = networkResponse.code,
@@ -92,6 +88,7 @@ class SearchViewModel @Inject constructor(
                 )
                 Log.e(TAG, "Error Code:${networkResponse.code}\n${networkResponse.message}")
             }
+
             is NetworkResponse.Success -> {
                 _state.value = (state.value as State.Search).copy(
                     isSearching = false,
@@ -99,6 +96,86 @@ class SearchViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    // Toggles the view of the Advanced Search
+    fun toggleAdvancedSearch() {
+        _state.value = (state.value as State.Search).copy(
+            showAdvancedSearch = !(state.value as State.Search).showAdvancedSearch
+        )
+    }
+
+    // Update Advanced Search
+    fun updateAdvancedSearchTitle(newTitle: String) {
+        val currentState = _state.value
+        if (currentState is State.Search) {
+            _state.value = currentState.copy(
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(title = newTitle)
+            )
+        }
+        Log.i(TAG, "Advanced search title updated: $newTitle")
+    }
+
+    fun updateAdvancedSearchArtist(newArtist: String) {
+        val currentState = _state.value
+        if (currentState is State.Search) {
+            _state.value = currentState.copy(
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(artist = newArtist)
+            )
+        }
+        Log.i(TAG, "Advanced search artist updated: $newArtist")
+    }
+
+    fun updateAdvancedSearchMedium(newMedium: String) {
+        val currentState = _state.value
+        if (currentState is State.Search) {
+            _state.value = currentState.copy(
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(medium = newMedium)
+            )
+        }
+        Log.i(TAG, "Advanced search medium updated: $newMedium")
+    }
+
+    fun updateAdvancedSearchCategory(newCategory: String) {
+        val currentState = _state.value
+        if (currentState is State.Search) {
+            _state.value = currentState.copy(
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(category = newCategory)
+            )
+        }
+        Log.i(TAG, "Advanced search category (department) updated: $newCategory")
+    }
+
+    fun updateAdvancedSearchSortBy(newSortBy: String) {
+        val currentState = _state.value
+        if (currentState is State.Search) {
+            _state.value = currentState.copy(
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(sortOrder = newSortBy)
+            )
+        }
+        Log.i(TAG, "Advanced search sort by updated: $newSortBy")
+    }
+
+    fun updateAdvancedSearchSortOrder(newSortOrder: String) {
+        val currentState = _state.value
+        if (currentState is State.Search) {
+            if (newSortOrder.lowercase() == "ascending") {
+                _state.value = currentState.copy(
+                    advancedSearchQuery = currentState.advancedSearchQuery.copy(sortOrder = "asc")
+                )
+            } else {
+                _state.value = currentState.copy(
+                    advancedSearchQuery = currentState.advancedSearchQuery.copy(sortOrder = "desc")
+                )
+            }
+        }
+        Log.i(TAG, "Advanced search sort order updated: $newSortOrder")
+    }
+
+    fun onAdvancedSearchFormClear() {
+        _state.value = (state.value as State.Search).copy(
+            advancedSearchQuery = AicAdvancedSearchQuery()
+        )
     }
 
     private suspend fun emitEvent(event: Event) {
@@ -109,7 +186,7 @@ class SearchViewModel @Inject constructor(
         data class Search(
             val data: PaginatedArtworkResults? = null,
             val basicQuery: BasicQuery? = null,
-            val advancedSearchQuery: AicAdvancedSearchQuery? = null,
+            val advancedSearchQuery: AicAdvancedSearchQuery = AicAdvancedSearchQuery(),
             val isSearching: Boolean = false,
             val showAdvancedSearch: Boolean = false,
             val showSearchRelevance: Boolean = false,
