@@ -5,8 +5,8 @@ data class AicAdvancedSearchQuery(
     val artist: String? = null,
     val medium: String? = null,
     val category: String? = null,
-    val sortBy: String? = null,
-    val sortOrder: String? = null,
+    val sortBy: String = "title", // default sort By
+    val sortOrder: String = "asc", // default sort Order
     val limit: String? = null,
     val source: String? = null
 )
