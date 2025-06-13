@@ -5,7 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import uk.techreturners.virtuart.data.model.AicApiElasticSearchQuery
+import uk.techreturners.virtuart.data.model.AdvancedSearchRequest
 import uk.techreturners.virtuart.data.model.Artwork
 import uk.techreturners.virtuart.data.model.ArtworkResult
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
@@ -49,7 +49,7 @@ class ArtworksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun advancedApiSearch(searchQuery: AicApiElasticSearchQuery): NetworkResponse<PaginatedArtworkResults> {
+    override suspend fun advancedApiSearch(searchQuery: AdvancedSearchRequest): NetworkResponse<PaginatedArtworkResults> {
         try {
             val response = api.searchAicApi(searchQuery = searchQuery)
             val responseCode = response.code()
