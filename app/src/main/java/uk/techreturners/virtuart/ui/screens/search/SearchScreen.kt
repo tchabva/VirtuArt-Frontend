@@ -44,6 +44,9 @@ fun SearchScreen(
         onSortByChange = viewModel::updateAdvancedSearchSortBy,
         onSortOrderChange = viewModel::updateAdvancedSearchSortOrder,
         onAdvancedSearch = viewModel::onAdvancedSearchFormSubmit,
-        onClearAdvancedSearch = viewModel::onAdvancedSearchFormClear
+        onClearAdvancedSearch = viewModel::onAdvancedSearchFormClear,
+        onClearBasicSearch = viewModel::clearBasicSearch,
+        onBasicSearch = viewModel::onBasicSearch,
+        onBasicQueryChange = viewModel::updateBasicSearch,
     )
 }

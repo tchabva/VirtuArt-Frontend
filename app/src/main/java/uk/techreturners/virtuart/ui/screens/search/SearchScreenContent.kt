@@ -48,7 +48,8 @@ fun SearchScreenContent(
     onClearAdvancedSearch: () -> Unit = {},
     onClearBasicSearch: () -> Unit = {},
     onBasicSearch: () -> Unit = {},
-    onBasicQueryChange: (String) -> Unit = {}
+    onBasicQueryChange: (String) -> Unit = {},
+    onArtworkItemClick: (String, String) -> Unit = {_,_ ->}
 ) {
     when (state) {
         is SearchViewModel.State.Error -> {
@@ -80,6 +81,7 @@ fun SearchScreenContent(
                 onClearBasicSearch = onClearBasicSearch,
                 onBasicSearch = onBasicSearch,
                 onBasicQueryChange = onBasicQueryChange,
+                onArtworkItemClick = onArtworkItemClick,
             )
         }
     }
@@ -100,7 +102,8 @@ private fun SearchScreenSearch(
     onClearAdvancedSearch: () -> Unit,
     onClearBasicSearch: () -> Unit,
     onBasicSearch: () -> Unit,
-    onBasicQueryChange: (String) -> Unit
+    onBasicQueryChange: (String) -> Unit,
+    onArtworkItemClick: (String, String) -> Unit = {_,_ ->}
 ) { 
     Column(
         modifier = Modifier
@@ -164,6 +167,7 @@ private fun SearchScreenSearch(
 
             Spacer(modifier = Modifier.height(16.dp))
         } else {
+            // TODO implement show and hide logic
             SimpleSearchForm(
                 state = state,
                 onQueryChange = onBasicQueryChange,
@@ -213,7 +217,7 @@ private fun SearchScreenSearch(
                 items(state.data.data) { artwork ->
                     ArtworkItem(
                         artwork = artwork,
-                        onClick = { _, _ -> }
+                        onClick = onArtworkItemClick
                     )
                 }
             }
