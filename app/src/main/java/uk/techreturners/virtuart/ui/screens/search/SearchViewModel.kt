@@ -52,23 +52,40 @@ class SearchViewModel @Inject constructor(
         // TODO Implement the basicSearch on the Backend
     }
 
-    private suspend fun advancedSearchQuery(/*advancedSearchQuery: AicAdvancedSearchQuery*/) {
-        _state.value = (state.value as State.Search).copy(isSearching = true)
+    fun onAdvancedSearchFormSubmit() {
+        viewModelScope.launch {
+            advancedSearchQuery()
+        }
+    }
+
+    private suspend fun advancedSearchQuery() {
+        val cState = state.value as State.Search
+        _state.value = (state.value as State.Search).copy(isSearching = true) // Loading Spinner
+
+        // Must clauses map,
+        val mustClauses = mutableListOf<Map<String, Any>>()
+        cState.advancedSearchQuery.title?.takeIf { it.isNotBlank() }
+            ?.let { mustClauses.add(mapOf("match" to mapOf("title" to it))) }
+        cState.advancedSearchQuery.artist?.takeIf { it.isNotBlank() }
+            ?.let { mustClauses.add(mapOf("match" to mapOf("artist_title" to it))) }
+        cState.advancedSearchQuery.medium?.takeIf { it.isNotBlank() }
+            ?.let { mustClauses.add(mapOf("match" to mapOf("medium_display" to it))) }
+        cState.advancedSearchQuery.category?.takeIf { it.isNotBlank() }
+            ?.let { mustClauses.add(mapOf("match" to mapOf("department_title" to it))) }
+        mustClauses.add(mapOf("term" to mapOf("is_public_domain" to true)))
+
+        // Sort clauses
+        val sortClauses = mapOf(
+            "${cState.advancedSearchQuery.sortBy}.keyword" to mapOf(
+                "order" to cState.advancedSearchQuery.sortOrder
+            )
+        )
 
         val elasticSearchQuery = AicApiElasticSearchQuery(
-            query = mapOf(
-                "bool" to mapOf(
-                    "must" to listOf(
-                        mapOf("match" to mapOf("artist_title" to "Monet")),
-                        mapOf("term" to mapOf("is_public_domain" to true))
-                    )
-                )
-            ),
-            sort = listOf(
-                mapOf("title.keyword" to mapOf("order" to "desc"))
-            ),
-            size = 10,
-            page = 1
+            query = mapOf("bool" to mapOf("must" to mustClauses)),
+            sort = listOf(sortClauses),
+            size = cState.advancedSearchQuery.limit,
+            page = cState.advancedSearchQuery.page
         )
 
         Log.i(TAG, "Elastic Search Query:\n$elasticSearchQuery")
@@ -94,6 +111,7 @@ class SearchViewModel @Inject constructor(
                     isSearching = false,
                     data = networkResponse.data
                 )
+                Log.i(TAG, "Search Successful:${networkResponse.data.data}")
             }
         }
     }
