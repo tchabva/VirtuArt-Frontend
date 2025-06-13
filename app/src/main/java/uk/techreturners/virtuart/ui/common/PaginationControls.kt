@@ -87,7 +87,7 @@ fun PaginationControls(
 
 @Preview(showBackground = true)
 @Composable
-fun PaginationControlsPreview() {
+private fun PaginationControlsPreview() {
     PaginationControls(
         totalPages = 2,
         currentPage = 1,
