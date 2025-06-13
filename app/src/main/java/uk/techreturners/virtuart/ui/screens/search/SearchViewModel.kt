@@ -76,7 +76,7 @@ class SearchViewModel @Inject constructor(
 
         // Sort clauses
         val sortClauses = mapOf(
-            "${cState.advancedSearchQuery.sortBy}.keyword" to mapOf(
+            cState.advancedSearchQuery.sortBy to mapOf(
                 "order" to cState.advancedSearchQuery.sortOrder
             )
         )
@@ -168,7 +168,7 @@ class SearchViewModel @Inject constructor(
         val currentState = _state.value
         if (currentState is State.Search) {
             _state.value = currentState.copy(
-                advancedSearchQuery = currentState.advancedSearchQuery.copy(sortOrder = newSortBy)
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(sortBy = newSortBy)
             )
         }
         Log.i(TAG, "Advanced search sort by updated: $newSortBy")
@@ -177,7 +177,7 @@ class SearchViewModel @Inject constructor(
     fun updateAdvancedSearchSortOrder(newSortOrder: String) {
         val currentState = _state.value
         if (currentState is State.Search) {
-            if (newSortOrder.lowercase() == "ascending") {
+            if (newSortOrder.lowercase() == "asc") {
                 _state.value = currentState.copy(
                     advancedSearchQuery = currentState.advancedSearchQuery.copy(sortOrder = "asc")
                 )
