@@ -235,12 +235,12 @@ internal fun AicAdvancedSearchForm(
                     ),
                     enabled = !state.isSearching && (
                             !state.advancedSearchQuery.title.isNullOrBlank() ||
-                                    state.advancedSearchQuery.artist.isNullOrBlank() ||
-                                    state.advancedSearchQuery.medium.isNullOrBlank() ||
-                                    state.advancedSearchQuery.category.isNullOrBlank()
+                                    !state.advancedSearchQuery.artist.isNullOrBlank() ||
+                                    !state.advancedSearchQuery.medium.isNullOrBlank() ||
+                                    !state.advancedSearchQuery.category.isNullOrBlank()
                             )
                 ) {
-                    Text("Search")
+                    Text(text = stringResource(R.string.search))
                 }
 
                 // Clear Button
