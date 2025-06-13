@@ -24,6 +24,10 @@ interface ArtworksApi {
         @Path("id") artworkId: String
     ): Response<Artwork>
 
+    // TODO consider making a Search Api Repo and controller
+    @POST("artworks/search")
+    suspend fun searchApiBasic(@Body searchQuery: BasicSearchQuery): Response<PaginatedArtworkResults>
+
     @POST("artworks/search/advanced")
-    suspend fun searchAdvancedApi(@Body searchQuery: AdvancedSearchRequest): Response<PaginatedArtworkResults>
+    suspend fun searchApiAdvanced(@Body searchQuery: AdvancedSearchRequest): Response<PaginatedArtworkResults>
 }
