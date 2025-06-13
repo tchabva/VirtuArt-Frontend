@@ -51,7 +51,7 @@ class ArtworksRepositoryImpl @Inject constructor(
 
     override suspend fun advancedApiSearch(searchQuery: AdvancedSearchRequest): NetworkResponse<PaginatedArtworkResults> {
         try {
-            val response = api.searchAicApi(searchQuery = searchQuery)
+            val response = api.searchAdvancedApi(searchQuery = searchQuery)
             val responseCode = response.code()
 
             return if (responseCode == 200) {

@@ -8,6 +8,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import uk.techreturners.virtuart.data.model.AdvancedSearchRequest
 import uk.techreturners.virtuart.data.model.Artwork
+import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 
 interface ArtworksApi {
@@ -24,5 +25,5 @@ interface ArtworksApi {
     ): Response<Artwork>
 
     @POST("artworks/search/advanced")
-    suspend fun searchAicApi(@Body searchQuery: AdvancedSearchRequest): Response<PaginatedArtworkResults>
+    suspend fun searchAdvancedApi(@Body searchQuery: AdvancedSearchRequest): Response<PaginatedArtworkResults>
 }
