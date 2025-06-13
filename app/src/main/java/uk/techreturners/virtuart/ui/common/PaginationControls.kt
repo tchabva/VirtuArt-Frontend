@@ -17,9 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import uk.techreturners.virtuart.R
 
 @Composable
 fun PaginationControls(
@@ -44,9 +46,9 @@ fun PaginationControls(
             border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
             enabled = hasPrevious
         ) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous")
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.previous_page))
             Text(
-                text = "Previous",
+                text = stringResource(R.string.previous),
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -56,7 +58,7 @@ fun PaginationControls(
         Spacer(modifier = Modifier.width(16.dp))
 
         Text(
-            text = "Page $currentPage of $totalPages",
+            text = stringResource(R.string.page_number_txt, currentPage, totalPages),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(1f),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -75,12 +77,12 @@ fun PaginationControls(
         ) {
 
             Text(
-                text = "Next",
+                text = stringResource(R.string.next),
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next")
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = stringResource(R.string.next_page))
         }
     }
 }
