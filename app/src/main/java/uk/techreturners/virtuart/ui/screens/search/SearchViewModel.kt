@@ -85,8 +85,8 @@ class SearchViewModel @Inject constructor(
         val elasticSearchQuery = AicApiElasticSearchQuery(
             query = mapOf("bool" to mapOf("must" to mustClauses)),
             sort = listOf(sortClauses),
-            size = cState.advancedSearchQuery.limit,
-            page = cState.advancedSearchQuery.page
+            size = cState.pageSize,
+            page = cState.currentPage
         )
 
         Log.i(TAG, "Elastic Search Query:\n$elasticSearchQuery")
@@ -213,6 +213,9 @@ class SearchViewModel @Inject constructor(
             val showApiSource: Boolean = false,
             val showPageLimit: Boolean = false,
             val isUserSignedIn: Boolean = false,
+            val pageSize: Int = 20,
+            val currentPage: Int = 1,
+            val source: String = "AIC",
         ) : State
 
         data class Error(val responseCode: Int?, val errorMessage: String) : State

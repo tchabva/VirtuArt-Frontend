@@ -7,13 +7,9 @@ data class AicAdvancedSearchQuery(
     val category: String? = null,
     val sortBy: String = "title.keyword", // default sort By
     val sortOrder: String = "asc", // default sort Order
-    val limit: Int = 20,
-    val source: String? = null,
-    val page: Int = 1
 )
 
 data class BasicQuery(
-    val query: String,
-    val limit: String?,
-    val source: String
+    val query: String? = null,
+    val source: String? = null
 )
