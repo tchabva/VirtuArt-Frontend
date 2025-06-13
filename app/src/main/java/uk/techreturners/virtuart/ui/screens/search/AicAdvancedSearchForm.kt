@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -30,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
@@ -47,7 +50,12 @@ internal fun AicAdvancedSearchForm(
     onSearch: () -> Unit,
     onClear: () -> Unit
 ) {
-    Card {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background
+        ),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,9 +73,13 @@ internal fun AicAdvancedSearchForm(
             // Title TextField
             OutlinedTextField(
                 value = state.advancedSearchQuery.title ?: "",
+                maxLines = 1,
                 onValueChange = onTitleChange,
                 label = { Text(stringResource(R.string.title)) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -75,9 +87,13 @@ internal fun AicAdvancedSearchForm(
             // Artist TextField
             OutlinedTextField(
                 value = state.advancedSearchQuery.artist ?: "",
+                maxLines = 1,
                 onValueChange = onArtistChange,
                 label = { Text(stringResource(R.string.artist)) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Words
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -86,8 +102,11 @@ internal fun AicAdvancedSearchForm(
             OutlinedTextField(
                 value = state.advancedSearchQuery.medium ?: "",
                 onValueChange = onMediumChange,
+                maxLines = 1,
                 label = { Text(stringResource(R.string.medium)) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -96,8 +115,11 @@ internal fun AicAdvancedSearchForm(
             OutlinedTextField(
                 value = state.advancedSearchQuery.category ?: "",
                 onValueChange = onDepartmentChange,
-                label = { Text(stringResource(R.string.category)) },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text(stringResource(R.string.department)) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -124,9 +146,9 @@ internal fun AicAdvancedSearchForm(
                 ) {
                     OutlinedTextField(
                         value = when (state.advancedSearchQuery.sortBy) {
-                            "title" -> "Title"
-                            "date" -> "Date"
-                            "artist" -> "Artist"
+                            "title.keyword" -> "Title"
+                            "date_end" -> "Date"
+                            "artist_title.keyword" -> "Artist"
                             else -> "Title"
                         },
                         onValueChange = {},
@@ -143,9 +165,9 @@ internal fun AicAdvancedSearchForm(
                         onDismissRequest = { expanded = false }
                     ) {
                         listOf(
-                            "title" to "Title",
-                            "date" to "Date",
-                            "artist" to "Artist"
+                            "title.keyword" to "Title",
+                            "date_end" to "Date",
+                            "artist_title.keyword" to "Artist"
                         ).forEach { (value, label) ->
                             DropdownMenuItem(
                                 text = { Text(label) },
@@ -158,6 +180,7 @@ internal fun AicAdvancedSearchForm(
                     }
                 }
 
+                // TODO Add to View Model
                 var orderExpanded by remember { mutableStateOf(false) }
 
                 ExposedDropdownMenuBox(
