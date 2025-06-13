@@ -6,3 +6,8 @@ data class AicApiElasticSearchQuery(
     val size: Int,
     val page: Int
 )
+
+data class BasicSearchQuery(
+    val q: String,
+    val query: Map<String,Any>
+)
