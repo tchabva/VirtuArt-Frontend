@@ -49,7 +49,7 @@ class ArtworksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun searchAicApi(searchQuery: AicApiElasticSearchQuery): NetworkResponse<PaginatedArtworkResults> {
+    override suspend fun advancedApiSearch(searchQuery: AicApiElasticSearchQuery): NetworkResponse<PaginatedArtworkResults> {
         try {
             val response = api.searchAicApi(searchQuery = searchQuery)
             val responseCode = response.code()

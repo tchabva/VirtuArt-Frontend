@@ -11,5 +11,5 @@ import uk.techreturners.virtuart.data.remote.NetworkResponse
 interface ArtworksRepository {
     fun getArtworks(): Flow<PagingData<ArtworkResult>>
     suspend fun getArtworksById(source: String, artworkId: String): NetworkResponse<Artwork>
-    suspend fun searchAicApi(searchQuery: AicApiElasticSearchQuery): NetworkResponse<PaginatedArtworkResults>
+    suspend fun advancedApiSearch(searchQuery: AicApiElasticSearchQuery): NetworkResponse<PaginatedArtworkResults>
 }
