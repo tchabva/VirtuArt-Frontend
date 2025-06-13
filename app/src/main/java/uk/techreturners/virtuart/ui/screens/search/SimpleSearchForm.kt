@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
-import uk.techreturners.virtuart.domain.model.BasicQuery
+import uk.techreturners.virtuart.data.model.BasicSearchQuery
 
 @Composable
 internal fun SimpleSearchForm(
@@ -86,7 +86,7 @@ private fun SimpleSearchFormPreview() {
     SimpleSearchForm(
         state = SearchViewModel.State.Search(
             data = null,
-            basicQuery = BasicQuery(
+            basicQuery = BasicSearchQuery(
                 query = "Monet"
             )
         ),

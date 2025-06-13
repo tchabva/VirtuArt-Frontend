@@ -36,7 +36,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
-import uk.techreturners.virtuart.domain.model.AicAdvancedSearchQuery
+import uk.techreturners.virtuart.data.model.AdvancedSearchRequest
 
 @Composable
 internal fun AicAdvancedSearchForm(
@@ -145,12 +145,7 @@ internal fun AicAdvancedSearchForm(
                     modifier = Modifier.weight(1f)
                 ) {
                     OutlinedTextField(
-                        value = when (state.advancedSearchQuery.sortBy) {
-                            "title.keyword" -> "Title"
-                            "date_end" -> "Date"
-                            "artist_title.keyword" -> "Artist"
-                            else -> "Title"
-                        },
+                        value = state.advancedSearchQuery.sortBy,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -165,14 +160,14 @@ internal fun AicAdvancedSearchForm(
                         onDismissRequest = { expanded = false }
                     ) {
                         listOf(
-                            "title.keyword" to "Title",
-                            "date_end" to "Date",
-                            "artist_title.keyword" to "Artist"
-                        ).forEach { (value, label) ->
+                            "Title",
+                            "Artist",
+                            "Date",
+                        ).forEach { sortBy ->
                             DropdownMenuItem(
-                                text = { Text(label) },
+                                text = { Text(sortBy) },
                                 onClick = {
-                                    onSortByChange(value)
+                                    onSortByChange(sortBy)
                                     expanded = false
                                 }
                             )
@@ -268,7 +263,7 @@ private fun AicAdvancedSearchFormPreview() {
     AicAdvancedSearchForm(
         state = SearchViewModel.State.Search(
             data = null,
-            advancedSearchQuery = AicAdvancedSearchQuery(
+            advancedSearchQuery = AdvancedSearchRequest(
                 title = "name",
             )
         ),

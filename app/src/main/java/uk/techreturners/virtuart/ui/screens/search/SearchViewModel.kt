@@ -9,12 +9,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import uk.techreturners.virtuart.data.model.AicApiElasticSearchQuery
+import uk.techreturners.virtuart.data.model.AdvancedSearchRequest
+import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ArtworksRepository
-import uk.techreturners.virtuart.domain.model.AicAdvancedSearchQuery
-import uk.techreturners.virtuart.domain.model.BasicQuery
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,69 +28,44 @@ class SearchViewModel @Inject constructor(
     val events: SharedFlow<Event> = _events
 
 
-    fun searchArtworks() {
-        val cState = (state.value as State.Search).copy()
-
+    fun onBasicSearch() {
         viewModelScope.launch {
-            if (cState.basicQuery == null && cState.advancedSearchQuery == null) {
-                emitEvent(event = Event.EmptySearchQuery)
-                Log.i(TAG, "Empty Search Query")
-            } else if (cState.basicQuery != null && cState.advancedSearchQuery == null) {
-                // TODO
-                Log.i(TAG, "Basic Search Query")
-            } else if (cState.basicQuery == null && cState.advancedSearchQuery != null) {
-//                advancedSearchQuery(cState.advancedSearchQuery)
-                // TODO
-                Log.i(TAG, "Advanced Search Query")
+            val cState = state.value as State.Search
+            _state.value = (state.value as State.Search).copy(isSearching = true)
+
+
+
+            Log.i(TAG, "Advanced Search Query")
+        }
+    }
+
+    fun onAdvancedSearchFormSubmit() {
+        viewModelScope.launch {
+            val cState = state.value as State.Search
+            val searchRequest = cState.advancedSearchQuery.copy(source = cState.source)
+
+            Log.i(TAG, searchRequest.toString())
+            Log.i(TAG, (state.value as State.Search).toString())
+
+
+            if (
+                !searchRequest.title.isNullOrBlank() || !searchRequest.artist.isNullOrBlank() ||
+                !searchRequest.medium.isNullOrBlank() || !searchRequest.department.isNullOrBlank()
+            ) {
+                _state.value = (state.value as State.Search).copy(showAdvancedSearch = false)
+                _state.value = (state.value as State.Search).copy(isSearching = true) // Loading Spinner
+                searchQuery(searchRequest)
+                Log.i(TAG, "Elastic Search Query:\n$searchRequest")
+            } else{
+                emitEvent(
+                    Event.EmptySearchQuery
+                )
             }
         }
     }
 
-    private suspend fun basicSearchQuery(basicQuery: BasicQuery) {
-        _state.value = (state.value as State.Search).copy(isSearching = true)
-        // TODO Implement the basicSearch on the Backend
-    }
-
-    fun onAdvancedSearchFormSubmit() {
-        _state.value = (state.value as State.Search).copy(showAdvancedSearch = false)
-        viewModelScope.launch {
-            advancedSearchQuery()
-        }
-    }
-
-    private suspend fun advancedSearchQuery() {
-        val cState = state.value as State.Search
-        _state.value = (state.value as State.Search).copy(isSearching = true) // Loading Spinner
-
-        // Must clauses map,
-        val mustClauses = mutableListOf<Map<String, Any>>()
-        cState.advancedSearchQuery.title?.takeIf { it.isNotBlank() }
-            ?.let { mustClauses.add(mapOf("match" to mapOf("title" to it))) }
-        cState.advancedSearchQuery.artist?.takeIf { it.isNotBlank() }
-            ?.let { mustClauses.add(mapOf("match" to mapOf("artist_title" to it))) }
-        cState.advancedSearchQuery.medium?.takeIf { it.isNotBlank() }
-            ?.let { mustClauses.add(mapOf("match" to mapOf("medium_display" to it))) }
-        cState.advancedSearchQuery.category?.takeIf { it.isNotBlank() }
-            ?.let { mustClauses.add(mapOf("match" to mapOf("department_title" to it))) }
-        mustClauses.add(mapOf("term" to mapOf("is_public_domain" to true)))
-
-        // Sort clauses
-        val sortClauses = mapOf(
-            cState.advancedSearchQuery.sortBy to mapOf(
-                "order" to cState.advancedSearchQuery.sortOrder
-            )
-        )
-
-        val elasticSearchQuery = AicApiElasticSearchQuery(
-            query = mapOf("bool" to mapOf("must" to mustClauses)),
-            sort = listOf(sortClauses),
-            size = cState.pageSize,
-            page = cState.currentPage
-        )
-
-        Log.i(TAG, "Elastic Search Query:\n$elasticSearchQuery")
-
-        when (val networkResponse = artworksRepository.searchAicApi(elasticSearchQuery)) {
+    private suspend fun searchQuery(query: AdvancedSearchRequest) {
+        when (val networkResponse = artworksRepository.advancedApiSearch(query)) {
             is NetworkResponse.Exception -> {
                 _state.value = State.NetworkError(
                     errorMessage = networkResponse.exception.message ?: "Unknown Error"
@@ -117,10 +91,32 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    // Update Basic Search
+    fun updateBasicSearch(newQuery: String) {
+        val currentState = _state.value
+        if (currentState is State.Search) {
+            _state.value = currentState.copy(
+                basicQuery = currentState.basicQuery.copy(query = newQuery)
+            )
+        }
+        Log.i(TAG, "Basic search query updated: $newQuery")
+    }
+
+    fun clearBasicSearch() {
+        _state.value = (state.value as State.Search).copy(
+            advancedSearchQuery = AdvancedSearchRequest()
+        )
+        Log.i(TAG, "Cleared Basic Search TextField")
+    }
+
     // Toggles the view of the Advanced Search
     fun toggleAdvancedSearch() {
         _state.value = (state.value as State.Search).copy(
             showAdvancedSearch = !(state.value as State.Search).showAdvancedSearch
+        )
+        Log.i(
+            TAG,
+            "Advanced search view toggled: ${(state.value as State.Search).showAdvancedSearch}"
         )
     }
 
@@ -155,14 +151,14 @@ class SearchViewModel @Inject constructor(
         Log.i(TAG, "Advanced search medium updated: $newMedium")
     }
 
-    fun updateAdvancedSearchCategory(newCategory: String) {
+    fun updateAdvancedSearchDepartment(newDepartment: String) {
         val currentState = _state.value
         if (currentState is State.Search) {
             _state.value = currentState.copy(
-                advancedSearchQuery = currentState.advancedSearchQuery.copy(category = newCategory)
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(department = newDepartment)
             )
         }
-        Log.i(TAG, "Advanced search category (department) updated: $newCategory")
+        Log.i(TAG, "Advanced search department updated: $newDepartment")
     }
 
     fun updateAdvancedSearchSortBy(newSortBy: String) {
@@ -193,8 +189,9 @@ class SearchViewModel @Inject constructor(
 
     fun onAdvancedSearchFormClear() {
         _state.value = (state.value as State.Search).copy(
-            advancedSearchQuery = AicAdvancedSearchQuery()
+            advancedSearchQuery = AdvancedSearchRequest()
         )
+        Log.i(TAG, "Cleared Advanced Search TextFields")
     }
 
     private suspend fun emitEvent(event: Event) {
@@ -204,8 +201,8 @@ class SearchViewModel @Inject constructor(
     sealed interface State {
         data class Search(
             val data: PaginatedArtworkResults? = null,
-            val basicQuery: BasicQuery? = null,
-            val advancedSearchQuery: AicAdvancedSearchQuery = AicAdvancedSearchQuery(),
+            val basicQuery: BasicSearchQuery = BasicSearchQuery(),
+            val advancedSearchQuery: AdvancedSearchRequest = AdvancedSearchRequest(),
             val isSearching: Boolean = false,
             val showAdvancedSearch: Boolean = false,
             val showSearchRelevance: Boolean = false,
@@ -214,8 +211,8 @@ class SearchViewModel @Inject constructor(
             val showPageLimit: Boolean = false,
             val isUserSignedIn: Boolean = false,
             val pageSize: Int = 20,
-            val currentPage: Int = 1,
             val source: String = "AIC",
+            val showBasicSearch: Boolean = true, // TODO
         ) : State
 
         data class Error(val responseCode: Int?, val errorMessage: String) : State
