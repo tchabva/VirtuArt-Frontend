@@ -10,7 +10,7 @@ data class Artwork(
     val altImageUrls: List<String>,
     val description: String?,
     val origin: String?,
-    val category: String?,
+    val department: String?,
     val sourceMuseum: String,
 )
 

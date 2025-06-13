@@ -228,7 +228,7 @@ private fun ArtworkDetailsCard(artwork: Artwork) {
             ArtworkDetailRow(stringResource(R.string.date), artwork.date)
             ArtworkDetailRow(stringResource(R.string.medium), artwork.displayMedium)
             ArtworkDetailRow(stringResource(R.string.origin), artwork.origin)
-            ArtworkDetailRow(stringResource(R.string.category), artwork.category)
+            ArtworkDetailRow(stringResource(R.string.department), artwork.department)
             ArtworkDetailRow(stringResource(R.string.museum), artwork.sourceMuseum)
         }
     }
@@ -350,7 +350,7 @@ private fun ArtworkDetailScreenLoadedPreview() {
                 ),
                 description = "A swirling night sky over a quiet village, painted during van Gogh's stay in a mental asylum.",
                 origin = "Saint-Rémy-de-Provence, France",
-                category = "Post-Impressionism",
+                department = "Post-Impressionism",
                 sourceMuseum = "Museum of Modern Art"
             )
         ),

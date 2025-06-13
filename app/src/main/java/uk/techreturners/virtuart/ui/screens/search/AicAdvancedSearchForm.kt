@@ -113,7 +113,7 @@ internal fun AicAdvancedSearchForm(
 
             // Category/Department TextField
             OutlinedTextField(
-                value = state.advancedSearchQuery.category ?: "",
+                value = state.advancedSearchQuery.department ?: "",
                 onValueChange = onDepartmentChange,
                 label = { Text(stringResource(R.string.department)) },
                 modifier = Modifier.fillMaxWidth(),
@@ -237,7 +237,7 @@ internal fun AicAdvancedSearchForm(
                             !state.advancedSearchQuery.title.isNullOrBlank() ||
                                     !state.advancedSearchQuery.artist.isNullOrBlank() ||
                                     !state.advancedSearchQuery.medium.isNullOrBlank() ||
-                                    !state.advancedSearchQuery.category.isNullOrBlank()
+                                    !state.advancedSearchQuery.department.isNullOrBlank()
                             )
                 ) {
                     Text(text = stringResource(R.string.search))

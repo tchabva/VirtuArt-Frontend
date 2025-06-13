@@ -40,7 +40,7 @@ fun SearchScreen(
         onTitleChange = viewModel::updateAdvancedSearchTitle,
         onArtistChange = viewModel::updateAdvancedSearchArtist,
         onMediumChange = viewModel::updateAdvancedSearchMedium,
-        onCategoryChange = viewModel::updateAdvancedSearchCategory,
+        onCategoryChange = viewModel::updateAdvancedSearchDepartment,
         onSortByChange = viewModel::updateAdvancedSearchSortBy,
         onSortOrderChange = viewModel::updateAdvancedSearchSortOrder,
         onAdvancedSearch = viewModel::onAdvancedSearchFormSubmit,
