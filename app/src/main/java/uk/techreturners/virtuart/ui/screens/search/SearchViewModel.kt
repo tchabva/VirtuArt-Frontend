@@ -53,6 +53,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onAdvancedSearchFormSubmit() {
+        _state.value = (state.value as State.Search).copy(showAdvancedSearch = false)
         viewModelScope.launch {
             advancedSearchQuery()
         }
