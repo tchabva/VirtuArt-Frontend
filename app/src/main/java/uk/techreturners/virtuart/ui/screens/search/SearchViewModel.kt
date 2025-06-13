@@ -27,15 +27,50 @@ class SearchViewModel @Inject constructor(
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
 
-
     fun onBasicSearch() {
         viewModelScope.launch {
             val cState = state.value as State.Search
             _state.value = (state.value as State.Search).copy(isSearching = true)
 
+            val searchRequest = cState.basicQuery.copy(source = cState.source)
 
+            if (!searchRequest.query.isNullOrBlank()) {
+                _state.value = cState.copy(isSearching = true)
+                searchBasicQuery(searchRequest)
+                Log.i(TAG, "Basic Search Query")
+            } else {
+                emitEvent(
+                    Event.EmptySearchQuery
+                )
+            }
+        }
+    }
 
-            Log.i(TAG, "Advanced Search Query")
+    private suspend fun searchBasicQuery(query: BasicSearchQuery) {
+        when (val networkResponse = artworksRepository.basicApiSearch(query)) {
+            is NetworkResponse.Exception -> {
+                _state.value = State.NetworkError(
+                    errorMessage = networkResponse.exception.message ?: "Unknown Error"
+                )
+                Log.e(TAG, "Network Error: ${networkResponse.exception.message}")
+            }
+
+            is NetworkResponse.Failed -> {
+                _state.value = State.Error(
+                    responseCode = networkResponse.code,
+                    errorMessage = networkResponse.message ?: "Unknown Error"
+                )
+                Log.e(TAG, "Error Code:${networkResponse.code}\n${networkResponse.message}")
+            }
+
+            is NetworkResponse.Success -> {
+                _state.value = (state.value as State.Search).copy(
+                    isSearching = false,
+                    data = networkResponse.data,
+                    advancedSearchQuery = AdvancedSearchRequest()
+                )
+                Log.i(TAG, "Basic Search Successful:${networkResponse.data.data}")
+            }
         }
     }
 
@@ -43,10 +78,6 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             val cState = state.value as State.Search
             val searchRequest = cState.advancedSearchQuery.copy(source = cState.source)
-
-            Log.i(TAG, searchRequest.toString())
-            Log.i(TAG, (state.value as State.Search).toString())
-
 
             if (
                 !searchRequest.title.isNullOrBlank() || !searchRequest.artist.isNullOrBlank() ||
@@ -56,7 +87,7 @@ class SearchViewModel @Inject constructor(
                 _state.value =
                     (state.value as State.Search).copy(isSearching = true) // Loading Spinner
                 searchAdvancedQuery(searchRequest)
-                Log.i(TAG, "Elastic Search Query:\n$searchRequest")
+                Log.i(TAG, "Advanced Elastic Search Query:\n$searchRequest")
             } else {
                 emitEvent(
                     Event.EmptySearchQuery
@@ -86,9 +117,9 @@ class SearchViewModel @Inject constructor(
                 _state.value = (state.value as State.Search).copy(
                     isSearching = false,
                     data = networkResponse.data,
-                    basicQuery = BasicSearchQuery()
+                    basicQuery = BasicSearchQuery() // TODO consider persisting the text onNext/Prev
                 )
-                Log.i(TAG, "Search Successful:${networkResponse.data.data}")
+                Log.i(TAG, "Advanced Search Successful:${networkResponse.data.data}")
             }
         }
     }
@@ -106,7 +137,7 @@ class SearchViewModel @Inject constructor(
 
     fun clearBasicSearch() {
         _state.value = (state.value as State.Search).copy(
-            advancedSearchQuery = AdvancedSearchRequest()
+            basicQuery = (state.value as State.Search).basicQuery.copy(query = null)
         )
         Log.i(TAG, "Cleared Basic Search TextField")
     }
@@ -202,7 +233,7 @@ class SearchViewModel @Inject constructor(
         if (cState is State.Search) {
             if (cState.data != null && cState.data.hasPrevious) {
                 val nextPage = cState.data.currentPage - 1
-                if (cState.basicQuery.query.isNullOrBlank()) {
+                if (cState.basicQuery.source.isNullOrBlank()) {
                     _state.value = cState.copy(
                         advancedSearchQuery = cState.advancedSearchQuery.copy(
                             currentPage = nextPage
@@ -210,9 +241,14 @@ class SearchViewModel @Inject constructor(
                     )
                     Log.i(TAG, "onPreviousClicked for Advanced Search in Pagination")
                     onAdvancedSearchFormSubmit()
-                } else {
-                    // TODO
-                    Log.i(TAG, "onPreviousClicked for Basic Search in Pagination")
+                } else if (cState.advancedSearchQuery.source.isNullOrBlank()) {
+                    _state.value = cState.copy(
+                        basicQuery = cState.basicQuery.copy(
+                            currentPage = nextPage
+                        )
+                    )
+                    Log.i(TAG, "onPreviousClicked for Basic  Search in Pagination")
+                    onBasicSearch()
                 }
             }
         }
@@ -231,9 +267,14 @@ class SearchViewModel @Inject constructor(
                     )
                     Log.i(TAG, "onNextClicked for Advanced Search in Pagination")
                     onAdvancedSearchFormSubmit()
-                } else {
-                    // TODO
+                } else if (cState.advancedSearchQuery.source.isNullOrBlank()) {
+                    _state.value = cState.copy(
+                        basicQuery = cState.basicQuery.copy(
+                            currentPage = nextPage
+                        )
+                    )
                     Log.i(TAG, "onNextClicked for Basic Search in Pagination")
+                    onBasicSearch()
                 }
             }
         }
