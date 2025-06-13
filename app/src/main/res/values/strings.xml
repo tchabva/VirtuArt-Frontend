@@ -75,4 +75,11 @@
     <string name="sort_by">Sort by</string>
     <string name="clear">Clear</string>
     <string name="department">Department</string>
+    <string name="search_artworks_textfield">Search artworks...</string>
+    <string name="search">Search</string>
+    <string name="previous_page">Previous Page</string>
+    <string name="previous">Previous</string>
+    <string name="page_number_txt">Page %1$s of %2$s</string>
+    <string name="next_page">Next Page</string>
+    <string name="next">Next</string>
 </resources>
