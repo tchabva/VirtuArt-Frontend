@@ -23,6 +23,6 @@ interface ArtworksApi {
         @Path("id") artworkId: String
     ): Response<Artwork>
 
-    @POST("artworks/search/aic")
+    @POST("artworks/search/advanced")
     suspend fun searchAicApi(@Body searchQuery: AdvancedSearchRequest): Response<PaginatedArtworkResults>
 }
