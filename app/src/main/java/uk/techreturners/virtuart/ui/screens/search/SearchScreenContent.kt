@@ -114,7 +114,7 @@ private fun SearchScreenSearch(
             Row {
                 DefaultPageSizeButton(
                     onClick = {/*TODO*/ },
-                    pageSize = state.advancedSearchQuery.limit
+                    pageSize = state.pageSize
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
