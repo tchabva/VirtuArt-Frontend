@@ -45,7 +45,10 @@ fun SearchScreenContent(
     onSortByChange: (String) -> Unit = {},
     onSortOrderChange: (String) -> Unit = {},
     onAdvancedSearch: () -> Unit = {},
-    onClearAdvancedSearch: () -> Unit = {}
+    onClearAdvancedSearch: () -> Unit = {},
+    onClearBasicSearch: () -> Unit = {},
+    onBasicSearch: () -> Unit = {},
+    onBasicQueryChange: (String) -> Unit = {}
 ) {
     when (state) {
         is SearchViewModel.State.Error -> {
@@ -73,7 +76,10 @@ fun SearchScreenContent(
                 onSortByChange = onSortByChange,
                 onSortOrderChange = onSortOrderChange,
                 onAdvancedSearch = onAdvancedSearch,
-                onClearAdvancedSearch = onClearAdvancedSearch
+                onClearAdvancedSearch = onClearAdvancedSearch,
+                onClearBasicSearch = onClearBasicSearch,
+                onBasicSearch = onBasicSearch,
+                onBasicQueryChange = onBasicQueryChange,
             )
         }
     }
@@ -91,8 +97,11 @@ private fun SearchScreenSearch(
     onSortByChange: (String) -> Unit,
     onSortOrderChange: (String) -> Unit,
     onAdvancedSearch: () -> Unit,
-    onClearAdvancedSearch: () -> Unit
-) {
+    onClearAdvancedSearch: () -> Unit,
+    onClearBasicSearch: () -> Unit,
+    onBasicSearch: () -> Unit,
+    onBasicQueryChange: (String) -> Unit
+) { 
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -152,6 +161,17 @@ private fun SearchScreenSearch(
                 onSearch = onAdvancedSearch,
                 onClear = onClearAdvancedSearch
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        } else {
+            SimpleSearchForm(
+                state = state,
+                onQueryChange = onBasicQueryChange,
+                onSearch  = onBasicSearch,
+                onClear = onClearBasicSearch
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         if (state.data == null) {
@@ -227,6 +247,9 @@ private fun SearchScreenSearchPreview() {
         onSortByChange = {},
         onSortOrderChange = {},
         onAdvancedSearch = {},
-        onClearAdvancedSearch = {}
+        onClearAdvancedSearch = {},
+        onClearBasicSearch = {},
+        onBasicSearch = {},
+        onBasicQueryChange = {},
     )
 }
