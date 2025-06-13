@@ -31,6 +31,7 @@ import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.ui.common.ArtworkItem
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultPageSizeButton
+import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.DefaultSourceButton
 import uk.techreturners.virtuart.ui.common.PaginationControls
 
@@ -49,7 +50,9 @@ fun SearchScreenContent(
     onClearBasicSearch: () -> Unit = {},
     onBasicSearch: () -> Unit = {},
     onBasicQueryChange: (String) -> Unit = {},
-    onArtworkItemClick: (String, String) -> Unit = {_,_ ->}
+    onArtworkItemClick: (String, String) -> Unit = { _, _ -> },
+    onPreviousClick: () -> Unit,
+    onNextClick: () -> Unit,
 ) {
     when (state) {
         is SearchViewModel.State.Error -> {
@@ -82,6 +85,8 @@ fun SearchScreenContent(
                 onBasicSearch = onBasicSearch,
                 onBasicQueryChange = onBasicQueryChange,
                 onArtworkItemClick = onArtworkItemClick,
+                onPreviousClick = onPreviousClick,
+                onNextClick = onNextClick
             )
         }
     }
@@ -103,8 +108,11 @@ private fun SearchScreenSearch(
     onClearBasicSearch: () -> Unit,
     onBasicSearch: () -> Unit,
     onBasicQueryChange: (String) -> Unit,
-    onArtworkItemClick: (String, String) -> Unit = {_,_ ->}
-) { 
+    onArtworkItemClick: (String, String) -> Unit = { _, _ -> },
+    onPreviousClick: () -> Unit,
+    onNextClick: () -> Unit,
+
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -171,7 +179,7 @@ private fun SearchScreenSearch(
             SimpleSearchForm(
                 state = state,
                 onQueryChange = onBasicQueryChange,
-                onSearch  = onBasicSearch,
+                onSearch = onBasicSearch,
                 onClear = onClearBasicSearch
             )
 
@@ -208,17 +216,21 @@ private fun SearchScreenSearch(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Search Results
-            LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Adaptive(150.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalItemSpacing = 8.dp,
-                modifier = Modifier.weight(1f)
-            ) {
-                items(state.data.data) { artwork ->
-                    ArtworkItem(
-                        artwork = artwork,
-                        onClick = onArtworkItemClick
-                    )
+            if (state.isSearching){
+                DefaultProgressIndicator()
+            } else {
+                LazyVerticalStaggeredGrid(
+                    columns = StaggeredGridCells.Adaptive(150.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalItemSpacing = 8.dp,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(state.data.data) { artwork ->
+                        ArtworkItem(
+                            artwork = artwork,
+                            onClick = onArtworkItemClick
+                        )
+                    }
                 }
             }
 
@@ -229,8 +241,8 @@ private fun SearchScreenSearch(
                 currentPage = state.data.currentPage,
                 hasNext = state.data.hasNext,
                 hasPrevious = state.data.hasPrevious,
-                onPreviousClick = {/*TODO */ },
-                onNextClick = {/*TODO */ }
+                onPreviousClick = onPreviousClick,
+                onNextClick = onNextClick,
             )
         }
     }
@@ -255,5 +267,7 @@ private fun SearchScreenSearchPreview() {
         onClearBasicSearch = {},
         onBasicSearch = {},
         onBasicQueryChange = {},
+        onPreviousClick = {},
+        onNextClick = {}
     )
 }

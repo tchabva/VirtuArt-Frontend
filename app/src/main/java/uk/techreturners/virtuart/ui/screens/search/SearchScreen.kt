@@ -31,7 +31,6 @@ fun SearchScreen(
         }
     }
 
-
     val state = viewModel.state.collectAsStateWithLifecycle()
 
     SearchScreenContent(
@@ -48,5 +47,8 @@ fun SearchScreen(
         onClearBasicSearch = viewModel::clearBasicSearch,
         onBasicSearch = viewModel::onBasicSearch,
         onBasicQueryChange = viewModel::updateBasicSearch,
+        onArtworkItemClick = {_,_ /*TODO*/ ->},
+        onPreviousClick = viewModel::onPreviousClick,
+        onNextClick = viewModel::onNextClick,
     )
 }

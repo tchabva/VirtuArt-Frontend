@@ -53,10 +53,11 @@ class SearchViewModel @Inject constructor(
                 !searchRequest.medium.isNullOrBlank() || !searchRequest.department.isNullOrBlank()
             ) {
                 _state.value = (state.value as State.Search).copy(showAdvancedSearch = false)
-                _state.value = (state.value as State.Search).copy(isSearching = true) // Loading Spinner
-                searchQuery(searchRequest)
+                _state.value =
+                    (state.value as State.Search).copy(isSearching = true) // Loading Spinner
+                searchAdvancedQuery(searchRequest)
                 Log.i(TAG, "Elastic Search Query:\n$searchRequest")
-            } else{
+            } else {
                 emitEvent(
                     Event.EmptySearchQuery
                 )
@@ -64,7 +65,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private suspend fun searchQuery(query: AdvancedSearchRequest) {
+    private suspend fun searchAdvancedQuery(query: AdvancedSearchRequest) {
         when (val networkResponse = artworksRepository.advancedApiSearch(query)) {
             is NetworkResponse.Exception -> {
                 _state.value = State.NetworkError(
@@ -84,7 +85,8 @@ class SearchViewModel @Inject constructor(
             is NetworkResponse.Success -> {
                 _state.value = (state.value as State.Search).copy(
                     isSearching = false,
-                    data = networkResponse.data
+                    data = networkResponse.data,
+                    basicQuery = BasicSearchQuery()
                 )
                 Log.i(TAG, "Search Successful:${networkResponse.data.data}")
             }
@@ -192,6 +194,49 @@ class SearchViewModel @Inject constructor(
             advancedSearchQuery = AdvancedSearchRequest()
         )
         Log.i(TAG, "Cleared Advanced Search TextFields")
+    }
+
+    // Pagination
+    fun onPreviousClick() {
+        val cState = state.value
+        if (cState is State.Search) {
+            if (cState.data != null && cState.data.hasPrevious) {
+                val nextPage = cState.data.currentPage - 1
+                if (cState.basicQuery.query.isNullOrBlank()) {
+                    _state.value = cState.copy(
+                        advancedSearchQuery = cState.advancedSearchQuery.copy(
+                            currentPage = nextPage
+                        )
+                    )
+                    Log.i(TAG, "onPreviousClicked for Advanced Search in Pagination")
+                    onAdvancedSearchFormSubmit()
+                } else {
+                    // TODO
+                    Log.i(TAG, "onPreviousClicked for Basic Search in Pagination")
+                }
+            }
+        }
+    }
+
+    fun onNextClick() {
+        val cState = state.value
+        if (cState is State.Search) {
+            if (cState.data != null && cState.data.hasNext) {
+                val nextPage = cState.data.currentPage + 1
+                if (cState.basicQuery.query.isNullOrBlank()) {
+                    _state.value = cState.copy(
+                        advancedSearchQuery = cState.advancedSearchQuery.copy(
+                            currentPage = nextPage
+                        )
+                    )
+                    Log.i(TAG, "onNextClicked for Advanced Search in Pagination")
+                    onAdvancedSearchFormSubmit()
+                } else {
+                    // TODO
+                    Log.i(TAG, "onNextClicked for Basic Search in Pagination")
+                }
+            }
+        }
     }
 
     private suspend fun emitEvent(event: Event) {
