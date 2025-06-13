@@ -270,7 +270,6 @@ private fun AicAdvancedSearchFormPreview() {
             data = null,
             advancedSearchQuery = AicAdvancedSearchQuery(
                 title = "name",
-                source = "aic"
             )
         ),
         onTitleChange = {},
