@@ -56,7 +56,9 @@ fun SearchScreenContent(
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
     toggleApiSourceDialog: () -> Unit = {},
-    onUpdateApiSource: (String) -> Unit
+    onUpdateApiSource: (String) -> Unit,
+    togglePageSizeDialog: () -> Unit,
+    onUpdatePageSize: (Int) -> Unit
 ) {
     when (state) {
         is SearchViewModel.State.Error -> {
@@ -93,6 +95,8 @@ fun SearchScreenContent(
                 onNextClick = onNextClick,
                 toggleApiSourceDialog = toggleApiSourceDialog,
                 onUpdateApiSource = onUpdateApiSource,
+                togglePageSizeDialog = togglePageSizeDialog,
+                onUpdatePageSize = onUpdatePageSize,
             )
         }
     }
@@ -117,7 +121,9 @@ private fun SearchScreenSearch(
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
     toggleApiSourceDialog: () -> Unit,
-    onUpdateApiSource: (String) -> Unit
+    onUpdateApiSource: (String) -> Unit,
+    togglePageSizeDialog: () -> Unit,
+    onUpdatePageSize: (Int) -> Unit
 
 ) {
     Column(
@@ -132,15 +138,18 @@ private fun SearchScreenSearch(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth(.36f),
+                modifier = Modifier.fillMaxWidth(.4f),
                 text = stringResource(R.string.search_artworks),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
 
-            Row {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 DefaultPageSizeButton(
-                    onClick = {/*TODO*/ },
+                    onClick = togglePageSizeDialog,
                     pageSize = state.pageSize
                 )
 
@@ -181,7 +190,6 @@ private fun SearchScreenSearch(
 
             Spacer(modifier = Modifier.height(16.dp))
         } else {
-            // TODO implement show and hide logic
             SimpleSearchForm(
                 state = state,
                 onQueryChange = onBasicQueryChange,
@@ -193,7 +201,7 @@ private fun SearchScreenSearch(
         }
 
         if (state.data == null) {
-            val source = when (state.source){
+            val source = when (state.source) {
                 stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
                 else -> stringResource(R.string.unknown)
             }
@@ -203,7 +211,7 @@ private fun SearchScreenSearch(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -217,7 +225,7 @@ private fun SearchScreenSearch(
                 )
             }
         } else if (state.data.data.isEmpty()) {
-            val source = when (state.source){
+            val source = when (state.source) {
                 stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
                 else -> stringResource(R.string.unknown)
             }
@@ -241,7 +249,7 @@ private fun SearchScreenSearch(
                 )
             }
         } else {
-            val source = when (state.source){
+            val source = when (state.source) {
                 stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
                 else -> stringResource(R.string.unknown)
             }
@@ -297,6 +305,15 @@ private fun SearchScreenSearch(
             state = state
         )
     }
+
+    // Page Size Dialog
+    if (state.showPageSize) {
+        PageSizeDialog(
+            onDismiss = togglePageSizeDialog,
+            onPageSizeChanged = onUpdatePageSize,
+            state = state
+        )
+    }
 }
 
 @Preview(showBackground = true)
@@ -322,5 +339,7 @@ private fun SearchScreenSearchPreview() {
         onNextClick = {},
         toggleApiSourceDialog = {},
         onUpdateApiSource = {},
+        togglePageSizeDialog = {},
+        onUpdatePageSize = {},
     )
 }

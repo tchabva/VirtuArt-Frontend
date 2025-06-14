@@ -32,7 +32,11 @@ class SearchViewModel @Inject constructor(
             val cState = state.value as State.Search
             _state.value = (state.value as State.Search).copy(isSearching = true)
 
-            val searchRequest = cState.basicQuery.copy(source = cState.source)
+            // Copy the source and page limit from the state
+            val searchRequest = cState.basicQuery.copy(
+                source = cState.source,
+                pageSize = cState.pageSize
+            )
 
             if (!searchRequest.query.isNullOrBlank()) {
                 _state.value = cState.copy(isSearching = true)
@@ -77,7 +81,10 @@ class SearchViewModel @Inject constructor(
     fun onAdvancedSearchFormSubmit() {
         viewModelScope.launch {
             val cState = state.value as State.Search
-            val searchRequest = cState.advancedSearchQuery.copy(source = cState.source)
+            val searchRequest = cState.advancedSearchQuery.copy(
+                source = cState.source,
+                pageSize = cState.pageSize
+            )
 
             if (
                 !searchRequest.title.isNullOrBlank() || !searchRequest.artist.isNullOrBlank() ||
@@ -280,7 +287,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    // toggle the Api Source Dialog
+    // Toggle the Api Source Dialog
     fun toggleShowApiSourceDialog() {
         _state.value = (state.value as State.Search).copy(
             showApiSource = !(state.value as State.Search).showApiSource
@@ -306,6 +313,32 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    // Toggle the PageSizeDialog
+    fun toggleShowPageSizeDialog() {
+        _state.value = (state.value as State.Search).copy(
+            showPageSize = !(state.value as State.Search).showPageSize
+        )
+        Log.i(
+            TAG,
+            "Toggle the showPageLimit dialog: ${(state.value as State.Search).showPageSize}"
+        )
+    }
+
+    fun updatePageSize(newPageSize: Int) {
+        val cState = state.value as State.Search
+        if (cState.pageSize != newPageSize) {
+            _state.value = cState.copy(
+                pageSize = newPageSize
+            )
+            Log.i(
+                TAG,
+                "Updated the Page Size: ${(state.value as State.Search).pageSize}"
+            )
+        } else {
+            Log.i(TAG, "Page Size not updated")
+        }
+    }
+
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
     }
@@ -320,9 +353,9 @@ class SearchViewModel @Inject constructor(
             val showSearchRelevance: Boolean = false,
             val showSortOrder: Boolean = false,
             val showApiSource: Boolean = false,
-            val showPageLimit: Boolean = false,
+            val showPageSize: Boolean = false,
             val isUserSignedIn: Boolean = false,
-            val pageSize: Int = 20,
+            val pageSize: Int = 25,
             val source: String = "aic",
             val showBasicSearch: Boolean = true, // TODO
         ) : State

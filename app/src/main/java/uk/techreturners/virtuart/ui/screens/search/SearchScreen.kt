@@ -52,5 +52,7 @@ fun SearchScreen(
         onNextClick = viewModel::onNextClick,
         toggleApiSourceDialog = viewModel::toggleShowApiSourceDialog,
         onUpdateApiSource = viewModel::updateApiSource,
+        togglePageSizeDialog = viewModel::toggleShowPageSizeDialog,
+        onUpdatePageSize = viewModel::updatePageSize,
     )
 }
