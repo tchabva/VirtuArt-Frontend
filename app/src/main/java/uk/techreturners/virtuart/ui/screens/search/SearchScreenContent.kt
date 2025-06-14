@@ -302,7 +302,7 @@ private fun SearchScreenSearch(
         DefaultSourceDialog(
             onDismiss = toggleApiSourceDialog,
             onSourceChanged = onUpdateApiSource,
-            state = state
+            source = state.source
         )
     }
 

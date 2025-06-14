@@ -23,13 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
-import uk.techreturners.virtuart.ui.screens.search.SearchViewModel
 
 @Composable
 fun DefaultSourceDialog(
     onDismiss: () -> Unit = {},
     onSourceChanged: (String) -> Unit = {},
-    state: SearchViewModel.State.Search
+    source: String
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -47,7 +46,7 @@ fun DefaultSourceDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = state.source == key,
+                            selected = source == key,
                             onClick = { onSourceChanged(key) },
                             colors = RadioButtonDefaults.colors(
                                 selectedColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -87,9 +86,5 @@ fun DefaultSourceDialog(
 @Preview
 @Composable
 private fun DefaultSourceDialogPreview() {
-    DefaultSourceDialog(
-        state = SearchViewModel.State.Search(
-            source = "aic"
-        )
-    )
+    DefaultSourceDialog(source = "aic")
 }

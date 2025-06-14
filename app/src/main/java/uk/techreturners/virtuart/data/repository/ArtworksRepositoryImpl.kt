@@ -19,13 +19,13 @@ class ArtworksRepositoryImpl @Inject constructor(
     private val api: ArtworksApi
 ) : ArtworksRepository {
 
-    override fun getArtworks(): Flow<PagingData<ArtworkResult>> {
+    override fun getArtworks(source: String): Flow<PagingData<ArtworkResult>> {
        return Pager(
            config = PagingConfig(
                pageSize = 20,
                enablePlaceholders = false
            ),
-           pagingSourceFactory = { ArtworkPagingSource(api)}
+           pagingSourceFactory = { ArtworkPagingSource(artworksApi = api, source = source)}
        ).flow
     }
 

@@ -10,7 +10,7 @@ import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 
 interface ArtworksRepository {
-    fun getArtworks(): Flow<PagingData<ArtworkResult>>
+    fun getArtworks(source: String = "aic"): Flow<PagingData<ArtworkResult>>
     suspend fun getArtworksById(source: String, artworkId: String): NetworkResponse<Artwork>
     suspend fun advancedApiSearch(searchQuery: AdvancedSearchRequest): NetworkResponse<PaginatedArtworkResults>
     suspend fun basicApiSearch(searchQuery: BasicSearchQuery): NetworkResponse<PaginatedArtworkResults>

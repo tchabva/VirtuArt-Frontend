@@ -5,13 +5,13 @@ import androidx.paging.PagingState
 import retrofit2.HttpException
 import uk.techreturners.virtuart.data.model.ArtworkResult
 import uk.techreturners.virtuart.data.remote.ArtworksApi
-import uk.techreturners.virtuart.data.remote.NetworkResponse
 import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
 
 class ArtworkPagingSource(
     private val artworksApi: ArtworksApi,
+    private val source: String
 ) : PagingSource<Int, ArtworkResult>() {
 
     // Called by the Paging Library asynchronously to fetch more data as the user scrolls
@@ -19,9 +19,10 @@ class ArtworkPagingSource(
         return try {
             // Starting page of 1 if no key is provided
             val page = params.key ?: STARTING_PAGE_INDEX
-            val response = artworksApi.getAicArtworks(
+            val response = artworksApi.getArtworks(
+                source = source,
                 limit = params.loadSize.toString(),
-                page = page.toString()
+                page = page.toString(),
             )
 
             val artworks = response.body()?.data ?: emptyList()
