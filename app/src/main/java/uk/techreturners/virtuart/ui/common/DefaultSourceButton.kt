@@ -29,7 +29,6 @@ import uk.techreturners.virtuart.R
 @Composable
 fun DefaultSourceButton(
     onClick: () -> Unit,
-    source: String
 ) {
     OutlinedButton(
         modifier = Modifier.wrapContentWidth(),
@@ -48,13 +47,7 @@ fun DefaultSourceButton(
                 modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.onBackground
             )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = source,
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+
         }
     }
 }
@@ -64,6 +57,5 @@ fun DefaultSourceButton(
 private fun DefaultPageSizeButtonPreview() {
     DefaultSourceButton(
         onClick = {},
-        source = "AIC"
     )
 }
