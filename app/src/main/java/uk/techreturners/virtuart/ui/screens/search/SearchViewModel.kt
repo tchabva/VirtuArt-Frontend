@@ -280,6 +280,32 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    // toggle the Api Source Dialog
+    fun toggleShowApiSourceDialog() {
+        _state.value = (state.value as State.Search).copy(
+            showApiSource = !(state.value as State.Search).showApiSource
+        )
+        Log.i(
+            TAG,
+            "Toggle the showApiSource: ${(state.value as State.Search).showApiSource}"
+        )
+    }
+
+    fun updateApiSource(newSource: String) {
+        val cState = state.value as State.Search
+        if (cState.source != newSource) {
+            _state.value = cState.copy(
+                source = newSource
+            )
+            Log.i(
+                TAG,
+                "Updated the Api Source: ${(state.value as State.Search).source}"
+            )
+        } else {
+            Log.i(TAG, "Api source not updated")
+        }
+    }
+
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
     }
@@ -297,7 +323,7 @@ class SearchViewModel @Inject constructor(
             val showPageLimit: Boolean = false,
             val isUserSignedIn: Boolean = false,
             val pageSize: Int = 20,
-            val source: String = "AIC",
+            val source: String = "aic",
             val showBasicSearch: Boolean = true, // TODO
         ) : State
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
@@ -33,6 +34,7 @@ import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultPageSizeButton
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.DefaultSourceButton
+import uk.techreturners.virtuart.ui.common.DefaultSourceDialog
 import uk.techreturners.virtuart.ui.common.PaginationControls
 
 @Composable
@@ -53,6 +55,8 @@ fun SearchScreenContent(
     onArtworkItemClick: (String, String) -> Unit = { _, _ -> },
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
+    toggleApiSourceDialog: () -> Unit = {},
+    onUpdateApiSource: (String) -> Unit
 ) {
     when (state) {
         is SearchViewModel.State.Error -> {
@@ -86,12 +90,13 @@ fun SearchScreenContent(
                 onBasicQueryChange = onBasicQueryChange,
                 onArtworkItemClick = onArtworkItemClick,
                 onPreviousClick = onPreviousClick,
-                onNextClick = onNextClick
+                onNextClick = onNextClick,
+                toggleApiSourceDialog = toggleApiSourceDialog,
+                onUpdateApiSource = onUpdateApiSource,
             )
         }
     }
 }
-
 
 @Composable
 private fun SearchScreenSearch(
@@ -111,8 +116,10 @@ private fun SearchScreenSearch(
     onArtworkItemClick: (String, String) -> Unit = { _, _ -> },
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
+    toggleApiSourceDialog: () -> Unit,
+    onUpdateApiSource: (String) -> Unit
 
-    ) {
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -140,8 +147,7 @@ private fun SearchScreenSearch(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 DefaultSourceButton(
-                    onClick = { },
-                    source = "AIC"
+                    onClick = toggleApiSourceDialog
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -187,28 +193,64 @@ private fun SearchScreenSearch(
         }
 
         if (state.data == null) {
+            val source = when (state.source){
+                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                else -> stringResource(R.string.unknown)
+            }
+            Text(
+                text = stringResource(R.string.source_museum_text, source),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Enter search terms to find artworks from.",
-                    modifier = Modifier.padding(16.dp),
+                    text = stringResource(R.string.enter_search_terms_txt),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
         } else if (state.data.data.isEmpty()) {
+            val source = when (state.source){
+                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                else -> stringResource(R.string.unknown)
+            }
+            Text(
+                text = stringResource(R.string.found_no_results_src_txt, source),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "No artworks found for your search criteria.",
-                    modifier = Modifier.padding(16.dp),
+                    text = stringResource(R.string.no_artworks_found_txt),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
         } else {
+            val source = when (state.source){
+                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                else -> stringResource(R.string.unknown)
+            }
             Text(
-                text = "Found ${state.data.totalItems} results in from the Art Institute of Chicago",
+                text = stringResource(
+                    R.string.found_results_from_the_src_txt,
+                    state.data.totalItems,
+                    source
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -216,7 +258,7 @@ private fun SearchScreenSearch(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Search Results
-            if (state.isSearching){
+            if (state.isSearching) {
                 DefaultProgressIndicator()
             } else {
                 LazyVerticalStaggeredGrid(
@@ -246,6 +288,15 @@ private fun SearchScreenSearch(
             )
         }
     }
+
+    // Source Dialog,
+    if (state.showApiSource) {
+        DefaultSourceDialog(
+            onDismiss = toggleApiSourceDialog,
+            onSourceChanged = onUpdateApiSource,
+            state = state
+        )
+    }
 }
 
 @Preview(showBackground = true)
@@ -268,6 +319,8 @@ private fun SearchScreenSearchPreview() {
         onBasicSearch = {},
         onBasicQueryChange = {},
         onPreviousClick = {},
-        onNextClick = {}
+        onNextClick = {},
+        toggleApiSourceDialog = {},
+        onUpdateApiSource = {},
     )
 }
