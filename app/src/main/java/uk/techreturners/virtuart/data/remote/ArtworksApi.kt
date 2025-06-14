@@ -6,8 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import uk.techreturners.virtuart.data.model.AicApiElasticSearchQuery
+import uk.techreturners.virtuart.data.model.AdvancedSearchRequest
 import uk.techreturners.virtuart.data.model.Artwork
+import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 
 interface ArtworksApi {
@@ -23,6 +24,10 @@ interface ArtworksApi {
         @Path("id") artworkId: String
     ): Response<Artwork>
 
-    @POST("artworks/search/aic")
-    suspend fun searchAicApi(@Body searchQuery: AicApiElasticSearchQuery): Response<PaginatedArtworkResults>
+    // TODO consider making a Search Api Repo and controller
+    @POST("artworks/search")
+    suspend fun searchApiBasic(@Body searchQuery: BasicSearchQuery): Response<PaginatedArtworkResults>
+
+    @POST("artworks/search/advanced")
+    suspend fun searchApiAdvanced(@Body searchQuery: AdvancedSearchRequest): Response<PaginatedArtworkResults>
 }

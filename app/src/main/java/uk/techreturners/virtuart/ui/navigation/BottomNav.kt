@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.ImageSearch
@@ -50,7 +51,7 @@ fun BottomNav(navController: NavController) {
         exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
     ) {
         NavigationBar(
-            modifier = Modifier.height(80.dp),
+            modifier = Modifier.height(68.dp),
             containerColor = MaterialTheme.colorScheme.background,
         ) {
             topLevelRoute.forEach { topLevelRoute ->
@@ -61,6 +62,7 @@ fun BottomNav(navController: NavController) {
                 NavigationBarItem(
                     icon = {
                         Icon(
+                            modifier = Modifier.size(20.dp),
                             imageVector = topLevelRoute.icon(isSelected),
                             contentDescription = topLevelRoute.name
                         )

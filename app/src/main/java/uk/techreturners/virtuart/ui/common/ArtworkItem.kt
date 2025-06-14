@@ -10,11 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
+import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.ArtworkResult
 
 @Composable
@@ -24,13 +27,14 @@ fun ArtworkItem(
 ) {
 
     Card(
-        onClick = { onClick(artwork.id, "aic") },
+        onClick = { onClick(artwork.id, artwork.source) },
         modifier = Modifier.fillMaxWidth()
     ) {
         Column {
-            // TODO Placeholder
             GlideImage(
                 model = artwork.imageURL,
+                loading = placeholder(R.drawable.ic_placeholder_artwork),
+                failure = placeholder(R.drawable.ic_placeholder_artwork),
                 contentDescription = artwork.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -67,13 +71,15 @@ fun ArtworkItem(
                     )
                 }
 
-                // TODO Source indicator
-//                Text(
-//                    text = "",
-//                    style = MaterialTheme.typography.bodySmall,
-//                    color = MaterialTheme.colorScheme.primary,
-//                    fontWeight = FontWeight.Medium
-//                )
+                Text(
+                    text = when(artwork.source) {
+                        "aic" -> stringResource(R.string.art_institute_of_chicago)
+                        else -> stringResource(R.string.unknown)
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }

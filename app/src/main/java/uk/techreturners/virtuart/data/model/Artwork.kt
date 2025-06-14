@@ -10,7 +10,7 @@ data class Artwork(
     val altImageUrls: List<String>,
     val description: String?,
     val origin: String?,
-    val category: String?,
+    val department: String?,
     val sourceMuseum: String,
 )
 
@@ -20,7 +20,7 @@ data class ArtworkResult(
     val artistTitle: String?,
     val date: String?,
     val imageURL: String,
-    val source: String = "aic" // TODO on backend
+    val source: String
 )
 
 data class PaginatedArtworkResults(
