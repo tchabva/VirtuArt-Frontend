@@ -1,6 +1,5 @@
 package uk.techreturners.virtuart.ui.screens.artworks
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,24 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,10 +32,14 @@ import uk.techreturners.virtuart.ui.common.ArtworkItem
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.DefaultSourceButton
+import uk.techreturners.virtuart.ui.common.DefaultSourceDialog
 
 @Composable
 fun ArtworksScreenContent(
+    state: ArtworksViewModel.State,
     artworks: LazyPagingItems<ArtworkResult>,
+    toggleSourceDialog: () -> Unit,
+    onUpdateApiSource: (String) -> Unit,
     onArtworkClick: (String, String) -> Unit
 ) {
     when (artworks.loadState.refresh) {
@@ -63,8 +57,10 @@ fun ArtworksScreenContent(
 
         else -> {
             ArtworksScreenLoaded(
+                state = state,
                 artworks = artworks,
-                showPageSizeDialog = {},
+                toggleSourceDialog = toggleSourceDialog,
+                onUpdateApiSource = onUpdateApiSource,
                 onArtworkClick = onArtworkClick
             )
         }
@@ -73,8 +69,10 @@ fun ArtworksScreenContent(
 
 @Composable
 private fun ArtworksScreenLoaded(
+    state: ArtworksViewModel.State,
     artworks: LazyPagingItems<ArtworkResult>,
-    showPageSizeDialog: () -> Unit,
+    toggleSourceDialog: () -> Unit,
+    onUpdateApiSource: (String) -> Unit,
     onArtworkClick: (String, String) -> Unit,
 ) {
     Column(
@@ -95,7 +93,7 @@ private fun ArtworksScreenLoaded(
             )
 
             DefaultSourceButton(
-                onClick = {/*TODO*/},
+                onClick = toggleSourceDialog,
             )
         }
 
@@ -157,6 +155,13 @@ private fun ArtworksScreenLoaded(
                 }
             }
         }
+    }
+    if (state.showApiSource){
+        DefaultSourceDialog(
+            onDismiss = toggleSourceDialog,
+            onSourceChanged = onUpdateApiSource,
+            source = state.source
+        )
     }
 }
 
