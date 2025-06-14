@@ -47,7 +47,7 @@ fun SearchScreen(
         onClearBasicSearch = viewModel::clearBasicSearch,
         onBasicSearch = viewModel::onBasicSearch,
         onBasicQueryChange = viewModel::updateBasicSearch,
-        onArtworkItemClick = { _, _ /*TODO*/ -> },
+        onArtworkItemClick = onArtworkClick,
         onPreviousClick = viewModel::onPreviousClick,
         onNextClick = viewModel::onNextClick,
         toggleApiSourceDialog = viewModel::toggleShowApiSourceDialog,
