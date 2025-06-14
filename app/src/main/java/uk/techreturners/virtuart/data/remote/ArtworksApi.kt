@@ -12,8 +12,9 @@ import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 
 interface ArtworksApi {
-    @GET("artworks/aic")
-    suspend fun getAicArtworks(
+    @GET("artworks/{source}")
+    suspend fun getArtworks(
+        @Path("source") source: String,
         @Query("limit") limit: String?,
         @Query("page") page: String?
     ): Response<PaginatedArtworkResults>
