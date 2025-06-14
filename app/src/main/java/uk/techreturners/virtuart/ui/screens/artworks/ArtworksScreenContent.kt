@@ -94,11 +94,9 @@ private fun ArtworksScreenLoaded(
                 fontWeight = FontWeight.Bold
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // TODO source button
-            }
+            DefaultSourceButton(
+                onClick = {/*TODO*/},
+            )
         }
 
         Spacer(modifier = Modifier.heightIn(8.dp))
@@ -180,16 +178,6 @@ fun ArtworksScreenPageLoading() {
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // TODO source button
-                DefaultSourceButton(
-                    onClick = {},
-                    source = "AIC"
-                )
-            }
         }
         DefaultProgressIndicator()
     }
