@@ -64,6 +64,7 @@ class ArtworksViewModel @Inject constructor(
                 source = newSource
             )
             _sourceFlow.value = newSource
+            toggleShowApiSource()
             Log.i(TAG, "Updated the Api Source: ${state.value.source}")
         } else {
             Log.i(TAG, "Api source not updated")
