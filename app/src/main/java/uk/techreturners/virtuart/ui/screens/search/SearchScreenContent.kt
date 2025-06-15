@@ -202,7 +202,7 @@ private fun SearchScreenSearch(
 
         if (state.data == null) {
             val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
                 else -> stringResource(R.string.unknown)
             }
             Text(
@@ -226,7 +226,7 @@ private fun SearchScreenSearch(
             }
         } else if (state.data.data.isEmpty()) {
             val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
                 else -> stringResource(R.string.unknown)
             }
             Text(
@@ -250,7 +250,7 @@ private fun SearchScreenSearch(
             }
         } else {
             val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
                 else -> stringResource(R.string.unknown)
             }
             Text(

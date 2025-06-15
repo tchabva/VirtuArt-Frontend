@@ -73,7 +73,8 @@ fun ArtworkItem(
 
                 Text(
                     text = when(artwork.source) {
-                        "aic" -> stringResource(R.string.art_institute_of_chicago)
+                        stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
+                        stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
                         else -> stringResource(R.string.unknown)
                     },
                     style = MaterialTheme.typography.bodySmall,

@@ -36,8 +36,8 @@ fun DefaultSourceDialog(
         text = {
             Column {
                 listOf(
-                    stringResource(R.string.aic) to stringResource(R.string.art_institute_of_chicago),
-                    "tbc" to "To Be Confirmed Museum"
+                    stringResource(R.string.aic) to stringResource(R.string.aic_full_name),
+                    stringResource(R.string.cma) to stringResource(R.string.cma_full_name)
                 ).forEach { (key, value) ->
                     Row(
                         modifier = Modifier
