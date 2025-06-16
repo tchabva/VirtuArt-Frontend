@@ -14,14 +14,18 @@ import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ArtworksRepository
+import uk.techreturners.virtuart.domain.repository.AuthRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val artworksRepository: ArtworksRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Search())
+    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Search(
+        source = authRepository.source.value
+    ))
     val state: StateFlow<State> = _state
 
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
@@ -301,8 +305,9 @@ class SearchViewModel @Inject constructor(
     fun updateApiSource(newSource: String) {
         val cState = state.value as State.Search
         if (cState.source != newSource) {
+            authRepository.updateSource(newSource)
             _state.value = cState.copy(
-                source = newSource
+                source = authRepository.source.value
             )
             Log.i(
                 TAG,
@@ -356,7 +361,7 @@ class SearchViewModel @Inject constructor(
             val showPageSize: Boolean = false,
             val isUserSignedIn: Boolean = false,
             val pageSize: Int = 25,
-            val source: String = "aic",
+            val source: String,
             val showBasicSearch: Boolean = true, // TODO
         ) : State
 

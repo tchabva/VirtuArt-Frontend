@@ -88,7 +88,8 @@ fun PageSizeDialog(
 fun PageSizeDialogPreview() {
     PageSizeDialog(
         state = SearchViewModel.State.Search(
-            pageSize = 10
+            pageSize = 10,
+            source = "cma"
         )
     )
 }
