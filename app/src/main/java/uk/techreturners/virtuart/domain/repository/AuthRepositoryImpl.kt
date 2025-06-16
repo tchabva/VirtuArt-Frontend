@@ -81,14 +81,18 @@ class AuthRepositoryImpl @Inject constructor(
                 TYPE_CLEAR_CREDENTIAL_STATE
             )
         )
+        Log.i(TAG, "User signed out")
+
     }
 
     override fun getSignedInUser(): UserData? {
+        Log.i(TAG, "Get getSignedInUser method invoked")
         return userState.value
     }
 
     override fun updateSource(newSource: String) {
         _source.value = newSource
+        Log.i(TAG, "Update the source value: ${source.value}")
     }
 
     companion object {
