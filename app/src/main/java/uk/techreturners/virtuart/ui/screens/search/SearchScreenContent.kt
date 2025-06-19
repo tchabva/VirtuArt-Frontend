@@ -162,7 +162,8 @@ private fun SearchScreenSearch(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 IconButton(
-                    onClick = onToggleAdvancedSearch
+                    onClick = onToggleAdvancedSearch,
+                    enabled = state.source == stringResource(R.string.aic)
                 ) {
                     Icon(
                         imageVector = if (state.showAdvancedSearch) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
