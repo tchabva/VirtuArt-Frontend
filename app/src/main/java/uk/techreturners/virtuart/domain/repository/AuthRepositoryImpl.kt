@@ -25,6 +25,9 @@ class AuthRepositoryImpl @Inject constructor(
     private val _userState: MutableStateFlow<UserData?> = MutableStateFlow(null)
     override val userState: StateFlow<UserData?> = _userState
 
+    private val _source: MutableStateFlow<String> = MutableStateFlow("aic")
+    override val source: StateFlow<String> = _source
+
     override suspend fun signIn(): SignInResult {
         try {
             val webClientId = context.getString(R.string.web_client_id)
@@ -78,10 +81,18 @@ class AuthRepositoryImpl @Inject constructor(
                 TYPE_CLEAR_CREDENTIAL_STATE
             )
         )
+        Log.i(TAG, "User signed out")
+
     }
 
     override fun getSignedInUser(): UserData? {
+        Log.i(TAG, "Get getSignedInUser method invoked")
         return userState.value
+    }
+
+    override fun updateSource(newSource: String) {
+        _source.value = newSource
+        Log.i(TAG, "Update the source value: ${source.value}")
     }
 
     companion object {

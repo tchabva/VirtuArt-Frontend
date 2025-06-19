@@ -264,8 +264,9 @@ private fun AicAdvancedSearchFormPreview() {
         state = SearchViewModel.State.Search(
             data = null,
             advancedSearchQuery = AdvancedSearchRequest(
-                title = "name",
-            )
+                title = "name"
+            ),
+            source = "aic"
         ),
         onTitleChange = {},
         onArtistChange = {},

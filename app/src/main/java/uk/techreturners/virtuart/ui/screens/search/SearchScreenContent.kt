@@ -162,7 +162,8 @@ private fun SearchScreenSearch(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 IconButton(
-                    onClick = onToggleAdvancedSearch
+                    onClick = onToggleAdvancedSearch,
+                    enabled = state.source == stringResource(R.string.aic)
                 ) {
                     Icon(
                         imageVector = if (state.showAdvancedSearch) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
@@ -202,7 +203,8 @@ private fun SearchScreenSearch(
 
         if (state.data == null) {
             val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
+                stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
                 else -> stringResource(R.string.unknown)
             }
             Text(
@@ -226,7 +228,8 @@ private fun SearchScreenSearch(
             }
         } else if (state.data.data.isEmpty()) {
             val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
+                stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
                 else -> stringResource(R.string.unknown)
             }
             Text(
@@ -250,7 +253,8 @@ private fun SearchScreenSearch(
             }
         } else {
             val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.art_institute_of_chicago)
+                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
+                stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
                 else -> stringResource(R.string.unknown)
             }
             Text(
@@ -321,7 +325,8 @@ private fun SearchScreenSearch(
 private fun SearchScreenSearchPreview() {
     SearchScreenSearch(
         state = SearchViewModel.State.Search(
-            showAdvancedSearch = true
+            showAdvancedSearch = true,
+            source = "cma"
         ),
         onToggleAdvancedSearch = {},
         onTitleChange = {},

@@ -116,6 +116,14 @@ fun NavGraphBuilder.exhibitionsGraph(
 
             ExhibitionDetailScreen(
                 viewModel = viewModel,
+                onArtworkItemClicked = { artworkId, source ->
+                    navController.navigate(
+                        Screens.ArtworkDetail(
+                            artworkId = artworkId,
+                            source = source
+                        )
+                    )
+                },
                 exhibitionDeleted = { context ->
                     navController.navigate(Screens.Exhibitions) {
                         popUpTo(Screens.Artworks) { inclusive = false }

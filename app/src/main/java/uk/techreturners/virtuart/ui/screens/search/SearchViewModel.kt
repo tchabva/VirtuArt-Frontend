@@ -14,14 +14,22 @@ import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.data.remote.NetworkResponse
 import uk.techreturners.virtuart.data.repository.ArtworksRepository
+import uk.techreturners.virtuart.domain.repository.AuthRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val artworksRepository: ArtworksRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Search())
+    //TODO fix pagination bug
+
+    private val _state: MutableStateFlow<State> = MutableStateFlow(
+        State.Search(
+            source = authRepository.source.value
+        )
+    )
     val state: StateFlow<State> = _state
 
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
@@ -136,7 +144,7 @@ class SearchViewModel @Inject constructor(
         val currentState = _state.value
         if (currentState is State.Search) {
             _state.value = currentState.copy(
-                basicQuery = currentState.basicQuery.copy(query = newQuery)
+                basicQuery = BasicSearchQuery(query = newQuery)
             )
         }
         Log.i(TAG, "Basic search query updated: $newQuery")
@@ -144,7 +152,7 @@ class SearchViewModel @Inject constructor(
 
     fun clearBasicSearch() {
         _state.value = (state.value as State.Search).copy(
-            basicQuery = (state.value as State.Search).basicQuery.copy(query = null)
+            basicQuery = BasicSearchQuery()
         )
         Log.i(TAG, "Cleared Basic Search TextField")
     }
@@ -165,7 +173,10 @@ class SearchViewModel @Inject constructor(
         val currentState = _state.value
         if (currentState is State.Search) {
             _state.value = currentState.copy(
-                advancedSearchQuery = currentState.advancedSearchQuery.copy(title = newTitle)
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(
+                    title = newTitle,
+                    currentPage = 1
+                )
             )
         }
         Log.i(TAG, "Advanced search title updated: $newTitle")
@@ -195,7 +206,10 @@ class SearchViewModel @Inject constructor(
         val currentState = _state.value
         if (currentState is State.Search) {
             _state.value = currentState.copy(
-                advancedSearchQuery = currentState.advancedSearchQuery.copy(department = newDepartment)
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(
+                    department = newDepartment,
+                    currentPage = 1
+                )
             )
         }
         Log.i(TAG, "Advanced search department updated: $newDepartment")
@@ -205,7 +219,10 @@ class SearchViewModel @Inject constructor(
         val currentState = _state.value
         if (currentState is State.Search) {
             _state.value = currentState.copy(
-                advancedSearchQuery = currentState.advancedSearchQuery.copy(sortBy = newSortBy)
+                advancedSearchQuery = currentState.advancedSearchQuery.copy(
+                    sortBy = newSortBy,
+                    currentPage = 1
+                )
             )
         }
         Log.i(TAG, "Advanced search sort by updated: $newSortBy")
@@ -216,11 +233,17 @@ class SearchViewModel @Inject constructor(
         if (currentState is State.Search) {
             if (newSortOrder.lowercase() == "asc") {
                 _state.value = currentState.copy(
-                    advancedSearchQuery = currentState.advancedSearchQuery.copy(sortOrder = "asc")
+                    advancedSearchQuery = currentState.advancedSearchQuery.copy(
+                        sortOrder = "asc",
+                        currentPage = 1
+                    )
                 )
             } else {
                 _state.value = currentState.copy(
-                    advancedSearchQuery = currentState.advancedSearchQuery.copy(sortOrder = "desc")
+                    advancedSearchQuery = currentState.advancedSearchQuery.copy(
+                        sortOrder = "desc",
+                        currentPage = 1
+                    )
                 )
             }
         }
@@ -240,7 +263,15 @@ class SearchViewModel @Inject constructor(
         if (cState is State.Search) {
             if (cState.data != null && cState.data.hasPrevious) {
                 val nextPage = cState.data.currentPage - 1
-                if (cState.basicQuery.source.isNullOrBlank()) {
+                if (!cState.basicQuery.query.isNullOrBlank()) {
+                    _state.value = cState.copy(
+                        basicQuery = cState.basicQuery.copy(
+                            currentPage = nextPage
+                        )
+                    )
+                    Log.i(TAG, "onPreviousClicked for Basic Search in Pagination")
+                    onBasicSearch()
+                } else {
                     _state.value = cState.copy(
                         advancedSearchQuery = cState.advancedSearchQuery.copy(
                             currentPage = nextPage
@@ -248,14 +279,6 @@ class SearchViewModel @Inject constructor(
                     )
                     Log.i(TAG, "onPreviousClicked for Advanced Search in Pagination")
                     onAdvancedSearchFormSubmit()
-                } else if (cState.advancedSearchQuery.source.isNullOrBlank()) {
-                    _state.value = cState.copy(
-                        basicQuery = cState.basicQuery.copy(
-                            currentPage = nextPage
-                        )
-                    )
-                    Log.i(TAG, "onPreviousClicked for Basic  Search in Pagination")
-                    onBasicSearch()
                 }
             }
         }
@@ -266,15 +289,7 @@ class SearchViewModel @Inject constructor(
         if (cState is State.Search) {
             if (cState.data != null && cState.data.hasNext) {
                 val nextPage = cState.data.currentPage + 1
-                if (cState.basicQuery.query.isNullOrBlank()) {
-                    _state.value = cState.copy(
-                        advancedSearchQuery = cState.advancedSearchQuery.copy(
-                            currentPage = nextPage
-                        )
-                    )
-                    Log.i(TAG, "onNextClicked for Advanced Search in Pagination")
-                    onAdvancedSearchFormSubmit()
-                } else if (cState.advancedSearchQuery.source.isNullOrBlank()) {
+                if (!cState.basicQuery.query.isNullOrBlank()) {
                     _state.value = cState.copy(
                         basicQuery = cState.basicQuery.copy(
                             currentPage = nextPage
@@ -282,6 +297,14 @@ class SearchViewModel @Inject constructor(
                     )
                     Log.i(TAG, "onNextClicked for Basic Search in Pagination")
                     onBasicSearch()
+                } else {
+                    _state.value = cState.copy(
+                        advancedSearchQuery = cState.advancedSearchQuery.copy(
+                            currentPage = nextPage
+                        )
+                    )
+                    Log.i(TAG, "onNextClicked for Advanced Search in Pagination")
+                    onAdvancedSearchFormSubmit()
                 }
             }
         }
@@ -301,8 +324,9 @@ class SearchViewModel @Inject constructor(
     fun updateApiSource(newSource: String) {
         val cState = state.value as State.Search
         if (cState.source != newSource) {
-            _state.value = cState.copy(
-                source = newSource
+            authRepository.updateSource(newSource)
+            _state.value = State.Search(
+                source = authRepository.source.value
             )
             Log.i(
                 TAG,
@@ -355,8 +379,8 @@ class SearchViewModel @Inject constructor(
             val showApiSource: Boolean = false,
             val showPageSize: Boolean = false,
             val isUserSignedIn: Boolean = false,
-            val pageSize: Int = 25,
-            val source: String = "aic",
+            val pageSize: Int = 20,
+            val source: String,
             val showBasicSearch: Boolean = true, // TODO
         ) : State
 

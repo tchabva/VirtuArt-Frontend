@@ -35,7 +35,7 @@ fun PageSizeDialog(
         title = { Text("Items per page") },
         text = {
             Column {
-                listOf(10, 25, 50).forEach { size ->
+                listOf(10, 20, 50).forEach { size ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -88,7 +88,8 @@ fun PageSizeDialog(
 fun PageSizeDialogPreview() {
     PageSizeDialog(
         state = SearchViewModel.State.Search(
-            pageSize = 10
+            pageSize = 10,
+            source = "cma"
         )
     )
 }

@@ -88,7 +88,8 @@ private fun SimpleSearchFormPreview() {
             data = null,
             basicQuery = BasicSearchQuery(
                 query = "Monet"
-            )
+            ),
+            source = "aic"
         ),
     )
 }

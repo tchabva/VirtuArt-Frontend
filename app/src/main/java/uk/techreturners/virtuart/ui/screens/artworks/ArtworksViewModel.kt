@@ -15,20 +15,24 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import uk.techreturners.virtuart.data.model.ArtworkResult
 import uk.techreturners.virtuart.data.repository.ArtworksRepository
+import uk.techreturners.virtuart.domain.repository.AuthRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class ArtworksViewModel @Inject constructor(
-    repository: ArtworksRepository
+    private val repository: ArtworksRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<State> = MutableStateFlow(State())
+    private val _state: MutableStateFlow<State> = MutableStateFlow(State(
+        source = authRepository.source.value
+    ))
     val state: StateFlow<State> = _state
 
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
 
-    private val _sourceFlow = MutableStateFlow(state.value.source)
+    private val _sourceFlow = authRepository.source
 
     val artworks: Flow<PagingData<ArtworkResult>> =
         _sourceFlow.flatMapLatest { source ->
@@ -60,10 +64,12 @@ class ArtworksViewModel @Inject constructor(
 
     fun updateApiSource(newSource: String) {
         if (state.value.source != newSource) {
+            authRepository.updateSource(newSource)
             _state.value = state.value.copy(
-                source = newSource
+                source = authRepository.source.value
             )
-            _sourceFlow.value = newSource
+//            _sourceFlow.value = newSource
+            toggleShowApiSource()
             Log.i(TAG, "Updated the Api Source: ${state.value.source}")
         } else {
             Log.i(TAG, "Api source not updated")
@@ -72,7 +78,7 @@ class ArtworksViewModel @Inject constructor(
 
     data class State(
         val showApiSource: Boolean = false,
-        val source: String = "aic"
+        val source: String
     )
 
     sealed interface Event {
