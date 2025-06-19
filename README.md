@@ -39,19 +39,61 @@ git clone <your-frontend-repo-url>
 cd virtuart-frontend
 ```
 
-### 3. Configure the Backend URL
-You need to tell the app where to find the backend API.
+### 3. Configure Backend URL and Client ID
+You need to tell the app where to find the backend API and your Google Sign-In Client ID.
 
 1.  In the root of the project, create a file named `local.properties` if it doesn't already exist.
-2.  Add the following line to your `local.properties` file:
+2.  Add the following lines to your `local.properties` file:
 
     ```properties
     # Use 10.0.2.2 to connect to localhost from the Android emulator
-    BACKEND_URL="http://10.0.2.2:8080/api/v1/"
+    BACKEND_URL="http://10.00.2.2:8080/api/v1/"
+    # Your Google Sign-In Web Client ID
+    WEB_CLIENT_ID="YOUR_GOOGLE_SIGN_IN_WEB_CLIENT_ID"
     ```
     **Note:** If you are running the app on a physical device, replace `10.0.2.2` with your computer's local IP address.
 
-### 4. Build and Run
+    You can obtain the `WEB_CLIENT_ID` from your Google API Console.
+
+### 4. Expose Properties in Gradle
+To make these properties available in the app, you need to add them to your `app/build.gradle.kts` file:
+
+```kotlin
+// In app/build.gradle.kts
+
+import java.util.Properties
+import java.io.FileInputStream
+
+// ... other gradle config
+
+// Load properties from local.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+android {
+    // ...
+    defaultConfig {
+        // ...
+        buildConfigField("String", "BACKEND_URL", "\"${localProperties.getProperty("BACKEND_URL")}\"")
+    }
+    // ...
+}
+
+// And add the client ID as a string resource
+android {
+    // ...
+    defaultConfig {
+        // ...
+        resValue("string", "web_client_id", "\"${localProperties.getProperty("WEB_CLIENT_ID")}\"")
+    }
+    // ...
+}
+```
+
+### 5. Build and Run
 Open the project in Android Studio, let Gradle sync, and then run the application on an emulator or a physical device.
 
 ---
@@ -60,7 +102,7 @@ Open the project in Android Studio, let Gradle sync, and then run the applicatio
 
 Some files are ignored by version control and must be created/configured by each developer:
 
-- **`local.properties`**: Add your SDK path and `BACKEND_URL` (see above example).
+- **`local.properties`**: Add your SDK path, `BACKEND_URL`, and `WEB_CLIENT_ID` (see above example).
 - **Keystore files (`*.jks`, `*.keystore`)**: For release builds, generate your own keystore. Not required for debug/development.
 - **`app/src/main/res/xml/network_security_config.xml`**: If you need to allow cleartext traffic for local development, create this file. Example:
 
