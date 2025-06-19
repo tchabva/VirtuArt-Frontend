@@ -33,11 +33,11 @@ import uk.techreturners.virtuart.data.model.ExhibitionItem
 @Composable
 fun ExhibitionArtworkItem(
     artwork: ExhibitionItem,
-    onClick: (String) -> Unit,
+    onClick: (String, String) -> Unit,
     onShowDeleteDialog: (String, String) -> Unit,
 ) {
     Card(
-        onClick = { onClick(artwork.id) },
+        onClick = { onClick(artwork.apiId, artwork.source) },
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -121,7 +121,7 @@ private fun ExhibitionArtworkItemPreview() {
             imageUrl = "https://example.com/images/artwork1.jpg",
             source = "ModernArtAPI",
         ),
-        onClick = { },
+        onClick = { _, _ -> },
         onShowDeleteDialog = { _, _ -> },
     )
 }

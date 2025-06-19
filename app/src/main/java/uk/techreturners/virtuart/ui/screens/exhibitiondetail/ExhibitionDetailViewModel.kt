@@ -322,6 +322,12 @@ class ExhibitionDetailViewModel @Inject constructor(
         toDeleteArtworkSource = null
     }
 
+    fun onExhibitionArtworkItemClicked(apiId: String, source: String) {
+        viewModelScope.launch {
+            emitEvent(Event.ExhibitionArtworkItemClicked(apiId, source))
+        }
+    }
+
     sealed interface State {
         data object Loading : State
 

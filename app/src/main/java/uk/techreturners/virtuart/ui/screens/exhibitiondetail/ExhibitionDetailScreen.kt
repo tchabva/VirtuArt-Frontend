@@ -11,6 +11,7 @@ import uk.techreturners.virtuart.R
 @Composable
 fun ExhibitionDetailScreen(
     viewModel: ExhibitionDetailViewModel,
+    onArtworkItemClicked: (String, String) -> Unit,
     exhibitionDeleted: (Context) -> Unit,
     artworkDeleted: (Context) -> Unit,
     onDeletedExhibitionConfirmed: () -> Unit,
@@ -76,7 +77,7 @@ fun ExhibitionDetailScreen(
                 }
 
                 is ExhibitionDetailViewModel.Event.ExhibitionArtworkItemClicked -> {
-                    TODO()
+                    onArtworkItemClicked(event.apiId, event.source)
                 }
 
                 ExhibitionDetailViewModel.Event.ExhibitionTitleTextFieldEmpty -> {
@@ -110,6 +111,7 @@ fun ExhibitionDetailScreen(
 
     ExhibitionDetailScreenContent(
         state.value,
+        onArtworkClick = viewModel::onExhibitionArtworkItemClicked,
         onDismissDeleteExhibitionDialog = viewModel::dismissDeleteExhibitionDialog,
         onDeleteExhibitionConfirmed = viewModel::onDeleteExhibitionConfirmed,
         onShowDeleteArtworkDialog = viewModel::onShowDeleteArtworkDialog,

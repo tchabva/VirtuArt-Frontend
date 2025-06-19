@@ -27,6 +27,7 @@ import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 @Composable
 fun ExhibitionDetailScreenContent(
     state: ExhibitionDetailViewModel.State,
+    onArtworkClick: (String, String) -> Unit,
     onDismissDeleteExhibitionDialog: () -> Unit,
     onDeleteExhibitionConfirmed: () -> Unit,
     onShowDeleteArtworkDialog: (String, String) -> Unit,
@@ -48,7 +49,7 @@ fun ExhibitionDetailScreenContent(
         is ExhibitionDetailViewModel.State.Loaded -> {
             ExhibitionDetailScreenLoaded(
                 state = state,
-                onArtworkClick = { TODO() },
+                onArtworkClick = onArtworkClick,
                 onDeleteExhibitionConfirmed = onDeleteExhibitionConfirmed,
                 onDismissDeleteExhibitionDialog = onDismissDeleteExhibitionDialog,
                 onShowDeleteArtworkDialog = onShowDeleteArtworkDialog,
@@ -77,7 +78,7 @@ fun ExhibitionDetailScreenContent(
 @Composable
 private fun ExhibitionDetailScreenLoaded(
     state: ExhibitionDetailViewModel.State.Loaded,
-    onArtworkClick: (String) -> Unit,
+    onArtworkClick: (String, String) -> Unit,
     onDeleteExhibitionConfirmed: () -> Unit,
     onDismissDeleteExhibitionDialog: () -> Unit,
     onShowDeleteArtworkDialog: (String, String) -> Unit,
@@ -194,7 +195,7 @@ private fun ExhibitionDetailScreenLoadedPreview() {
                 )
             )
         ),
-        onArtworkClick = { },
+        onArtworkClick = { _, _ -> },
         onDeleteExhibitionConfirmed = { },
         onDismissDeleteExhibitionDialog = { },
         onShowDeleteArtworkDialog = { _, _ -> },
