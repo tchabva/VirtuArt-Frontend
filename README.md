@@ -117,9 +117,7 @@ Some files are ignored by version control and must be created/configured by each
         </domain-config>
     </network-security-config>
     ```
-
----
-
+```
 ## Project Structure
 ```
 app/src/main/java/com/example/virtuart
@@ -127,7 +125,6 @@ app/src/main/java/com/example/virtuart
 ├── viewmodel       // ViewModels for each screen
 ├── data            // Repository, data sources, network API definitions
 ├── di              // Dependency injection modules (Hilt)
-└── util            // Utility classes and helpers
 ```
 
 ## Contributing
