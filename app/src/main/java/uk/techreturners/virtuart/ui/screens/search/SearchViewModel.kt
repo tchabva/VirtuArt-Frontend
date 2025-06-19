@@ -360,7 +360,7 @@ class SearchViewModel @Inject constructor(
             val showApiSource: Boolean = false,
             val showPageSize: Boolean = false,
             val isUserSignedIn: Boolean = false,
-            val pageSize: Int = 25,
+            val pageSize: Int = 20,
             val source: String,
             val showBasicSearch: Boolean = true, // TODO
         ) : State
