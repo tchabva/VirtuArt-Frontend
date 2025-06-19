@@ -64,16 +64,17 @@ Some files are ignored by version control and must be created/configured by each
 - **Keystore files (`*.jks`, `*.keystore`)**: For release builds, generate your own keystore. Not required for debug/development.
 - **`app/src/main/res/xml/network_security_config.xml`**: If you need to allow cleartext traffic for local development, create this file. Example:
 
-    ```xml
+```xml
     <?xml version="1.0" encoding="utf-8"?>
     <network-security-config>
         <domain-config cleartextTrafficPermitted="true">
+            <!-- For the Android Emulator -->
             <domain includeSubdomains="true">10.0.2.2</domain>
-            <domain includeSubdomains="true">YOUR.IP.ADDRESS/domain> (For Local Device)
+            <!-- For a physical device (replace with your computer's IP) -->
+            <domain includeSubdomains="true">YOUR.LOCAL.IP.ADDRESS</domain>
         </domain-config>
     </network-security-config>
     ```
-
 ---
 
 ## Project Structure
