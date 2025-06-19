@@ -306,7 +306,7 @@ class SearchViewModel @Inject constructor(
         val cState = state.value as State.Search
         if (cState.source != newSource) {
             authRepository.updateSource(newSource)
-            _state.value = cState.copy(
+            _state.value = State.Search(
                 source = authRepository.source.value
             )
             Log.i(
