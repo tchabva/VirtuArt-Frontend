@@ -2,6 +2,10 @@ package uk.techreturners.virtuart.di
 
 import android.content.Context
 import androidx.credentials.CredentialManager
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +22,6 @@ import uk.techreturners.virtuart.data.remote.ExhibitionsApi
 import uk.techreturners.virtuart.domain.repository.AuthRepository
 import javax.inject.Singleton
 
-
 /*
 Allows for creation of singletons for which can then be injected where they are required
  */
@@ -26,6 +29,16 @@ Allows for creation of singletons for which can then be injected where they are 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun providePreferencesDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("user_preferences") }
+        )
+    }
 
     @Provides
     @Singleton
