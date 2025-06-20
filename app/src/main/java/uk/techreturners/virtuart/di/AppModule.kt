@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,6 +21,7 @@ import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.remote.ArtworksApi
 import uk.techreturners.virtuart.data.remote.ExhibitionsApi
 import uk.techreturners.virtuart.domain.repository.AuthRepository
+import uk.techreturners.virtuart.domain.repository.TokenManager
 import javax.inject.Singleton
 
 /*
@@ -48,12 +50,15 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAuthInterceptor(authRepository: AuthRepository): Interceptor {
+    fun provideAuthInterceptor(
+        authRepository: AuthRepository,
+        tokenManager: TokenManager
+    ): Interceptor {
         return Interceptor { chain ->
             val originalRequest = chain.request()
             val user = authRepository.getSignedInUser()
 
-            val newRequest = if (user != null) {
+            val newRequestWithAuth = if (user != null) {
                 originalRequest.newBuilder()
                     .header("Authorization", "Bearer ${user.userId}")
                     .build()
@@ -61,7 +66,30 @@ object AppModule {
                 originalRequest
             }
 
-            chain.proceed(newRequest)
+            val response = chain.proceed(newRequestWithAuth)
+
+            // Handle 401 Response Unauthorised - token might be expired
+            if (response.code == 401 && user != null){
+                response.close()
+
+                // Attempt to refresh token
+                runBlocking {
+                    val refreshSuccess = tokenManager.validateAndRefreshToken()
+                    if (refreshSuccess) {
+                        val refreshedUser = authRepository.getSignedInUser()
+                        val retryRequest = originalRequest.newBuilder()
+                            .header("Authorization", "Bearer ${refreshedUser?.userId}")
+                            .build()
+                        chain.proceed(retryRequest)
+                    } else {
+                        // Token refresh failed, user needs to re-authenticate
+                        authRepository.signOut()
+                        response
+                    }
+                }
+            } else {
+                response
+            }
         }
     }
 
