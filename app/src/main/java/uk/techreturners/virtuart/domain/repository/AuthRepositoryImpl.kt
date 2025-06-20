@@ -37,11 +37,18 @@ class AuthRepositoryImpl @Inject constructor(
     private val _source: MutableStateFlow<String> = MutableStateFlow("aic")
     override val source: StateFlow<String> = _source
 
+
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val savedUser = getUserData()
             if(savedUser != null){
                 _userState.value = savedUser
+            }
+            // Restore source from DataStore
+            val savedSource = getSourceFromDataStore()
+            if (!savedSource.isNullOrBlank()) {
+                _source.value = savedSource
             }
         }
     }
@@ -114,6 +121,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun updateSource(newSource: String) {
         _source.value = newSource
+        CoroutineScope(Dispatchers.IO).launch {
+            saveSourceToDataStore(newSource)
+        }
         Log.i(TAG, "Update the source value: ${source.value}")
     }
 
@@ -147,6 +157,19 @@ class AuthRepositoryImpl @Inject constructor(
     private suspend fun clearUserData(){
         userPreferenceDataStore.edit { it.clear() }
         Log.i(TAG, "Clear UserData from Data Store")
+    }
+
+
+    private suspend fun saveSourceToDataStore(source: String) {
+        userPreferenceDataStore.edit { preferences ->
+            preferences[SOURCE_KEY] = source
+        }
+        Log.i(TAG, "Source persisted in the DataStore: $source")
+    }
+
+    private suspend fun getSourceFromDataStore(): String? {
+        val preferences = userPreferenceDataStore.data.first()
+        return preferences[SOURCE_KEY]
     }
 
     companion object {
