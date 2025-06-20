@@ -117,6 +117,10 @@ class AuthRepositoryImpl @Inject constructor(
         Log.i(TAG, "Update the source value: ${source.value}")
     }
 
+    override suspend fun updateUserData(userData: UserData) {
+        saveUserData(userData)
+    }
+
     private suspend fun saveUserData(userData: UserData) {
         userPreferenceDataStore.edit { preferences ->
             preferences[USER_ID_KEY] = userData.userId
