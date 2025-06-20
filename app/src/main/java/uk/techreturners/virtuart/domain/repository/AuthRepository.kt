@@ -11,4 +11,5 @@ interface AuthRepository {
     suspend fun signOut()
     fun getSignedInUser(): UserData?
     fun updateSource(newSource: String)
+    suspend fun updateUserData(userData: UserData)
 }
