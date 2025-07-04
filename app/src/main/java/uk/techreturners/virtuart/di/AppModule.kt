@@ -20,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.remote.ArtworksApi
 import uk.techreturners.virtuart.data.remote.ExhibitionsApi
+import uk.techreturners.virtuart.data.remote.SearchApi
 import uk.techreturners.virtuart.domain.repository.AuthRepository
 import uk.techreturners.virtuart.domain.repository.TokenManager
 import javax.inject.Singleton
@@ -139,5 +140,20 @@ object AppModule {
             .client(okHttpClient)
             .build()
             .create(ArtworksApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSearchApi(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient
+    ): SearchApi {
+        return Retrofit
+            .Builder()
+            .baseUrl(context.getString(R.string.base_url_backend_wireless))
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(SearchApi::class.java)
     }
 }
