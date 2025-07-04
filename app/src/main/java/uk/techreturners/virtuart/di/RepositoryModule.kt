@@ -8,6 +8,8 @@ import uk.techreturners.virtuart.data.repository.ArtworksRepository
 import uk.techreturners.virtuart.data.repository.ArtworksRepositoryImpl
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepository
 import uk.techreturners.virtuart.data.repository.ExhibitionsRepositoryImpl
+import uk.techreturners.virtuart.data.repository.SearchRepository
+import uk.techreturners.virtuart.data.repository.SearchRepositoryImpl
 import uk.techreturners.virtuart.domain.repository.AuthRepository
 import uk.techreturners.virtuart.domain.repository.AuthRepositoryImpl
 import javax.inject.Singleton
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindsArtistsRepository(
         artworksRepositoryImpl: ArtworksRepositoryImpl
     ): ArtworksRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsSearchRepository(
+        searchRepositoryImpl: SearchRepositoryImpl
+    ): SearchRepository
 }
