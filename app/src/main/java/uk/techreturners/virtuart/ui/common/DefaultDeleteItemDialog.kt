@@ -27,7 +27,6 @@ fun DefaultDeleteItemDialog(
     onDismiss: () -> Unit,
     onDeleteItemConfirmed: () -> Unit
 ) {
-
     AlertDialog(
         icon = { Icons.Default.Warning },
         title = {
@@ -60,21 +59,10 @@ fun DefaultDeleteItemDialog(
             }
         },
         dismissButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface)
-            ) {
-                Text(
-                    text = stringResource(R.string.no),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            DefaultOutlinedButton(
+                buttonText = stringResource(R.string.no),
+                onClick = onDismiss
+            )
         }
     )
 }
