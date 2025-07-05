@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -30,6 +27,7 @@ import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.ArtworkResult
 import uk.techreturners.virtuart.ui.common.ArtworkItem
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
+import uk.techreturners.virtuart.ui.common.DefaultNoArtworksCard
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.DefaultSourceButton
 import uk.techreturners.virtuart.ui.common.DefaultSourceDialog
@@ -45,10 +43,8 @@ fun ArtworksScreenContent(
 ) {
     when (artworks.loadState.refresh) {
         is LoadState.Error -> {
-            val e = artworks.loadState.refresh as LoadState.Error
             DefaultErrorScreen(
-                responseCode = null,
-                errorMessage = e.error.localizedMessage ?: "An error occurred",
+                buttonText = stringResource(R.string.try_again),
                 onClick = onTryAgainClicked
             )
         }
@@ -103,26 +99,12 @@ private fun ArtworksScreenLoaded(
 
         if (artworks.itemCount == 0) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Card(
-                    modifier = Modifier.fillMaxHeight(0.50f),
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "No artworks found.",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
+                DefaultNoArtworksCard()
             }
         } else {
             LazyVerticalStaggeredGrid(
@@ -158,7 +140,7 @@ private fun ArtworksScreenLoaded(
             }
         }
     }
-    if (state.showApiSource){
+    if (state.showApiSource) {
         DefaultSourceDialog(
             onDismiss = toggleSourceDialog,
             onSourceChanged = onUpdateApiSource,
@@ -189,7 +171,6 @@ fun ArtworksScreenPageLoading() {
         DefaultProgressIndicator()
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
