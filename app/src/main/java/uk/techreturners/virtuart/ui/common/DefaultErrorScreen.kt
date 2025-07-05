@@ -1,6 +1,5 @@
 package uk.techreturners.virtuart.ui.common
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,11 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,8 +24,7 @@ import uk.techreturners.virtuart.R
 
 @Composable
 fun DefaultErrorScreen(
-    responseCode: Int?,
-    errorMessage: String?,
+    buttonText: String,
     onClick: () -> Unit
 ) {
     Column(
@@ -45,36 +41,23 @@ fun DefaultErrorScreen(
         ) {
             Text(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(vertical = 40.dp, horizontal = 16.dp)
                     .align(Alignment.CenterHorizontally),
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
-                text = stringResource(
-                    R.string.error_occurred,
-                    responseCode ?: "N/A",
-                    errorMessage ?: stringResource(R.string.unknown_error)
-                ),
+                text = stringResource(R.string.error_occurred),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        OutlinedButton(
-            onClick = onClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface)
-        ) {
-            Text(
-                text = stringResource(R.string.try_again),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
+        DefaultOutlinedButton(
+            buttonText = buttonText,
+            onClick = onClick
+        )
     }
 }
 
@@ -82,8 +65,7 @@ fun DefaultErrorScreen(
 @Composable
 private fun DefaultErrorScreenPreview() {
     DefaultErrorScreen(
-        responseCode = 404,
-        errorMessage = "",
-        onClick = {}
+        onClick = {},
+        buttonText = stringResource(R.string.try_again)
     )
 }
