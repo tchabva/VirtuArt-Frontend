@@ -37,12 +37,10 @@ class AuthRepositoryImpl @Inject constructor(
     private val _source: MutableStateFlow<String> = MutableStateFlow("aic")
     override val source: StateFlow<String> = _source
 
-
-
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val savedUser = getUserData()
-            if(savedUser != null){
+            if (savedUser != null) {
                 _userState.value = savedUser
             }
             // Restore source from DataStore
@@ -90,7 +88,7 @@ class AuthRepositoryImpl @Inject constructor(
 
                 _userState.value = userData
                 SignInResult.Success(userData)
-            }else {
+            } else {
                 Log.e(TAG, "Unexpected credential type: ${credential.type}")
                 SignInResult.Error("Failed to process Google credential")
             }
@@ -141,24 +139,23 @@ class AuthRepositoryImpl @Inject constructor(
         Log.i(TAG, "User Data persisted in the DataStore; $userData")
     }
 
-    private suspend fun getUserData(): UserData?{
+    private suspend fun getUserData(): UserData? {
         val preferences = userPreferenceDataStore.data.first()
         val userId = preferences[USER_ID_KEY]
-        return if (userId != null){
+        return if (userId != null) {
             UserData(
                 userId = userId,
                 email = preferences[USER_EMAIL_KEY],
                 displayName = preferences[DISPLAY_NAME_KEY],
                 profilePicture = preferences[PROFILE_PICTURE_KEY],
             )
-        }  else null
+        } else null
     }
 
-    private suspend fun clearUserData(){
+    private suspend fun clearUserData() {
         userPreferenceDataStore.edit { it.clear() }
         Log.i(TAG, "Clear UserData from Data Store")
     }
-
 
     private suspend fun saveSourceToDataStore(source: String) {
         userPreferenceDataStore.edit { preferences ->
