@@ -36,7 +36,7 @@ internal fun SimpleSearchForm(
         OutlinedTextField(
             value = state.basicQuery.query ?: "",
             onValueChange = onQueryChange,
-            label = { Text(stringResource(R.string.search_artworks_textfield)) },
+            label = { Text(stringResource(R.string.search_artworks_txt)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,

@@ -54,5 +54,6 @@ fun SearchScreen(
         onUpdateApiSource = viewModel::updateApiSource,
         togglePageSizeDialog = viewModel::toggleShowPageSizeDialog,
         onUpdatePageSize = viewModel::updatePageSize,
+        onReturnToSearchClicked = viewModel::onReturnToSearchButtonClicked
     )
 }

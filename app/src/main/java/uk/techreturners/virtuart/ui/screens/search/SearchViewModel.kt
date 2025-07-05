@@ -363,6 +363,13 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun onReturnToSearchButtonClicked(){
+        _state.value = State.Search(
+            source = authRepository.source.value
+        )
+        Log.i(TAG, "Return to Search Button clicked")
+    }
+
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
     }
