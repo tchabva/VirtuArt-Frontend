@@ -40,14 +40,16 @@ fun ArtworksScreenContent(
     artworks: LazyPagingItems<ArtworkResult>,
     toggleSourceDialog: () -> Unit,
     onUpdateApiSource: (String) -> Unit,
-    onArtworkClick: (String, String) -> Unit
+    onArtworkClick: (String, String) -> Unit,
+    onTryAgainClicked: () -> Unit
 ) {
     when (artworks.loadState.refresh) {
         is LoadState.Error -> {
             val e = artworks.loadState.refresh as LoadState.Error
             DefaultErrorScreen(
                 responseCode = null,
-                errorMessage = e.error.localizedMessage ?: "An error occurred"
+                errorMessage = e.error.localizedMessage ?: "An error occurred",
+                onClick = onTryAgainClicked
             )
         }
 

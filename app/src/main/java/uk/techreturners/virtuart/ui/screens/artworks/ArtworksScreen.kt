@@ -28,6 +28,7 @@ fun ArtworksScreen(
         artworks = viewModel.artworks.collectAsLazyPagingItems(),
         onArtworkClick = viewModel::onArtworkClicked,
         toggleSourceDialog = viewModel::toggleShowApiSource,
-        onUpdateApiSource = viewModel::updateApiSource
+        onUpdateApiSource = viewModel::updateApiSource,
+        onTryAgainClicked = viewModel::onTryAgainButtonClick
     )
 }
