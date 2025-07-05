@@ -8,10 +8,9 @@ import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 
 interface SearchApi {
-    // TODO consider making a Search Api Repo and controller
-    @POST("artworks/search")
+    @POST("search")
     suspend fun searchApiBasic(@Body searchQuery: BasicSearchQuery): Response<PaginatedArtworkResults>
 
-    @POST("artworks/search/advanced")
+    @POST("search/advanced")
     suspend fun searchApiAdvanced(@Body searchQuery: AdvancedSearchRequest): Response<PaginatedArtworkResults>
 }
