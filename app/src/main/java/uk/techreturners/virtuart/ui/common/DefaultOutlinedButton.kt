@@ -39,7 +39,6 @@ fun DefaultOutlinedButton(
 @Composable
 private fun DefaultOutlinedButtonPreview(){
     DefaultOutlinedButton(
-
         buttonText = "Test",
         onClick = {}
     )
