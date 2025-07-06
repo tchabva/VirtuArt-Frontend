@@ -39,7 +39,6 @@ fun ProfileScreen(
     ProfileScreenContent(
         state = state.value,
         onSignIn = viewModel::signIn,
-        onSignOut = viewModel::signOut,
-        onTryAgainClicked = {}
+        onSignOut = viewModel::signOut
     )
 }

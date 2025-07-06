@@ -84,10 +84,6 @@ class ProfileViewModel @Inject constructor(
         data class SignedIn(
             val currentUser: UserData? = null,
         ) : State
-
-        data class Error(
-            val errorMessage: String
-        ) : State
     }
 
     sealed interface Event {
