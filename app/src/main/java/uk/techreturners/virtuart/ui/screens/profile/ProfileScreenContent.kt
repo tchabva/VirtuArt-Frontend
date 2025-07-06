@@ -52,14 +52,15 @@ import uk.techreturners.virtuart.ui.theme.VirtuArtTheme
 fun ProfileScreenContent(
     state: ProfileViewModel.State,
     onSignIn: () -> Unit,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onTryAgainClicked: () -> Unit,
 ) {
 
     when (state) {
         is ProfileViewModel.State.Error -> {
             DefaultErrorScreen(
-                responseCode = null,
-                errorMessage = state.errorMessage
+                buttonText = stringResource(R.string.try_again),
+                onClick = { TODO() }
             )
         }
 

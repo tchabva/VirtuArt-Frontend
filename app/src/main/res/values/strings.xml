@@ -96,4 +96,7 @@
     <string name="try_again">Try Again</string>
     <string name="no_artworks_found">No artworks found</string>
     <string name="return_to_search">Return to Search</string>
+    <string name="signed_in_successfully">Signed In Successfully</string>
+    <string name="signed_out_successfully">Signed Out Successfully</string>
+    <string name="sign_in_failed">Sign In Failed</string>
 </resources>
