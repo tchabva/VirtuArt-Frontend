@@ -1,5 +1,6 @@
 package uk.techreturners.virtuart.ui.screens.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,15 +32,21 @@ class ProfileViewModel @Inject constructor(
     fun signIn() {
         viewModelScope.launch {
             _state.value = State.Loading
+            Log.i(TAG, "Sign In Button clicked")
             when (val signInResult = authRepository.signIn()) {
                 is SignInResult.Error -> {
-                    _state.value = State.Error(errorMessage = signInResult.exception)
+                    _state.value = State.NoUser
+                    emitEvent(
+                        Event.OnSignInFailed
+                    )
                 }
 
                 is SignInResult.Success -> {
                     _state.value = State.SignedIn(signInResult.userData)
+                    emitEvent(
+                        Event.OnSignInSuccessful
+                    )
                 }
-                // TODO address the error management more thoroughly
             }
         }
     }
@@ -58,7 +65,11 @@ class ProfileViewModel @Inject constructor(
             _state.value = State.Loading
             authRepository.signOut()
             _state.value = State.NoUser
+            emitEvent(
+                Event.OnSignOutSuccessful
+            )
         }
+        Log.i(TAG, "Sign Out Button clicked")
     }
 
     private suspend fun emitEvent(event: Event) {
@@ -80,7 +91,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     sealed interface Event {
-        // TODO if required
+        data object OnSignInSuccessful : Event
+        data object OnSignInFailed : Event
+        data object OnSignOutSuccessful : Event
     }
 
     companion object {
