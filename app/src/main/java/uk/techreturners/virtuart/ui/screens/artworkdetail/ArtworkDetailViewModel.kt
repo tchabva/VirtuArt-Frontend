@@ -196,6 +196,16 @@ class ArtworkDetailViewModel @Inject constructor(
         )
     }
 
+    fun onTryAgainButtonClick() {
+        viewModelScope.launch {
+            _state.value = State.Loading
+            emitEvent(
+                Event.OnTryAgainButtonClicked
+            )
+        }
+        Log.i(TAG, "Try Again Button clicked")
+    }
+
     sealed interface State {
         data object Loading : State
 
@@ -217,6 +227,7 @@ class ArtworkDetailViewModel @Inject constructor(
         data object AddToExhibitionSuccessful : Event
         data object AddToExhibitionFailed : Event
         data object ArtworkAlreadyInExhibition : Event
+        data object OnTryAgainButtonClicked : Event
     }
 
     companion object {

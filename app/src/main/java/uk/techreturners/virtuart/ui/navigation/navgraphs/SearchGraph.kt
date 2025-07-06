@@ -66,6 +66,12 @@ fun NavGraphBuilder.searchGraph(
                         message = context.getString(R.string.added_artwork_to_exhibition)
                     )
                 }
+            },
+            onTryAgainButtonClicked = {
+                viewModel.getArtwork(
+                    artworkId = artworkDetail.artworkId,
+                    source = artworkDetail.source
+                )
             }
         )
     }

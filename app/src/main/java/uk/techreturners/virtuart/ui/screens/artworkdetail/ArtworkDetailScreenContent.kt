@@ -40,14 +40,15 @@ fun ArtworkDetailScreenContent(
     state: ArtworkDetailViewModel.State,
     onShowAddToExhibitionDialog: () -> Unit,
     dismissAddToExhibitionDialog: () -> Unit,
-    onAddToExhibition: (String) -> Unit
+    onAddToExhibition: (String) -> Unit,
+    onTryAgainClicked: () -> Unit
 
 ) {
     when (state) {
-        is ArtworkDetailViewModel.State.Error -> {
+        is ArtworkDetailViewModel.State.Error, is ArtworkDetailViewModel.State.NetworkError -> {
             DefaultErrorScreen(
-                responseCode = state.responseCode,
-                errorMessage = state.errorMessage
+                onClick = onTryAgainClicked,
+                buttonText = stringResource(R.string.try_again),
             )
         }
 
@@ -62,13 +63,6 @@ fun ArtworkDetailScreenContent(
 
         ArtworkDetailViewModel.State.Loading -> {
             DefaultProgressIndicator()
-        }
-
-        is ArtworkDetailViewModel.State.NetworkError -> {
-            DefaultErrorScreen(
-                responseCode = null,
-                errorMessage = state.errorMessage
-            )
         }
     }
 }
