@@ -17,7 +17,8 @@ fun ExhibitionDetailScreen(
     onDeletedExhibitionConfirmed: () -> Unit,
     exhibitionDetailsUpdated: (Context) -> Unit,
     exhibitionUpdateRequest: () -> Unit,
-    deleteArtworkFromExhibition: () -> Unit
+    deleteArtworkFromExhibition: () -> Unit,
+    onTryAgainButtonClicked: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -103,6 +104,10 @@ fun ExhibitionDetailScreen(
                 ExhibitionDetailViewModel.Event.ExhibitionArtworkItemDeleteConfirmed -> {
                     deleteArtworkFromExhibition()
                 }
+
+                ExhibitionDetailViewModel.Event.OnTryAgainButtonClicked -> {
+                    onTryAgainButtonClicked()
+                }
             }
         }
     }
@@ -120,6 +125,7 @@ fun ExhibitionDetailScreen(
         onUpdateExhibitionClick = exhibitionUpdateRequest,
         updateExhibitionTitle = viewModel::updateExhibitionTitle,
         updateExhibitionDescription = viewModel::updateExhibitionDescription,
-        onDeleteArtworkItemConfirmed = viewModel::onDeleteArtworkFromExhibitionConfirmed
+        onDeleteArtworkItemConfirmed = viewModel::onDeleteArtworkFromExhibitionConfirmed,
+        onTryAgainButtonClicked = viewModel::onTryAgainButtonCLicked
     )
 }

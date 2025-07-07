@@ -164,6 +164,13 @@ fun NavGraphBuilder.exhibitionsGraph(
                 deleteArtworkFromExhibition = {
                     viewModel.deleteArtworkFromExhibition(exhibitionId = exhibitionDetail.exhibitionId)
                 },
+                onTryAgainButtonClicked = {
+                    coroutineScope.launch {
+                        viewModel.getExhibitionDetail(
+                            exhibitionId = exhibitionDetail.exhibitionId
+                        )
+                    }
+                },
             )
         }
     }
