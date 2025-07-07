@@ -100,6 +100,7 @@ fun ExhibitionsScreen(
         onCreateNewExhibitionFabClicked = viewModel::showCreateExhibitionDialog,
         onDismissExhibitionDialog = viewModel::dismissCreateExhibitionDialog,
         updateTitle = viewModel::updateExhibitionTitle,
-        updateDescription = viewModel::updateExhibitionDescription
+        updateDescription = viewModel::updateExhibitionDescription,
+        onTryAgainButtonClicked = viewModel::refreshExhibitions
     )
 }

@@ -28,6 +28,10 @@ class ExhibitionsViewModel @Inject constructor(
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
 
+    private suspend fun emitEvent(event: Event) {
+        _events.emit(event)
+    }
+
     init {
         observeUserState()
     }
@@ -78,7 +82,6 @@ class ExhibitionsViewModel @Inject constructor(
             Log.i(TAG, "RefreshExhibitions method invoked")
         }
     }
-
 
     fun onSignInButtonClicked() {
         viewModelScope.launch {
@@ -210,10 +213,6 @@ class ExhibitionsViewModel @Inject constructor(
             emitEvent(Event.ExhibitionItemClicked(exhibitionId))
         }
         Log.i(TAG, "ExhibitionItem Clicked ID: $exhibitionId")
-    }
-
-    private suspend fun emitEvent(event: Event) {
-        _events.emit(event)
     }
 
     fun showCreateExhibitionDialog() {
