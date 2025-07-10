@@ -1,18 +1,14 @@
 package uk.techreturners.virtuart.ui.common
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
@@ -51,7 +47,7 @@ fun DefaultSourceDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            modifier = Modifier.clearAndSetSemantics {  },
+                            modifier = Modifier.clearAndSetSemantics { },
                             selected = source == key,
                             onClick = { onSourceChanged(key) },
                             colors = RadioButtonDefaults.colors(
@@ -70,21 +66,10 @@ fun DefaultSourceDialog(
             }
         },
         confirmButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface)
-            ) {
-                Text(
-                    text = stringResource(R.string.dismiss),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            DefaultOutlinedButton(
+                buttonText = stringResource(R.string.dismiss),
+                onClick = onDismiss
+            )
         }
     )
 }

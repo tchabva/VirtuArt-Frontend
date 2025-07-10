@@ -328,6 +328,16 @@ class ExhibitionDetailViewModel @Inject constructor(
         }
     }
 
+    fun onTryAgainButtonCLicked() {
+         viewModelScope.launch {
+             _state.value = State.Loading
+             emitEvent(
+                 Event.OnTryAgainButtonClicked
+             )
+         }
+        Log.i(TAG, "Try Again Button clicked")
+    }
+
     sealed interface State {
         data object Loading : State
 
@@ -359,6 +369,7 @@ class ExhibitionDetailViewModel @Inject constructor(
         data object DeleteExhibitionArtworkItemSuccessful : Event
         data object DeleteExhibitionArtworkItemNetworkError : Event
         data object DeleteExhibitionArtworkItemFailed : Event
+        data object OnTryAgainButtonClicked : Event
     }
 
     companion object {

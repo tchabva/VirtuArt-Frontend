@@ -25,9 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,26 +40,17 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.domain.model.UserData
-import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
-import uk.techreturners.virtuart.ui.theme.VirtuArtTheme
 
 
 @Composable
 fun ProfileScreenContent(
     state: ProfileViewModel.State,
     onSignIn: () -> Unit,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
 ) {
 
     when (state) {
-        is ProfileViewModel.State.Error -> {
-            DefaultErrorScreen(
-                responseCode = null,
-                errorMessage = state.errorMessage
-            )
-        }
-
         ProfileViewModel.State.Loading -> {
             DefaultProgressIndicator()
         }

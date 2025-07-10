@@ -13,13 +13,13 @@ import uk.techreturners.virtuart.data.model.AdvancedSearchRequest
 import uk.techreturners.virtuart.data.model.BasicSearchQuery
 import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.data.remote.NetworkResponse
-import uk.techreturners.virtuart.data.repository.ArtworksRepository
+import uk.techreturners.virtuart.data.repository.SearchRepository
 import uk.techreturners.virtuart.domain.repository.AuthRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val artworksRepository: ArtworksRepository,
+    private val artworksRepository: SearchRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
@@ -361,6 +361,13 @@ class SearchViewModel @Inject constructor(
         } else {
             Log.i(TAG, "Page Size not updated")
         }
+    }
+
+    fun onReturnToSearchButtonClicked(){
+        _state.value = State.Search(
+            source = authRepository.source.value
+        )
+        Log.i(TAG, "Return to Search Button clicked")
     }
 
     private suspend fun emitEvent(event: Event) {

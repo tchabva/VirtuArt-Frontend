@@ -7,6 +7,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.ui.navigation.Screens
 import uk.techreturners.virtuart.ui.navigation.Tabs
 import uk.techreturners.virtuart.ui.screens.profile.ProfileScreen
@@ -22,8 +24,27 @@ fun NavGraphBuilder.profileGraph(
             val viewModel = hiltViewModel<ProfileViewModel>()
             ProfileScreen(
                 viewModel = viewModel,
-                signInButtonClicked = viewModel::signIn,
-                onSignOutClicked = viewModel::signOut
+                onSignInSuccessful = { context ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.signed_in_successfully)
+                        )
+                    }
+                },
+                onSignOutSuccessful = { context ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.signed_out_successfully)
+                        )
+                    }
+                },
+                onSignInFailed = { context ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.sign_in_failed)
+                        )
+                    }
+                }
             )
         }
     }

@@ -12,7 +12,8 @@ import uk.techreturners.virtuart.R
 fun ArtworkDetailScreen(
     viewModel: ArtworkDetailViewModel,
     onAddArtworkToExhibition: (String) -> Unit,
-    addArtworkToExhibitionSuccessful: (Context) -> Unit
+    addArtworkToExhibitionSuccessful: (Context) -> Unit,
+    onTryAgainButtonClicked: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -46,17 +47,21 @@ fun ArtworkDetailScreen(
                 is ArtworkDetailViewModel.Event.OnAddToExhibitionClicked -> {
                     onAddArtworkToExhibition(event.exhibitionId)
                 }
+
+                ArtworkDetailViewModel.Event.OnTryAgainButtonClicked -> {
+                    onTryAgainButtonClicked()
+                }
             }
         }
     }
 
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-
     ArtworkDetailScreenContent(
         state = state.value,
         onShowAddToExhibitionDialog = viewModel::onShowAddToExhibitionDialog,
         dismissAddToExhibitionDialog = viewModel::dismissShowAddToExhibitionDialog,
         onAddToExhibition = viewModel::onAddArtworkToExhibitionItemClicked,
+        onTryAgainClicked = viewModel::onTryAgainButtonClick
     )
 }

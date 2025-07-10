@@ -49,14 +49,15 @@ fun ExhibitionsScreenContent(
     onShowDeleteExhibitionDialog: (String) -> Unit,
     onDismissDeleteExhibitionDialog: () -> Unit,
     updateTitle: (String) -> Unit,
-    updateDescription: (String) -> Unit
+    updateDescription: (String) -> Unit,
+    onTryAgainButtonClicked: () -> Unit
 ) {
 
     when (state) {
-        is ExhibitionsViewModel.State.Error -> {
+        is ExhibitionsViewModel.State.Error, is ExhibitionsViewModel.State.NetworkError -> {
             DefaultErrorScreen(
-                responseCode = state.responseCode,
-                errorMessage = state.errorMessage
+                buttonText = stringResource(R.string.try_again),
+                onClick = onTryAgainButtonClicked
             )
         }
 
@@ -77,13 +78,6 @@ fun ExhibitionsScreenContent(
 
         ExhibitionsViewModel.State.Loading -> {
             DefaultProgressIndicator()
-        }
-
-        is ExhibitionsViewModel.State.NetworkError -> {
-            DefaultErrorScreen(
-                responseCode = null,
-                errorMessage = state.errorMessage
-            )
         }
 
         ExhibitionsViewModel.State.NoUser -> {

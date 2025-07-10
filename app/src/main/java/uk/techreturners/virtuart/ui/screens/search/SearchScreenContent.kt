@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.ui.common.ArtworkItem
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
+import uk.techreturners.virtuart.ui.common.DefaultNoArtworksCard
 import uk.techreturners.virtuart.ui.common.DefaultPageSizeButton
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.DefaultSourceButton
@@ -58,20 +59,14 @@ fun SearchScreenContent(
     toggleApiSourceDialog: () -> Unit = {},
     onUpdateApiSource: (String) -> Unit,
     togglePageSizeDialog: () -> Unit,
-    onUpdatePageSize: (Int) -> Unit
+    onUpdatePageSize: (Int) -> Unit,
+    onReturnToSearchClicked: () -> Unit
 ) {
     when (state) {
-        is SearchViewModel.State.Error -> {
+        is SearchViewModel.State.Error, is SearchViewModel.State.NetworkError -> {
             DefaultErrorScreen(
-                responseCode = state.responseCode,
-                errorMessage = state.errorMessage
-            )
-        }
-
-        is SearchViewModel.State.NetworkError -> {
-            DefaultErrorScreen(
-                responseCode = null,
-                errorMessage = state.errorMessage
+                buttonText = stringResource(R.string.return_to_search),
+                onClick = onReturnToSearchClicked
             )
         }
 
@@ -239,18 +234,8 @@ private fun SearchScreenSearch(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.no_artworks_found_txt),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+
+            DefaultNoArtworksCard()
         } else {
             val source = when (state.source) {
                 stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
