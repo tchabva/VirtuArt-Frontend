@@ -1,7 +1,5 @@
 package uk.techreturners.virtuart.data.model
 
-import java.time.LocalDateTime
-
 data class Exhibition(
     val id: String,
     val title: String,
@@ -23,6 +21,7 @@ data class ExhibitionItem(
     val id: String,
     val apiId: String,
     val title: String?,
+    val artist: String?,
     val date: String?,
     val imageUrl: String?,
     val source: String

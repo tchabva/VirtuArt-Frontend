@@ -99,7 +99,14 @@ fun ExhibitionArtworkItem(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                //  TODO possibly add artist variable to ExhibitionItem
+                if (!artwork.artist.isNullOrBlank()) {
+                    Text(
+                        text = artwork.artist,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
                 if (!artwork.date.isNullOrBlank()) {
                     Text(
                         text = artwork.date,
@@ -145,6 +152,7 @@ private fun ExhibitionArtworkItemPreview() {
             id = "item_001",
             apiId = "api_001",
             title = "Sunset Reflections",
+            artist = "A Good Painter",
             date = "2025-03-15",
             imageUrl = "https://example.com/images/artwork1.jpg",
             source = "ModernArtAPI",
