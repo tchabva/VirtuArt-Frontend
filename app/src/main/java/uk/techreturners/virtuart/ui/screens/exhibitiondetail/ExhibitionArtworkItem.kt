@@ -1,5 +1,6 @@
 package uk.techreturners.virtuart.ui.screens.exhibitiondetail
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,15 +21,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
+import com.bumptech.glide.integration.compose.GlideSubcomposition
+import com.bumptech.glide.integration.compose.RequestState
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.ExhibitionItem
+import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 
 @Composable
 fun ExhibitionArtworkItem(
@@ -46,17 +49,42 @@ fun ExhibitionArtworkItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Artwork
-            GlideImage(
+            GlideSubcomposition(
                 model = artwork.imageUrl,
-                contentDescription = artwork.title,
-                loading = placeholder(R.drawable.ic_launcher_foreground),
-                failure = placeholder(R.drawable.ic_launcher_foreground),
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
+                when (state) {
+                    RequestState.Failure -> {
+                        Image(
+                            painter = painterResource(R.drawable.ic_placeholder_artwork),
+                            contentDescription = stringResource(
+                                R.string.artwork_image_description_error,
+                                artwork.title ?: "Unknown Artwork"
+                            ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    RequestState.Loading -> {
+                        DefaultProgressIndicator()
+                    }
+
+                    is RequestState.Success -> {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            painter = painter,
+                            contentDescription = stringResource(
+                                R.string.artwork_image_description,
+                                artwork.title ?: "Unknown Artwork"
+                            ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.width(12.dp))
 
