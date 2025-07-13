@@ -32,7 +32,8 @@
     <string name="deleted_artwork_from_exhibition">Deleted artwork from exhibition</string>
     <string name="created">Created</string>
     <string name="last_updated">Last Updated</string>
-    <string name="artwork_image">Artwork Image</string>
+    <string name="artwork_image_description">Artwork for %1$s</string>
+    <string name="artwork_image_description_error">Failed to load artwork for %1$s</string>
     <string name="source_colon_text">Source: %1$s</string>
     <string name="delete_item_content_txt">Delete %1$s}</string>
     <string name="edit_exhibition_details_icon_txt">Edit exhibition details</string>
@@ -57,7 +58,8 @@
     <string name="origin">Origin</string>
     <string name="category">Category</string>
     <string name="museum">Museum</string>
-    <string name="additional_images_content_description">Additional images of %1$s</string>
+    <string name="additional_images_content_description">Additional images for %1$s</string>
+    <string name="additional_images_error">Could not load additional image for %1$s</string>
     <string name="additional_images">Additional Images</string>
     <string name="select_an_exhibition">Select an Exhibition:</string>
     <string name="failed_to_add_artwork_to_exhibit_toast_txt">Failed to add artwork to exhibition</string>

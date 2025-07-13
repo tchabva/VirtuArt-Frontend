@@ -36,12 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
+import com.bumptech.glide.integration.compose.GlideSubcomposition
+import com.bumptech.glide.integration.compose.RequestState
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.domain.model.UserData
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
-
 
 @Composable
 fun ProfileScreenContent(
@@ -49,7 +48,6 @@ fun ProfileScreenContent(
     onSignIn: () -> Unit,
     onSignOut: () -> Unit,
 ) {
-
     when (state) {
         ProfileViewModel.State.Loading -> {
             DefaultProgressIndicator()
@@ -63,7 +61,7 @@ fun ProfileScreenContent(
 
         is ProfileViewModel.State.SignedIn -> {
             ProfileScreenSignedIn(
-                state = state,
+                signedInState = state,
                 signOut = { onSignOut() }
             )
         }
@@ -72,7 +70,7 @@ fun ProfileScreenContent(
 
 @Composable
 private fun ProfileScreenSignedIn(
-    state: ProfileViewModel.State.SignedIn,
+    signedInState: ProfileViewModel.State.SignedIn,
     signOut: () -> Unit
 ) {
     Column(
@@ -92,16 +90,36 @@ private fun ProfileScreenSignedIn(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Profile Picture
-        GlideImage(
-            model = state.currentUser?.profilePicture,
-            contentDescription = stringResource(R.string.user_profile_picture_description),
-            loading = placeholder(R.drawable.ic_launcher_foreground),
-            failure = placeholder(R.drawable.ic_launcher_foreground),
+        GlideSubcomposition(
+            model = signedInState.currentUser?.profilePicture,
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+        ) {
+            when (state) {
+                RequestState.Failure -> {
+                    Image(
+                        painter = painterResource(R.drawable.ic_placeholder_artwork),
+                        contentDescription = stringResource(R.string.user_profile_picture_description),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                RequestState.Loading -> {
+                    DefaultProgressIndicator()
+                }
+
+                is RequestState.Success -> {
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        painter = painter,
+                        contentDescription = stringResource(R.string.user_profile_picture_description),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -128,7 +146,8 @@ private fun ProfileScreenSignedIn(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = state.currentUser?.displayName ?: stringResource(R.string.unknown),
+                        text = signedInState.currentUser?.displayName
+                            ?: stringResource(R.string.unknown),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium
                     )
@@ -160,7 +179,7 @@ private fun ProfileScreenSignedIn(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = state.currentUser?.email ?: stringResource(R.string.unknown),
+                        text = signedInState.currentUser?.email ?: stringResource(R.string.unknown),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium
                     )
@@ -285,7 +304,7 @@ private fun ProfileScreenNoUser(
 @Composable
 private fun ProfileScreenSignedInPreview() {
     ProfileScreenSignedIn(
-        state = ProfileViewModel.State.SignedIn(
+        signedInState = ProfileViewModel.State.SignedIn(
             currentUser = UserData(
                 userId = "id",
                 displayName = "John Doe",
