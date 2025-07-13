@@ -1,5 +1,6 @@
 package uk.techreturners.virtuart.ui.common
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,13 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
+import com.bumptech.glide.integration.compose.GlideSubcomposition
+import com.bumptech.glide.integration.compose.RequestState
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.ArtworkResult
 
@@ -31,16 +33,42 @@ fun ArtworkItem(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column {
-            GlideImage(
+            GlideSubcomposition(
                 model = artwork.imageURL,
-                loading = placeholder(R.drawable.ic_placeholder_artwork),
-                failure = placeholder(R.drawable.ic_placeholder_artwork),
-                contentDescription = artwork.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                contentScale = ContentScale.Crop,
-            )
+                modifier = Modifier.height(150.dp),
+            ) {
+                when (state) {
+                    RequestState.Failure -> {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            painter = painterResource(R.drawable.ic_placeholder_artwork),
+                            contentDescription = stringResource(
+                                R.string.additional_images_content_description,
+                                artwork.title
+                            ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    RequestState.Loading -> {
+                        DefaultProgressIndicator()
+                    }
+
+                    is RequestState.Success -> {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            painter = painter,
+                            contentDescription = stringResource(
+                                R.string.additional_images_error,
+                                artwork.title
+                            ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+            }
 
             Column(
                 modifier = Modifier.padding(12.dp)
@@ -85,7 +113,6 @@ fun ArtworkItem(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
