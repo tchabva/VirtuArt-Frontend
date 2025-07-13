@@ -27,7 +27,6 @@ fun ArtworkItem(
     artwork: ArtworkResult,
     onClick: (String, String) -> Unit,
 ) {
-
     Card(
         onClick = { onClick(artwork.id, artwork.source) },
         modifier = Modifier.fillMaxWidth()
@@ -81,7 +80,7 @@ fun ArtworkItem(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                if (!artwork.artistTitle.isNullOrBlank()){
+                if (!artwork.artistTitle.isNullOrBlank()) {
                     Text(
                         text = artwork.artistTitle,
                         style = MaterialTheme.typography.bodySmall,
@@ -100,7 +99,7 @@ fun ArtworkItem(
                 }
 
                 Text(
-                    text = when(artwork.source) {
+                    text = when (artwork.source) {
                         stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
                         stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
                         else -> stringResource(R.string.unknown)
@@ -126,6 +125,6 @@ private fun ArtworkItemPreview() {
             imageURL = "https://example.com/girl-with-pearl-earring.jpg",
             source = "aic"
         ),
-        onClick = {_,_ ->},
+        onClick = { _, _ -> },
     )
 }
