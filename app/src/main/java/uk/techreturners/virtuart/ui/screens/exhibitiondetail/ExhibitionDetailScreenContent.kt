@@ -174,6 +174,7 @@ private fun ExhibitionDetailScreenLoadedPreview() {
                         id = "item_001",
                         apiId = "api_001",
                         title = "Sunset Reflections",
+                        artist = "A Good Painter",
                         date = "2025-03-15",
                         imageUrl = "https://example.com/images/artwork1.jpg",
                         source = "ModernArtAPI"
@@ -182,6 +183,7 @@ private fun ExhibitionDetailScreenLoadedPreview() {
                         id = "item_002",
                         apiId = "api_002",
                         title = "Urban Geometry",
+                        artist = "A Good Photographer",
                         date = "2025-04-10",
                         imageUrl = "https://example.com/images/artwork2.jpg",
                         source = "UrbanGallerySource"
