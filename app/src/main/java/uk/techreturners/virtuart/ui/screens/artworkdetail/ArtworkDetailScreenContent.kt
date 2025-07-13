@@ -170,7 +170,7 @@ private fun ArtworkImageCard(artwork: Artwork) {
                             .aspectRatio(4f / 3f),
                         painter = painterResource(R.drawable.ic_placeholder_artwork),
                         contentDescription = stringResource(
-                            R.string.additional_images_content_description,
+                            R.string.artwork_image_description_error,
                             artwork.title
                         ),
                         contentScale = ContentScale.Crop
@@ -187,7 +187,7 @@ private fun ArtworkImageCard(artwork: Artwork) {
                             .fillMaxWidth(),
                         painter = painter,
                         contentDescription = stringResource(
-                            R.string.additional_images_error,
+                            R.string.artwork_image_description,
                             artwork.title
                         ),
                         contentScale = ContentScale.Crop
