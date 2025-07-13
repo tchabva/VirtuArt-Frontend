@@ -57,7 +57,8 @@
     <string name="origin">Origin</string>
     <string name="category">Category</string>
     <string name="museum">Museum</string>
-    <string name="additional_images_content_description">Additional images of %1$s</string>
+    <string name="additional_images_content_description">Additional images for %1$s</string>
+    <string name="additional_images_error">Could not load additional image for %1$s</string>
     <string name="additional_images">Additional Images</string>
     <string name="select_an_exhibition">Select an Exhibition:</string>
     <string name="failed_to_add_artwork_to_exhibit_toast_txt">Failed to add artwork to exhibition</string>

@@ -1,6 +1,7 @@
 package uk.techreturners.virtuart.ui.screens.artworkdetail
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,11 +25,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.GlideSubcomposition
+import com.bumptech.glide.integration.compose.RequestState
 import com.bumptech.glide.integration.compose.placeholder
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Artwork
@@ -307,16 +311,39 @@ fun AdditionalImagesCard(artwork: Artwork) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(artwork.altImageUrls) { imageUrl ->
-                    GlideImage(
+                    GlideSubcomposition(
                         model = imageUrl,
-                        contentDescription = stringResource(
-                            R.string.additional_images_content_description,
-                            artwork.title
-                        ),
                         modifier = Modifier
                             .size(168.dp),
-                        contentScale = ContentScale.Crop
-                    )
+                    ) {
+                        when (state) {
+                            RequestState.Failure -> {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_placeholder_artwork),
+                                    contentDescription = stringResource(
+                                        R.string.additional_images_content_description,
+                                        artwork.title
+                                    ),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            RequestState.Loading -> {
+                                DefaultProgressIndicator()
+                            }
+
+                            is RequestState.Success -> {
+                                Image(
+                                    painter = painter,
+                                    contentDescription = stringResource(
+                                        R.string.additional_images_error,
+                                        artwork.title
+                                    ),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -329,7 +356,7 @@ private fun ArtworkDetailScreenLoadedPreview() {
     ArtworkDetailScreenLoaded(
         onShowAddToExhibitionDialog = {},
         dismissAddToExhibitionDialog = {},
-        onAddToExhibition = { _-> },
+        onAddToExhibition = { _ -> },
         state = ArtworkDetailViewModel.State.Loaded(
             data = Artwork(
                 id = "art001",
