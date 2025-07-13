@@ -30,10 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.GlideSubcomposition
 import com.bumptech.glide.integration.compose.RequestState
-import com.bumptech.glide.integration.compose.placeholder
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.Artwork
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
@@ -160,16 +158,43 @@ private fun ArtworkImageCard(artwork: Artwork) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
-        GlideImage(
+        GlideSubcomposition(
             model = artwork.imageUrl,
-            contentDescription = artwork.title,
-            loading = placeholder(R.drawable.ic_placeholder_artwork),
-            failure = placeholder(R.drawable.ic_placeholder_artwork),
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(4f / 3f),
-            contentScale = ContentScale.Crop
-        )
+            modifier = Modifier,
+        ) {
+            when (state) {
+                RequestState.Failure -> {
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(4f / 3f),
+                        painter = painterResource(R.drawable.ic_placeholder_artwork),
+                        contentDescription = stringResource(
+                            R.string.additional_images_content_description,
+                            artwork.title
+                        ),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                RequestState.Loading -> {
+                    DefaultProgressIndicator()
+                }
+
+                is RequestState.Success -> {
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        painter = painter,
+                        contentDescription = stringResource(
+                            R.string.additional_images_error,
+                            artwork.title
+                        ),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+        }
     }
 }
 
