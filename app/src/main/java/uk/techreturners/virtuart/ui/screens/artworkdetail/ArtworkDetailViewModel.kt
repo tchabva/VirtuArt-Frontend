@@ -169,6 +169,7 @@ class ArtworkDetailViewModel @Inject constructor(
                         TAG,
                         "Artwork added to user's exhibition"
                     )
+                    setRefreshExhibitionToTrue()
                 }
             }
             getUserExhibitions() // Update the User Exhibitions
@@ -204,6 +205,11 @@ class ArtworkDetailViewModel @Inject constructor(
             )
         }
         Log.i(TAG, "Try Again Button clicked")
+    }
+
+    private fun setRefreshExhibitionToTrue() {
+        authRepository.setRefreshExhibitionsToTrue()
+        Log.i(TAG, "Set Refresh Exhibitions to True")
     }
 
     sealed interface State {
