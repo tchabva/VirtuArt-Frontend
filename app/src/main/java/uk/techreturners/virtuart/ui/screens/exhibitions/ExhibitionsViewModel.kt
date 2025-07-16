@@ -261,6 +261,15 @@ class ExhibitionsViewModel @Inject constructor(
         toDeleteExhibitionId = null
     }
 
+    fun getRefreshExhibitionValue(): StateFlow<Boolean> {
+        return authRepository.refreshExhibitions
+    }
+
+    fun resetRefreshExhibition() {
+        authRepository.setRefreshExhibitionsToFalse()
+        Log.i(TAG,"Reset the refreshExhibition")
+    }
+
     sealed interface State {
         data object Loading : State
 
