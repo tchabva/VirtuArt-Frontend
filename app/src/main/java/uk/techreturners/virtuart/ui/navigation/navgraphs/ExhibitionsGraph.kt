@@ -48,6 +48,13 @@ fun NavGraphBuilder.exhibitionsGraph(
                 }
             }
 
+            LaunchedEffect(viewModel.getRefreshExhibitionValue().value) {
+                if (viewModel.getRefreshExhibitionValue().value){
+                    viewModel.refreshExhibitions()
+                    viewModel.resetRefreshExhibition()
+                }
+            }
+
             ExhibitionsScreen(
                 viewModel = viewModel,
                 navigateToProfileGraph = {

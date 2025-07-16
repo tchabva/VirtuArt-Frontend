@@ -37,6 +37,9 @@ class AuthRepositoryImpl @Inject constructor(
     private val _source: MutableStateFlow<String> = MutableStateFlow("aic")
     override val source: StateFlow<String> = _source
 
+    private val _refreshExhibitions: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    override val refreshExhibitions: StateFlow<Boolean> = _refreshExhibitions
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val savedUser = getUserData()
@@ -127,6 +130,16 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun updateUserData(userData: UserData) {
         saveUserData(userData)
+    }
+
+    override fun setRefreshExhibitionsToTrue() {
+        _refreshExhibitions.value = true
+        Log.i(TAG, "Toggled the value of the refreshExhibitions ${refreshExhibitions.value}")
+    }
+
+    override fun setRefreshExhibitionsToFalse() {
+        _refreshExhibitions.value = false
+        Log.i(TAG, "Toggled the value of the refreshExhibitions ${refreshExhibitions.value}")
     }
 
     private suspend fun saveUserData(userData: UserData) {
