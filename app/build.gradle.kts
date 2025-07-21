@@ -14,19 +14,21 @@ plugins {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
-        freeCompilerArgs.addAll(listOf(
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-            "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-            "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
-            "-opt-in=com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi",
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-        ))
+        freeCompilerArgs.addAll(
+            listOf(
+                "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
+                "-opt-in=com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            )
+        )
     }
 }
 
 android {
     namespace = "uk.techreturners.virtuart"
-    compileSdk = 35
+    compileSdk = 36
 
     // Read local.properties
     val localProperties = Properties()
@@ -38,7 +40,7 @@ android {
     defaultConfig {
         applicationId = "uk.techreturners.virtuart"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -78,7 +80,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
