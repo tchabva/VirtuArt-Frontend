@@ -11,7 +11,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +26,7 @@ import uk.techreturners.virtuart.domain.model.UserData
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val credentialManager: CredentialManager,
     private val userPreferenceDataStore: DataStore<Preferences>
 ) : AuthRepository {
@@ -58,11 +58,14 @@ class AuthRepositoryImpl @Inject constructor(
         try {
             val webClientId = context.getString(R.string.web_client_id)
 
-            val signInWithGoogleOption = GetSignInWithGoogleOption.Builder(webClientId)
+            val googleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(webClientId)
+                .setAutoSelectEnabled(true)
                 .build()
 
             val request = GetCredentialRequest.Builder()
-                .addCredentialOption(signInWithGoogleOption)
+                .addCredentialOption(googleIdOption)
                 .build()
 
             val result = credentialManager.getCredential(
