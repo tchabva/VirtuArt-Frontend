@@ -4,14 +4,14 @@ import android.content.Context
 import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.techreturners.virtuart.R
 import javax.inject.Inject
 
 class TokenManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val authRepository: AuthRepository,
     private val credentialManager: CredentialManager,
 ) {
@@ -19,18 +19,22 @@ class TokenManager @Inject constructor(
     suspend fun validateAndRefreshToken(): Boolean {
         val currentUser = authRepository.getSignedInUser()
 
-        if (currentUser?.userId == null){
+        if (currentUser?.userId == null) {
             return false
         }
 
         return try {
             // Attempt to get fresh credentials silently
             val webClientId = context.getString(R.string.web_client_id)
-            val signInWithGoogleOption = GetSignInWithGoogleOption.Builder(webClientId)
+
+            val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(true)
+                .setServerClientId(webClientId)
+                .setAutoSelectEnabled(true)
                 .build()
 
             val request = GetCredentialRequest.Builder()
-                .addCredentialOption(signInWithGoogleOption)
+                .addCredentialOption(googleIdOption)
                 .build()
 
             val result = credentialManager.getCredential(
@@ -52,8 +56,8 @@ class TokenManager @Inject constructor(
             } else {
                 false
             }
-        } catch (e: Exception){
-            Log.e(TAG, "Token refresh failed")
+        } catch (e: Exception) {
+            Log.e(TAG, "Token refresh failed", e)
             false
         }
     }
