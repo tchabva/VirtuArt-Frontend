@@ -35,7 +35,13 @@ fun NavGraphBuilder.artworksGraph(
                             source = source
                         )
                     )
-                }
+                },
+                tokenRefreshFailed = { context ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.token_refresh_failed_txt)
+                        )
+                    } }
             )
         }
     }

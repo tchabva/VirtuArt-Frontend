@@ -101,4 +101,5 @@
     <string name="signed_in_successfully">Signed In Successfully</string>
     <string name="signed_out_successfully">Signed Out Successfully</string>
     <string name="sign_in_failed">Sign In Failed</string>
+    <string name="token_refresh_failed_txt">Error occurred, you have been signed out!</string>
 </resources>
