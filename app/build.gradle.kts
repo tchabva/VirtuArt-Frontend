@@ -110,6 +110,10 @@ dependencies {
 
     // Glide Compose
     implementation(libs.compose.glide)
+    // Glide core library
+    implementation(libs.glide)
+    //noinspection KaptUsageInsteadOfKsp
+    kapt(libs.glide.compiler)
 
     // Material 3 Extended Icons
     implementation(libs.androidx.material.icons.extended)

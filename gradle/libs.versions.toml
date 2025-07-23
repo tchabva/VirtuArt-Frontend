@@ -3,6 +3,7 @@ agp = "8.11.1"
 credentials = "1.5.0"
 datastorePreferences = "1.1.7"
 googleid = "1.1.1"
+glide = "4.16.0"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -48,6 +49,9 @@ lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 # Glide Compose
 compose-glide = { module = "com.github.bumptech.glide:compose", version.ref = "composeGlide" }
+# Glide Core Library
+glide = {module = "com.github.bumptech.glide:glide", version.ref = "glide"}
+glide-compiler = {module = "com.github.bumptech.glide:compiler", version.ref = "glide"}
 # Material 3 Extended Icons
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 # JDK Desugaring Libraries
