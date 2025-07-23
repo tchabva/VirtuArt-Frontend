@@ -33,9 +33,16 @@ class ArtworksViewModel @Inject constructor(
 
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
+    private suspend fun emitEvent(event: Event) {
+        _events.emit(event)
+    }
 
     private val _sourceFlow = authRepository.source
+
     private val _refreshCounter = MutableStateFlow(0) // For refresh functionality
+    private fun refreshArtworks() {
+        _refreshCounter.value += 1
+    }
 
     val artworks: Flow<PagingData<ArtworkResult>> =
         _sourceFlow.flatMapLatest { source ->
@@ -45,9 +52,6 @@ class ArtworksViewModel @Inject constructor(
             }
         }.cachedIn(viewModelScope)
 
-    private suspend fun emitEvent(event: Event) {
-        _events.emit(event)
-    }
 
     fun onArtworkClicked(artworkId: String, source: String) {
         viewModelScope.launch {
@@ -83,7 +87,7 @@ class ArtworksViewModel @Inject constructor(
         // Refresh the paging data to retry loading artworks
         viewModelScope.launch {
             // Increment the refresh counter to trigger a new paging flow
-            _refreshCounter.value += 1
+            refreshArtworks()
             Log.i(TAG, "Try Again Button clicked source: ${state.value.source}")
         }
     }
