@@ -41,14 +41,14 @@ class ArtworksViewModel @Inject constructor(
 
     private val _sourceFlow = authRepository.source
 
-    private val _refreshCounter = MutableStateFlow(0) // For refresh functionality
+    private val _refreshTrigger = MutableStateFlow(0) // For refresh functionality
     private fun refreshArtworks() {
-        _refreshCounter.value += 1
+        _refreshTrigger.value += 1
     }
 
     val artworks: Flow<PagingData<ArtworkResult>> =
         _sourceFlow.flatMapLatest { source ->
-            _refreshCounter.flatMapLatest { counter -> // Allows for refresh
+            _refreshTrigger.flatMapLatest { counter -> // Allows for refresh
                 Log.i(TAG, "Current Source API: $source, Refresh Counter: $counter")
                 repository.getArtworks(source = source)
             }
