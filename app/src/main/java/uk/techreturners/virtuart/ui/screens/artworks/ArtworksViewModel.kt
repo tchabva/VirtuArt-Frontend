@@ -43,7 +43,7 @@ class ArtworksViewModel @Inject constructor(
 
     private val _refreshTrigger = MutableStateFlow(0) // For refresh functionality
     private fun refreshArtworks() {
-        _refreshTrigger.value += 1
+        _refreshTrigger.value++
     }
 
     val artworks: Flow<PagingData<ArtworkResult>> =
