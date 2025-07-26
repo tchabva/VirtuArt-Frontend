@@ -33,6 +33,7 @@ Allows for creation of singletons for which can then be injected where they are 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    private const val INT_TAG = "AuthInterceptor"
 
     @Provides
     @Singleton
@@ -65,14 +66,16 @@ object AppModule {
                     .header("Authorization", "Bearer ${currentUser.userId}")
                     .build()
             } else {
+                Log.i(INT_TAG, "Unsigned in user for interceptor request")
                 originalRequest
             }
 
             // Execute the request
+            Log.i(INT_TAG, "Attempting request with authorization")
             val response = chain.proceed(newRequestWithAuth)
 
             if (response.code == 401 && currentUser != null) {
-                Log.w("AuthInterceptor", "Received 401, attempting token refresh")
+                Log.w(INT_TAG, "Received 401, attempting token refresh")
 
                 response.close() // closes the original response
 
@@ -82,7 +85,7 @@ object AppModule {
                 }
 
                 if (refreshSuccess) {
-                    Log.i("AuthInterceptor", "Token refresh successful, retrying request")
+                    Log.i(INT_TAG, "Token refresh successful, retrying request")
 
                     // Get the updated user with the new token
                     val updatedUser = authRepository.getSignedInUser()
@@ -90,12 +93,14 @@ object AppModule {
                         .header("Authorization", "Bearer ${updatedUser?.userId}")
                         .build()
 
+                    Log.i(INT_TAG, "Signed in user interceptor request after refresh")
                     chain.proceed(retryRequest)
                 } else {
-                    Log.e("AuthInterceptor", "Token Refresh Failed")
+                    Log.e(INT_TAG, "Token Refresh Failed")
                     chain.proceed(originalRequest)
                 }
             } else {
+                Log.i(INT_TAG, "Signed in user interceptor request")
                 response
             }
         }
