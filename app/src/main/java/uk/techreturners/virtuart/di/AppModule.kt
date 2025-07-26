@@ -95,12 +95,10 @@ object AppModule {
                     Log.e("AuthInterceptor", "Token Refresh Failed")
                     chain.proceed(originalRequest)
                 }
-
             } else {
                 response
             }
         }
-
     }
 
     @Provides
