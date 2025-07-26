@@ -1,6 +1,7 @@
 package uk.techreturners.virtuart.di
 
 import android.content.Context
+import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -11,6 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,6 +23,7 @@ import uk.techreturners.virtuart.data.remote.ArtworksApi
 import uk.techreturners.virtuart.data.remote.ExhibitionsApi
 import uk.techreturners.virtuart.data.remote.SearchApi
 import uk.techreturners.virtuart.domain.repository.AuthRepository
+import uk.techreturners.virtuart.domain.repository.TokenManager
 import javax.inject.Singleton
 
 /*
@@ -50,21 +53,54 @@ object AppModule {
     @Singleton
     @Provides
     fun provideAuthInterceptor(
-        authRepository: AuthRepository
+        authRepository: AuthRepository,
+        tokenManager: TokenManager
     ): Interceptor {
         return Interceptor { chain ->
             val originalRequest = chain.request()
-            val user = authRepository.getSignedInUser()
+            val currentUser = authRepository.getSignedInUser()
 
-            val newRequestWithAuth = if (user != null) {
+            val newRequestWithAuth = if (currentUser != null) {
                 originalRequest.newBuilder()
-                    .header("Authorization", "Bearer ${user.userId}")
+                    .header("Authorization", "Bearer ${currentUser.userId}")
                     .build()
             } else {
                 originalRequest
             }
-            chain.proceed(newRequestWithAuth)
+
+            // Execute the request
+            val response = chain.proceed(newRequestWithAuth)
+
+            if (response.code == 401 && currentUser != null) {
+                Log.w("AuthInterceptor", "Received 401, attempting token refresh")
+
+                response.close() // closes the original response
+
+                // Attempt a token refresh
+                val refreshSuccess = runBlocking {
+                    tokenManager.tokenRefresh()
+                }
+
+                if (refreshSuccess) {
+                    Log.i("AuthInterceptor", "Token refresh successful, retrying request")
+
+                    // Get the updated user with the new token
+                    val updatedUser = authRepository.getSignedInUser()
+                    val retryRequest = originalRequest.newBuilder()
+                        .header("Authorization", "Bearer ${updatedUser?.userId}")
+                        .build()
+
+                    chain.proceed(retryRequest)
+                } else {
+                    Log.e("AuthInterceptor", "Token Refresh Failed")
+                    chain.proceed(originalRequest)
+                }
+
+            } else {
+                response
+            }
         }
+
     }
 
     @Provides
