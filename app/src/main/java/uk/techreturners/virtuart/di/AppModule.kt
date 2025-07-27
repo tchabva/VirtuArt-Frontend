@@ -1,6 +1,7 @@
 package uk.techreturners.virtuart.di
 
 import android.content.Context
+import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -32,6 +33,7 @@ Allows for creation of singletons for which can then be injected where they are 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    private const val INT_TAG = "AuthInterceptor"
 
     @Provides
     @Singleton
@@ -57,38 +59,48 @@ object AppModule {
     ): Interceptor {
         return Interceptor { chain ->
             val originalRequest = chain.request()
-            val user = authRepository.getSignedInUser()
+            val currentUser = authRepository.getSignedInUser()
 
-            val newRequestWithAuth = if (user != null) {
+            val newRequestWithAuth = if (currentUser != null) {
                 originalRequest.newBuilder()
-                    .header("Authorization", "Bearer ${user.userId}")
+                    .header("Authorization", "Bearer ${currentUser.userId}")
                     .build()
             } else {
+                Log.i(INT_TAG, "Unsigned in user for interceptor request")
                 originalRequest
             }
 
+            // Execute the request
+            Log.i(INT_TAG, "Attempting request with authorization")
             val response = chain.proceed(newRequestWithAuth)
 
-            // Handle 401 Response Unauthorised - token might be expired
-            if (response.code == 401 && user != null){
-                response.close()
+            if (response.code == 401 && currentUser != null) {
+                Log.w(INT_TAG, "Received 401, attempting token refresh")
 
-                // Attempt to refresh token
-                runBlocking {
-                    val refreshSuccess = tokenManager.validateAndRefreshToken()
-                    if (refreshSuccess) {
-                        val refreshedUser = authRepository.getSignedInUser()
-                        val retryRequest = originalRequest.newBuilder()
-                            .header("Authorization", "Bearer ${refreshedUser?.userId}")
-                            .build()
-                        chain.proceed(retryRequest)
-                    } else {
-                        // Token refresh failed, user needs to re-authenticate
-                        authRepository.signOut()
-                        response
-                    }
+                response.close() // closes the original response
+
+                // Attempt a token refresh
+                val refreshSuccess = runBlocking {
+                    tokenManager.tokenRefresh()
+                }
+
+                if (refreshSuccess) {
+                    Log.i(INT_TAG, "Token refresh successful, retrying request")
+
+                    // Get the updated user with the new token
+                    val updatedUser = authRepository.getSignedInUser()
+                    val retryRequest = originalRequest.newBuilder()
+                        .header("Authorization", "Bearer ${updatedUser?.userId}")
+                        .build()
+
+                    Log.i(INT_TAG, "Signed in user interceptor request after refresh")
+                    chain.proceed(retryRequest)
+                } else {
+                    Log.e(INT_TAG, "Token Refresh Failed")
+                    chain.proceed(originalRequest)
                 }
             } else {
+                Log.i(INT_TAG, "Signed in user interceptor request")
                 response
             }
         }

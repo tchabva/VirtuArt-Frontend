@@ -12,7 +12,6 @@ import uk.techreturners.virtuart.data.model.CreateExhibitionRequest
 import uk.techreturners.virtuart.data.model.Exhibition
 import uk.techreturners.virtuart.data.model.ExhibitionDetail
 import uk.techreturners.virtuart.data.model.UpdateExhibitionRequest
-import uk.techreturners.virtuart.ui.navigation.Screens
 
 interface ExhibitionsApi {
     @GET("exhibitions")

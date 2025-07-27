@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtworksViewModel @Inject constructor(
     private val repository: ArtworksRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(
@@ -33,21 +33,18 @@ class ArtworksViewModel @Inject constructor(
 
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
-
-    private val _sourceFlow = authRepository.source
-    private val _refreshCounter = MutableStateFlow(0) // For refresh functionality
-
-    val artworks: Flow<PagingData<ArtworkResult>> =
-        _sourceFlow.flatMapLatest { source ->
-            _refreshCounter.flatMapLatest { counter -> // Allows for refresh
-                Log.i(TAG, "Current Source API: $source, Refresh Counter: $counter")
-                repository.getArtworks(source = source)
-            }
-        }.cachedIn(viewModelScope)
-
     private suspend fun emitEvent(event: Event) {
         _events.emit(event)
     }
+
+    private val _sourceFlow = authRepository.source
+
+    val artworks: Flow<PagingData<ArtworkResult>> =
+        _sourceFlow.flatMapLatest { source ->
+            // Allows for refresh
+            Log.i(TAG, "Current Source API: $source")
+            repository.getArtworks(source = source)
+        }.cachedIn(viewModelScope)
 
     fun onArtworkClicked(artworkId: String, source: String) {
         viewModelScope.launch {
@@ -79,22 +76,15 @@ class ArtworksViewModel @Inject constructor(
         }
     }
 
-    fun onTryAgainButtonClick() {
-        // Refresh the paging data to retry loading artworks
-        viewModelScope.launch {
-            // Increment the refresh counter to trigger a new paging flow
-            _refreshCounter.value += 1
-            Log.i(TAG, "Try Again Button clicked source: ${state.value.source}")
-        }
-    }
-
     data class State(
         val showApiSource: Boolean = false,
-        val source: String
+        val source: String,
+        val isRefreshingToken: Boolean = false
     )
 
     sealed interface Event {
         data class ClickedOnArtwork(val artworkId: String, val source: String) : Event
+        data object TokenRefreshFailed : Event
     }
 
     companion object {

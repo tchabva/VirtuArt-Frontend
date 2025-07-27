@@ -132,7 +132,8 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUserData(userData: UserData) {
-        saveUserData(userData)
+        saveUserData(userData) // update userdata in the data store
+        _userState.value = userData // update the user data in the Auth Repository
     }
 
     override fun setRefreshExhibitionsToTrue() {
