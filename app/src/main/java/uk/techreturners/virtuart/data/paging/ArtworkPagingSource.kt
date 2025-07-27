@@ -1,6 +1,5 @@
 package uk.techreturners.virtuart.data.paging
 
-import android.R.attr.data
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -38,7 +37,7 @@ class ArtworkPagingSource(
 
         } catch (exception: IOException) {
             // IOException for network failures.
-            Log.e(TAG , "Exception: $exception", exception)
+            Log.e(TAG, "Exception: $exception", exception)
             return LoadResult.Error(exception)
         } catch (exception: HttpException) {
             // HttpException for any non-2xx HTTP status codes.
