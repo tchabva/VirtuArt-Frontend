@@ -16,14 +16,12 @@ import kotlinx.coroutines.launch
 import uk.techreturners.virtuart.data.model.ArtworkResult
 import uk.techreturners.virtuart.data.repository.ArtworksRepository
 import uk.techreturners.virtuart.domain.repository.AuthRepository
-import uk.techreturners.virtuart.domain.repository.TokenManager
 import javax.inject.Inject
 
 @HiltViewModel
 class ArtworksViewModel @Inject constructor(
     private val repository: ArtworksRepository,
     private val authRepository: AuthRepository,
-    private val tokenManager: TokenManager
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(
@@ -48,8 +46,8 @@ class ArtworksViewModel @Inject constructor(
 
     val artworks: Flow<PagingData<ArtworkResult>> =
         _sourceFlow.flatMapLatest { source ->
-            _refreshTrigger.flatMapLatest { counter -> // Allows for refresh
-                Log.i(TAG, "Current Source API: $source, Refresh Counter: $counter")
+            _refreshTrigger.flatMapLatest { trigger -> // Allows for refresh
+                Log.i(TAG, "Current Source API: $source, Refresh Trigger: $trigger")
                 repository.getArtworks(source = source)
             }
         }.cachedIn(viewModelScope)
@@ -90,21 +88,6 @@ class ArtworksViewModel @Inject constructor(
             // Increment the refresh counter to trigger a new paging flow
             refreshArtworks()
             Log.i(TAG, "Try Again Button clicked source: ${state.value.source}")
-        }
-    }
-
-    fun onTokenExpired() {
-        viewModelScope.launch {
-            _state.value = state.value.copy(isRefreshingToken = true)
-            val refreshSuccessful = tokenManager.validateAndRefreshToken()
-            if (refreshSuccessful) {
-                Log.i(TAG, "Token refresh successful, reloading artworks")
-                refreshArtworks()
-            } else {
-                Log.e(TAG, "Token refresh failed")
-                emitEvent(Event.TokenRefreshFailed)
-            }
-            _state.value = state.value.copy(isRefreshingToken = false)
         }
     }
 
