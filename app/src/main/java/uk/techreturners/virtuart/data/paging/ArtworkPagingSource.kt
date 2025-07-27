@@ -1,5 +1,7 @@
 package uk.techreturners.virtuart.data.paging
 
+import android.R.attr.data
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import retrofit2.HttpException
@@ -26,17 +28,21 @@ class ArtworkPagingSource(
             )
 
             val artworks = response.body()?.data ?: emptyList()
+            Log.i(TAG, "Page loaded with ${artworks.size} artworks")
             LoadResult.Page(
                 data = artworks,
                 prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
                 nextKey = if (artworks.isEmpty()) null else page + 1
             )
 
+
         } catch (exception: IOException) {
             // IOException for network failures.
+            Log.e(TAG , "Exception: $exception", exception)
             return LoadResult.Error(exception)
         } catch (exception: HttpException) {
             // HttpException for any non-2xx HTTP status codes.
+            Log.e(TAG, "HttpException: ${exception.code()}", exception)
             return LoadResult.Error(exception)
         }
     }
@@ -47,5 +53,9 @@ class ArtworkPagingSource(
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
+    }
+
+    companion object {
+        private const val TAG = "ArtworkPagingSource"
     }
 }
