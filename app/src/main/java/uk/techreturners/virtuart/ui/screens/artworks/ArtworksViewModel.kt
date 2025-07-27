@@ -39,17 +39,11 @@ class ArtworksViewModel @Inject constructor(
 
     private val _sourceFlow = authRepository.source
 
-    private val _refreshTrigger = MutableStateFlow(0) // For refresh functionality
-    private fun refreshArtworks() {
-        _refreshTrigger.value++
-    }
-
     val artworks: Flow<PagingData<ArtworkResult>> =
         _sourceFlow.flatMapLatest { source ->
-            _refreshTrigger.flatMapLatest { trigger -> // Allows for refresh
-                Log.i(TAG, "Current Source API: $source, Refresh Trigger: $trigger")
-                repository.getArtworks(source = source)
-            }
+            // Allows for refresh
+            Log.i(TAG, "Current Source API: $source")
+            repository.getArtworks(source = source)
         }.cachedIn(viewModelScope)
 
     fun onArtworkClicked(artworkId: String, source: String) {
@@ -79,15 +73,6 @@ class ArtworksViewModel @Inject constructor(
             Log.i(TAG, "Updated the Api Source: ${state.value.source}")
         } else {
             Log.i(TAG, "Api source not updated")
-        }
-    }
-
-    fun onTryAgainButtonClick() {
-        // Refresh the paging data to retry loading artworks
-        viewModelScope.launch {
-            // Increment the refresh counter to trigger a new paging flow
-            refreshArtworks()
-            Log.i(TAG, "Try Again Button clicked source: ${state.value.source}")
         }
     }
 

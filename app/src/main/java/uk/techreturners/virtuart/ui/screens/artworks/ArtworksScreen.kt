@@ -37,6 +37,6 @@ fun ArtworksScreen(
         onArtworkClick = viewModel::onArtworkClicked,
         toggleSourceDialog = viewModel::toggleShowApiSource,
         onUpdateApiSource = viewModel::updateApiSource,
-        onTryAgainClicked = viewModel::onTryAgainButtonClick
+        onTryAgainClicked = artworks::retry
     )
 }
