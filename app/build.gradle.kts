@@ -58,6 +58,23 @@ android {
             localProperties.getProperty("base.url.backend.wireless")
                 ?: "http://10.0.2.2:8080/api/v1/"
         )
+        resValue(
+            "string",
+            "wireless_ip",
+            localProperties.getProperty("wireless.ip")
+        )
+
+        // Generate network security config during configuration phase
+        val templateFile = file("src/main/res/xml/network_security_config_template.xml")
+        val targetFile = file("src/main/res/xml/network_security_config.xml")
+
+        if (templateFile.exists() && localPropertiesFile.exists()) {
+            val wirelessIp = localProperties.getProperty("wireless.ip") ?: "192.168.1.100"
+            val content = templateFile.readText().replace("WIRELESS_IP_PLACEHOLDER", wirelessIp)
+            targetFile.parentFile.mkdirs()
+            targetFile.writeText(content)
+            println("✅ Generated network_security_config.xml with IP: $wirelessIp")
+        }
     }
 
     buildTypes {
