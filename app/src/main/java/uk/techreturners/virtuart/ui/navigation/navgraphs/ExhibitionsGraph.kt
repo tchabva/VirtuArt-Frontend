@@ -11,6 +11,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -37,6 +39,7 @@ fun NavGraphBuilder.exhibitionsGraph(
     navigation<Tabs.Exhibitions>(startDestination = Screens.Exhibitions) {
         composable<Screens.Exhibitions> { backStackEntry ->
             val viewModel = hiltViewModel<ExhibitionsViewModel>()
+            val refreshExhibition by viewModel.getRefreshExhibitionValue().collectAsState()
 
             // Checks if we are returning from ExhibitionDetail and a refresh is required
             LaunchedEffect(backStackEntry) {
@@ -48,8 +51,8 @@ fun NavGraphBuilder.exhibitionsGraph(
                 }
             }
 
-            LaunchedEffect(viewModel.getRefreshExhibitionValue().value) {
-                if (viewModel.getRefreshExhibitionValue().value){
+            LaunchedEffect(refreshExhibition) {
+                if (viewModel.getRefreshExhibitionValue().value) {
                     viewModel.refreshExhibitions()
                     viewModel.resetRefreshExhibition()
                 }
