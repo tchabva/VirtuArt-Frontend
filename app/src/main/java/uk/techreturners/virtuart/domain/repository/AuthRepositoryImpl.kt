@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import uk.techreturners.virtuart.BuildConfig
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.domain.model.SignInResult
 import uk.techreturners.virtuart.domain.model.UserData
@@ -56,7 +57,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signIn(): SignInResult {
         try {
-            val webClientId = context.getString(R.string.web_client_id)
+            val webClientId = BuildConfig.WEB_CLIENT_ID
 
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)

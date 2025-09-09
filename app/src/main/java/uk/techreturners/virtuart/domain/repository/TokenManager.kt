@@ -8,7 +8,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.qualifiers.ApplicationContext
-import uk.techreturners.virtuart.R
+import uk.techreturners.virtuart.BuildConfig
 import javax.inject.Inject
 
 class TokenManager @Inject constructor(
@@ -52,7 +52,7 @@ class TokenManager @Inject constructor(
 
     private suspend fun attemptTokenRefresh(filterByAuthorizedAccounts: Boolean): Boolean {
         return try {
-            val webClientId = context.getString(R.string.web_client_id)
+            val webClientId = BuildConfig.WEB_CLIENT_ID
 
             val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)

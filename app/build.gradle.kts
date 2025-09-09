@@ -46,22 +46,23 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Inject IP address as String resources
-        resValue(
-            "string",
-            "web_client_id",
-            localProperties.getProperty("web.client.id") ?: "localhost"
-        )
-        resValue(
-            "string",
-            "base_url_backend_wireless",
-            localProperties.getProperty("base.url.backend.wireless")
-                ?: "http://10.0.2.2:8080/api/v1/"
-        )
+        // Inject IP address as String resource
         resValue(
             "string",
             "wireless_ip",
             localProperties.getProperty("wireless.ip")
+        )
+
+        // Add Web Client and Backend Base URL as BuildConfig attributes
+        buildConfigField(
+            "String",
+            "WEB_CLIENT_ID",
+            "\"${localProperties.getProperty("web.client.id")}\""
+        )
+        buildConfigField(
+            "String",
+            "BASE_BACKEND_URL_WIRELESS",
+            "\"${localProperties.getProperty("base.url.backend.wireless")}\""
         )
 
         // Generate network security config during configuration phase
