@@ -6,9 +6,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.dagger.hilt.android")
 }
 
 kotlin {
@@ -76,6 +76,12 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+
+    ksp {
+        arg("dagger.fastInit", "enabled")
+        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
     }
 }
 
@@ -112,8 +118,7 @@ dependencies {
     implementation(libs.compose.glide)
     // Glide core library
     implementation(libs.glide)
-    //noinspection KaptUsageInsteadOfKsp
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
 
     // Material 3 Extended Icons
     implementation(libs.androidx.material.icons.extended)
@@ -132,19 +137,9 @@ dependencies {
 
     // Dagger Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Add DataStore dependency
     implementation(libs.androidx.datastore.preferences)
-}
-
-kapt {
-    correctErrorTypes = true
-    arguments {
-        arg("dagger.fastInit", "enabled")
-        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
-        arg("dagger.hilt.android.internal.projectType", "app")
-        arg("dagger.hilt.internal.useAggregatingRootProcessor", "true")
-    }
 }
