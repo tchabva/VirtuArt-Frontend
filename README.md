@@ -1,28 +1,37 @@
 # VirtuArt Frontend
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.x-blue.svg)](https://kotlinlang.org)
-[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-1.6.x-brightgreen.svg)](https://developer.android.com/jetpack/compose)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.x-blue.svg)](https://kotlinlang.org)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-2025.08.01-brightgreen.svg)](https://developer.android.com/jetpack/compose)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is the official Android frontend for the VirtuArt Exhibit Curator. It allows users to browse artwork from world-renowned museums, create their own virtual exhibitions, and manage their collections.
+This is the official Android frontend for the VirtuArt Exhibit Curator. It allows users to browse artwork from world-renowned museums, create their own virtual exhibitions, and manage their collections with a modern, intuitive interface.
 
 This application is powered by the **[VirtuArt-Backend](https://github.com/tchabva/virtuart-backend)**.
 
 ## Features
--   Browse and search for artwork from multiple museum APIs.
--   View detailed information and high-resolution images of each artwork.
--   Create, view, update, and delete personal virtual exhibitions.
--   Add and remove artworks from your exhibitions.
--   User authentication via Google Sign-In.
+-   **Browse Artworks**: Explore artwork collections from multiple museum APIs with pagination support
+-   **Advanced Search**: Search artworks with simple and advanced filtering options
+-   **Artwork Details**: View comprehensive information including high-resolution images, artist details, and provenance
+-   **Virtual Exhibitions**: Create, view, update, and delete personal virtual exhibitions
+-   **Exhibition Management**: Add and remove artworks from your exhibitions with intuitive drag-and-drop interface
+-   **User Authentication**: Secure Google Sign-In integration with token management
+-   **Offline Support**: Cached artwork data for improved performance
+-   **Modern UI**: Material Design 3 with dark/light theme support
+-   **Responsive Design**: Optimized for various screen sizes and orientations
 
 ## Technologies Used
--   **Kotlin**: Official language for Android development.
--   **Jetpack Compose**: Modern toolkit for building native Android UI.
--   **ViewModel**: Manage UI-related data in a lifecycle-conscious way.
--   **Coroutines & StateFlow**: For asynchronous programming and reactive state management.
--   **Retrofit & OkHttp**: For making network requests to the backend API.
--   **Hilt**: For dependency injection.
--   **Material Design 3**: For UI components and styling.
+-   **Kotlin**: Official language for Android development with latest features
+-   **Jetpack Compose**: Modern declarative UI toolkit with Material Design 3
+-   **ViewModel & StateFlow**: Lifecycle-aware data management with reactive state handling
+-   **Coroutines**: Asynchronous programming with structured concurrency
+-   **Retrofit & OkHttp **: Type-safe HTTP client with advanced networking features
+-   **Hilt**: Dependency injection framework for scalable architecture
+-   **Paging**: Efficient loading and display of large datasets
+-   **Glide**: Image loading and caching library with Compose integration
+-   **Navigation Compose**: Type-safe navigation with deep linking support
+-   **DataStore**: Modern data storage solution for preferences
+-   **Google Identity Services**: Secure authentication with Google Sign-In
+-   **Material Design 3**: Latest design system with dynamic theming
 
 ## Prerequisites
 -   Android Studio (latest stable version recommended)
@@ -46,52 +55,21 @@ You need to tell the app where to find the backend API and your Google Sign-In C
 2.  Add the following lines to your `local.properties` file:
 
     ```properties
-    # Use 10.0.2.2 to connect to localhost from the Android emulator
-    BACKEND_URL="http://10.00.2.2:8080/api/v1/"
+    # Your computer's local IP address for wireless device connection
+    wireless.ip=192.168.1.100
     # Your Google Sign-In Web Client ID
-    WEB_CLIENT_ID="YOUR_GOOGLE_SIGN_IN_WEB_CLIENT_ID"
+    web.client.id=YOUR_GOOGLE_SIGN_IN_WEB_CLIENT_ID
+    # Backend base URL for wireless connection
+    base.url.backend.wireless=http://192.168.1.100:8080/api/v1/
     ```
-    **Note:** If you are running the app on a physical device, replace `10.0.2.2` with your computer's local IP address.
+    **Note:** Replace `192.168.1.100` with your computer's actual local IP address. You can find this by running `ipconfig` (Windows) or `ifconfig` (Mac/Linux).
 
-    You can obtain the `WEB_CLIENT_ID` from your Google API Console.
+    You can obtain the `web.client.id` from your Google API Console.
 
-### 4. Expose Properties in Gradle
-To make these properties available in the app, you need to add them to your `app/build.gradle.kts` file:
+### 4. Network Security Configuration
+The app automatically generates a network security configuration file during the build process. This allows the app to connect to your local backend server over HTTP.
 
-```kotlin
-// In app/build.gradle.kts
-
-import java.util.Properties
-import java.io.FileInputStream
-
-// ... other gradle config
-
-// Load properties from local.properties
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(FileInputStream(localPropertiesFile))
-}
-
-android {
-    // ...
-    defaultConfig {
-        // ...
-        buildConfigField("String", "BACKEND_URL", "\"${localProperties.getProperty("BACKEND_URL")}\"")
-    }
-    // ...
-}
-
-// And add the client ID as a string resource
-android {
-    // ...
-    defaultConfig {
-        // ...
-        resValue("string", "web_client_id", "\"${localProperties.getProperty("WEB_CLIENT_ID")}\"")
-    }
-    // ...
-}
-```
+The configuration is automatically created from the template file and your local IP address. No manual configuration is required.
 
 ### 5. Build and Run
 Open the project in Android Studio, let Gradle sync, and then run the application on an emulator or a physical device.
@@ -102,29 +80,32 @@ Open the project in Android Studio, let Gradle sync, and then run the applicatio
 
 Some files are ignored by version control and must be created/configured by each developer:
 
-- **`local.properties`**: Add your SDK path, `BACKEND_URL`, and `WEB_CLIENT_ID` (see above example).
+- **`local.properties`**: Add your SDK path, `wireless.ip`, `web.client.id`, and `base.url.backend.wireless` (see above example).
 - **Keystore files (`*.jks`, `*.keystore`)**: For release builds, generate your own keystore. Not required for debug/development.
-- **`app/src/main/res/xml/network_security_config.xml`**: If you need to allow cleartext traffic for local development, create this file. Example:
-
-```xml
-    <?xml version="1.0" encoding="utf-8"?>
-    <network-security-config>
-        <domain-config cleartextTrafficPermitted="true">
-            <!-- For the Android Emulator -->
-            <domain includeSubdomains="true">10.0.2.2</domain>
-            <!-- For a physical device (replace with your computer's IP) -->
-            <domain includeSubdomains="true">YOUR.LOCAL.IP.ADDRESS</domain>
-        </domain-config>
-    </network-security-config>
-    ```
-```
+- **`app/src/main/res/xml/network_security_config.xml`**: Automatically generated during build from the template file. No manual creation required.
 ## Project Structure
 ```
-app/src/main/java/com/example/virtuart
-├── ui              // UI components, screens, and themes (Jetpack Compose)
-├── viewmodel       // ViewModels for each screen
-├── data            // Repository, data sources, network API definitions
-├── di              // Dependency injection modules (Hilt)
+app/src/main/java/uk/techreturners/virtuart/
+├── ui/                     // UI components, screens, and themes (Jetpack Compose)
+│   ├── common/            // Reusable UI components
+│   ├── navigation/        // Navigation setup and routing
+│   ├── screens/           // Individual screen implementations
+│   │   ├── artworks/      // Artwork browsing and listing
+│   │   ├── artworkdetail/ // Detailed artwork view
+│   │   ├── exhibitions/   // Exhibition management
+│   │   ├── exhibitiondetail/ // Detailed exhibition view
+│   │   ├── search/        // Search functionality
+│   │   └── profile/       // User profile and settings
+│   └── theme/             // Material Design 3 theming
+├── data/                  // Data layer implementation
+│   ├── model/            // Data models and DTOs
+│   ├── paging/           // Paging data source
+│   ├── remote/           // API interfaces and network layer
+│   └── repository/       // Repository implementations
+├── domain/               // Domain layer
+│   ├── model/           // Domain models
+│   └── repository/      // Repository interfaces
+└── di/                  // Dependency injection modules (Hilt)
 ```
 
 ## Contributing
