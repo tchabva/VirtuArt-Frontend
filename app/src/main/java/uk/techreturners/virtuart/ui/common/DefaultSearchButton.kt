@@ -1,6 +1,5 @@
 package uk.techreturners.virtuart.ui.common
 
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -17,11 +16,12 @@ import uk.techreturners.virtuart.R
 @Composable
 fun DefaultSearchButton(
     onClick: () -> Unit,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    modifier: Modifier
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -37,7 +37,8 @@ fun DefaultSearchButton(
 private fun PreviewEnabledDefaultSearchButton(){
     DefaultSearchButton(
         isEnabled = true,
-        onClick = {}
+        onClick = {},
+        modifier = Modifier.fillMaxWidth()
     )
 }
 
@@ -46,6 +47,7 @@ private fun PreviewEnabledDefaultSearchButton(){
 private fun PreviewDisabledDefaultSearchButton(){
     DefaultSearchButton(
         isEnabled = false,
-        onClick = {}
+        onClick = {},
+        modifier = Modifier.fillMaxWidth()
     )
 }

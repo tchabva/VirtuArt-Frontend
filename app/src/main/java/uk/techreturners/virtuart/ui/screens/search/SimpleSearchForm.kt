@@ -67,6 +67,7 @@ internal fun SimpleSearchForm(
 
         // Search Button
         DefaultSearchButton(
+            modifier = Modifier.fillMaxWidth(),
             onClick = onSearch,
             isEnabled = !state.isSearching && !state.basicQuery.query.isNullOrBlank()
         )
