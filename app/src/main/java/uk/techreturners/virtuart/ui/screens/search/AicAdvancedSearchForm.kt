@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.AdvancedSearchRequest
+import uk.techreturners.virtuart.ui.common.DefaultSearchButton
 
 @Composable
 internal fun AicAdvancedSearchForm(
@@ -221,22 +222,16 @@ internal fun AicAdvancedSearchForm(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Search Button
-                Button(
+                DefaultSearchButton(
                     onClick = onSearch,
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    ),
-                    enabled = !state.isSearching && (
+                    isEnabled = !state.isSearching && (
                             !state.advancedSearchQuery.title.isNullOrBlank() ||
                                     !state.advancedSearchQuery.artist.isNullOrBlank() ||
                                     !state.advancedSearchQuery.medium.isNullOrBlank() ||
                                     !state.advancedSearchQuery.department.isNullOrBlank()
-                            )
-                ) {
-                    Text(text = stringResource(R.string.search))
-                }
+                            ),
+                    modifier = Modifier.weight(1f)
+                )
 
                 // Clear Button
                 OutlinedButton(
