@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.BasicSearchQuery
+import uk.techreturners.virtuart.ui.common.DefaultSearchButton
 
 @Composable
 internal fun SimpleSearchForm(
@@ -65,18 +66,10 @@ internal fun SimpleSearchForm(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Search Button
-        // TODO Refactor out to common Search Button
-        Button(
+        DefaultSearchButton(
             onClick = onSearch,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onSurfaceVariant
-            ),
-            enabled = !state.isSearching && !state.basicQuery.query.isNullOrBlank()
-        ) {
-            Text(text = stringResource(R.string.search))
-        }
+            isEnabled = !state.isSearching && !state.basicQuery.query.isNullOrBlank()
+        )
     }
 }
 
