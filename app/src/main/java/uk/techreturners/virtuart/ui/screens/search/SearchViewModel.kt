@@ -132,7 +132,7 @@ class SearchViewModel @Inject constructor(
                 _state.value = (state.value as State.Search).copy(
                     isSearching = false,
                     data = networkResponse.data,
-                    basicQuery = BasicSearchQuery() // TODO consider persisting the text onNext/Prev
+                    basicQuery = BasicSearchQuery()
                 )
                 Log.i(TAG, "Advanced Search Successful:${networkResponse.data.data}")
             }
@@ -363,7 +363,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onReturnToSearchButtonClicked(){
+    fun onReturnToSearchButtonClicked() {
         _state.value = State.Search(
             source = authRepository.source.value
         )
