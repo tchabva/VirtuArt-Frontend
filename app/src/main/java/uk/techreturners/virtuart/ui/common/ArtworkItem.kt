@@ -12,19 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import com.bumptech.glide.integration.compose.GlideSubcomposition
-import com.bumptech.glide.integration.compose.RequestState
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.ArtworkResult
 
@@ -38,43 +32,7 @@ fun ArtworkItem(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column {
-//            GlideSubcomposition(
-//                model = artwork.imageURL,
-//                modifier = Modifier.height(150.dp),
-//            ) {
-//                when (state) {
-//                    RequestState.Failure -> {
-//                        Image(
-//                            modifier = Modifier
-//                                .fillMaxWidth(),
-//                            painter = painterResource(R.drawable.ic_placeholder_artwork),
-//                            contentDescription = stringResource(
-//                                R.string.additional_images_content_description,
-//                                artwork.title
-//                            ),
-//                            contentScale = ContentScale.Crop
-//                        )
-//                    }
-//
-//                    RequestState.Loading -> {
-//                        DefaultProgressIndicator()
-//                    }
-//
-//                    is RequestState.Success -> {
-//                        Image(
-//                            modifier = Modifier
-//                                .fillMaxWidth(),
-//                            painter = painter,
-//                            contentDescription = stringResource(
-//                                R.string.additional_images_error,
-//                                artwork.title
-//                            ),
-//                            contentScale = ContentScale.Crop
-//                        )
-//                    }
-//                }
-//            }
-
+            // Artwork Image
             SubcomposeAsyncImage(
                 model = artwork.imageURL,
                 contentDescription = stringResource(
@@ -86,7 +44,7 @@ fun ArtworkItem(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp),
+                    .height(200.dp),
                 contentScale = ContentScale.Crop,
                 error = {
                     Image(
@@ -106,6 +64,7 @@ fun ArtworkItem(
             Column(
                 modifier = Modifier.padding(12.dp)
             ) {
+                // Artwork Title
                 Text(
                     text = artwork.title,
                     style = MaterialTheme.typography.titleSmall,
@@ -113,7 +72,7 @@ fun ArtworkItem(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-
+                // Artwork Artist
                 if (!artwork.artistTitle.isNullOrBlank()) {
                     Text(
                         text = artwork.artistTitle,
@@ -123,7 +82,7 @@ fun ArtworkItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
+                // Artwork Date
                 if (!artwork.date.isNullOrBlank()) {
                     Text(
                         text = artwork.date,
@@ -131,7 +90,7 @@ fun ArtworkItem(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
+                // Artwork Source
                 Text(
                     text = when (artwork.source) {
                         stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
