@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -160,44 +159,6 @@ private fun ArtworkImageCard(artwork: Artwork) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
-//        GlideSubcomposition(
-//            model = artwork.imageUrl,
-//            modifier = Modifier,
-//        ) {
-//            when (state) {
-//                RequestState.Failure -> {
-//                    Image(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .aspectRatio(4f / 3f),
-//                        painter = painterResource(R.drawable.ic_placeholder_artwork),
-//                        contentDescription = stringResource(
-//                            R.string.artwork_image_description_error,
-//                            artwork.title
-//                        ),
-//                        contentScale = ContentScale.Crop
-//                    )
-//                }
-//
-//                RequestState.Loading -> {
-//                    DefaultProgressIndicator()
-//                }
-//
-//                is RequestState.Success -> {
-//                    Image(
-//                        modifier = Modifier
-//                            .fillMaxWidth(),
-//                        painter = painter,
-//                        contentDescription = stringResource(
-//                            R.string.artwork_image_description,
-//                            artwork.title
-//                        ),
-//                        contentScale = ContentScale.Crop
-//                    )
-//                }
-//            }
-//        }
-
         SubcomposeAsyncImage(
             model = artwork.imageUrl,
             contentDescription = stringResource(
