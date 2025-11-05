@@ -18,7 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import uk.techreturners.virtuart.R
+import uk.techreturners.virtuart.BuildConfig
 import uk.techreturners.virtuart.data.remote.ArtworksApi
 import uk.techreturners.virtuart.data.remote.ExhibitionsApi
 import uk.techreturners.virtuart.data.remote.SearchApi
@@ -34,6 +34,7 @@ Allows for creation of singletons for which can then be injected where they are 
 @InstallIn(SingletonComponent::class)
 object AppModule {
     private const val INT_TAG = "AuthInterceptor"
+    private const val BACKEND_BASE_URL = BuildConfig.BASE_BACKEND_URL_WIRELESS
 
     @Provides
     @Singleton
@@ -127,12 +128,11 @@ object AppModule {
     @Provides
     @Singleton
     fun providesExhibitionsApi(
-        @ApplicationContext context: Context,
         okHttpClient: OkHttpClient
     ): ExhibitionsApi {
         return Retrofit
             .Builder()
-            .baseUrl(context.getString(R.string.base_url_backend_wireless))
+            .baseUrl(BACKEND_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -142,12 +142,11 @@ object AppModule {
     @Provides
     @Singleton
     fun providesArtworksApi(
-        @ApplicationContext context: Context,
         okHttpClient: OkHttpClient
     ): ArtworksApi {
         return Retrofit
             .Builder()
-            .baseUrl(context.getString(R.string.base_url_backend_wireless))
+            .baseUrl(BACKEND_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -157,12 +156,11 @@ object AppModule {
     @Provides
     @Singleton
     fun providesSearchApi(
-        @ApplicationContext context: Context,
         okHttpClient: OkHttpClient
     ): SearchApi {
         return Retrofit
             .Builder()
-            .baseUrl(context.getString(R.string.base_url_backend_wireless))
+            .baseUrl(BACKEND_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

@@ -6,9 +6,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.dagger.hilt.android")
 }
 
 kotlin {
@@ -46,18 +46,36 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Inject IP address as String resources
+        // Inject IP address as String resource
         resValue(
             "string",
-            "web_client_id",
-            localProperties.getProperty("web.client.id") ?: "localhost"
+            "wireless_ip",
+            localProperties.getProperty("wireless.ip")
         )
-        resValue(
-            "string",
-            "base_url_backend_wireless",
-            localProperties.getProperty("base.url.backend.wireless")
-                ?: "http://10.0.2.2:8080/api/v1/"
+
+        // Add Web Client and Backend Base URL as BuildConfig attributes
+        buildConfigField(
+            "String",
+            "WEB_CLIENT_ID",
+            "\"${localProperties.getProperty("web.client.id")}\""
         )
+        buildConfigField(
+            "String",
+            "BASE_BACKEND_URL_WIRELESS",
+            "\"${localProperties.getProperty("base.url.backend.wireless")}\""
+        )
+
+        // Generate network security config during configuration phase
+        val templateFile = file("src/main/res/xml/network_security_config_template.xml")
+        val targetFile = file("src/main/res/xml/network_security_config.xml")
+
+        if (templateFile.exists() && localPropertiesFile.exists()) {
+            val wirelessIp = localProperties.getProperty("wireless.ip") ?: "192.168.1.100"
+            val content = templateFile.readText().replace("WIRELESS_IP_PLACEHOLDER", wirelessIp)
+            targetFile.parentFile.mkdirs()
+            targetFile.writeText(content)
+            println("✅ Generated network_security_config.xml with IP: $wirelessIp")
+        }
     }
 
     buildTypes {
@@ -76,6 +94,12 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+
+    ksp {
+        arg("dagger.fastInit", "enabled")
+        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
     }
 }
 
@@ -112,8 +136,7 @@ dependencies {
     implementation(libs.compose.glide)
     // Glide core library
     implementation(libs.glide)
-    //noinspection KaptUsageInsteadOfKsp
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
 
     // Material 3 Extended Icons
     implementation(libs.androidx.material.icons.extended)
@@ -132,19 +155,9 @@ dependencies {
 
     // Dagger Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Add DataStore dependency
     implementation(libs.androidx.datastore.preferences)
-}
-
-kapt {
-    correctErrorTypes = true
-    arguments {
-        arg("dagger.fastInit", "enabled")
-        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
-        arg("dagger.hilt.android.internal.projectType", "app")
-        arg("dagger.hilt.internal.useAggregatingRootProcessor", "true")
-    }
 }

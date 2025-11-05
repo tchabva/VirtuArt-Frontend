@@ -26,7 +26,6 @@ class ExhibitionsRepositoryImpl @Inject constructor(
                 )
                 return NetworkResponse.Success(response.body()!!)
             } else {
-                // TODO add code for expired token response
                 Log.e(TAG, "Failed Retrieval of Albums: Code = $responseCode")
                 return NetworkResponse.Failed(
                     response.message() ?: "",

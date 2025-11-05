@@ -132,7 +132,7 @@ class SearchViewModel @Inject constructor(
                 _state.value = (state.value as State.Search).copy(
                     isSearching = false,
                     data = networkResponse.data,
-                    basicQuery = BasicSearchQuery() // TODO consider persisting the text onNext/Prev
+                    basicQuery = BasicSearchQuery()
                 )
                 Log.i(TAG, "Advanced Search Successful:${networkResponse.data.data}")
             }
@@ -354,6 +354,36 @@ class SearchViewModel @Inject constructor(
             _state.value = cState.copy(
                 pageSize = newPageSize
             )
+            // Note: I want to update the pageSize, and ensure that the current page does not go beyond the last page, possible do it in such a manner that it will automatically update the search if PaginatedArtworkResults is not null
+            if (cState.data != null){
+
+                val oldPageSize = cState.data.pageSize
+                val currentPage = cState.data.currentPage
+                val totalPages = cState.data.totalPages
+                val totalArtworks = cState.data.totalItems
+                val remainingArtworks = (totalPages - currentPage) * oldPageSize
+
+                if (remainingArtworks < newPageSize){
+                    if (totalArtworks % newPageSize == 0){
+
+                        _state.value = cState.copy(
+                            basicQuery = cState.basicQuery.copy(
+                                currentPage = totalPages / newPageSize
+                            )
+                        )
+                    } else {
+                        _state.value = cState.copy(
+                            basicQuery = cState.basicQuery.copy(
+                                currentPage = (totalPages / newPageSize) + 1
+                            )
+                        )
+                    }
+                }
+
+                if (cState.basicQuery.query != null) {
+                    onBasicSearch()
+                }
+            }
             Log.i(
                 TAG,
                 "Updated the Page Size: ${(state.value as State.Search).pageSize}"
@@ -363,7 +393,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onReturnToSearchButtonClicked(){
+    fun onReturnToSearchButtonClicked() {
         _state.value = State.Search(
             source = authRepository.source.value
         )
