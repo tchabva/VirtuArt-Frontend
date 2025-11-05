@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
 import com.bumptech.glide.integration.compose.GlideSubcomposition
 import com.bumptech.glide.integration.compose.RequestState
 import uk.techreturners.virtuart.R
@@ -158,43 +160,69 @@ private fun ArtworkImageCard(artwork: Artwork) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
-        GlideSubcomposition(
+//        GlideSubcomposition(
+//            model = artwork.imageUrl,
+//            modifier = Modifier,
+//        ) {
+//            when (state) {
+//                RequestState.Failure -> {
+//                    Image(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .aspectRatio(4f / 3f),
+//                        painter = painterResource(R.drawable.ic_placeholder_artwork),
+//                        contentDescription = stringResource(
+//                            R.string.artwork_image_description_error,
+//                            artwork.title
+//                        ),
+//                        contentScale = ContentScale.Crop
+//                    )
+//                }
+//
+//                RequestState.Loading -> {
+//                    DefaultProgressIndicator()
+//                }
+//
+//                is RequestState.Success -> {
+//                    Image(
+//                        modifier = Modifier
+//                            .fillMaxWidth(),
+//                        painter = painter,
+//                        contentDescription = stringResource(
+//                            R.string.artwork_image_description,
+//                            artwork.title
+//                        ),
+//                        contentScale = ContentScale.Crop
+//                    )
+//                }
+//            }
+//        }
+
+        SubcomposeAsyncImage(
             model = artwork.imageUrl,
-            modifier = Modifier,
-        ) {
-            when (state) {
-                RequestState.Failure -> {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(4f / 3f),
-                        painter = painterResource(R.drawable.ic_placeholder_artwork),
-                        contentDescription = stringResource(
-                            R.string.artwork_image_description_error,
-                            artwork.title
-                        ),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                RequestState.Loading -> {
-                    DefaultProgressIndicator()
-                }
-
-                is RequestState.Success -> {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        painter = painter,
-                        contentDescription = stringResource(
-                            R.string.artwork_image_description,
-                            artwork.title
-                        ),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+            contentDescription = stringResource(
+                R.string.artwork_image_description,
+                artwork.title
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            loading = {
+                DefaultProgressIndicator()
+            },
+            contentScale = ContentScale.FillWidth,
+            error = {
+                Image(
+                    painter = painterResource(R.drawable.ic_placeholder_artwork),
+                    contentDescription = stringResource(
+                        R.string.artwork_image_description_error,
+                        artwork.title
+                    ),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(4f / 3f),
+                )
             }
-        }
+        )
     }
 }
 
