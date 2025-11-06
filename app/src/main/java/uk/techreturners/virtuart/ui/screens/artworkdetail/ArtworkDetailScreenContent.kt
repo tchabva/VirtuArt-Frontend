@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -325,39 +326,63 @@ fun AdditionalImagesCard(artwork: Artwork) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(artwork.altImageUrls) { imageUrl ->
-                    GlideSubcomposition(
+//                    GlideSubcomposition(
+//                        model = imageUrl,
+//                        modifier = Modifier
+//                            .size(168.dp),
+//                    ) {
+//                        when (state) {
+//                            RequestState.Failure -> {
+//                                Image(
+//                                    painter = painterResource(R.drawable.ic_placeholder_artwork),
+//                                    contentDescription = stringResource(
+//                                        R.string.additional_images_content_description,
+//                                        artwork.title
+//                                    ),
+//                                    contentScale = ContentScale.Crop
+//                                )
+//                            }
+//
+//                            RequestState.Loading -> {
+//                                DefaultProgressIndicator()
+//                            }
+//
+//                            is RequestState.Success -> {
+//                                Image(
+//                                    painter = painter,
+//                                    contentDescription = stringResource(
+//                                        R.string.additional_images_error,
+//                                        artwork.title
+//                                    ),
+//                                    contentScale = ContentScale.Crop
+//                                )
+//                            }
+//                        }
+//                    }
+
+                    SubcomposeAsyncImage(
                         model = imageUrl,
+                        contentDescription = stringResource(
+                            R.string.additional_images_content_description,
+                            artwork.title
+                        ),
                         modifier = Modifier
                             .size(168.dp),
-                    ) {
-                        when (state) {
-                            RequestState.Failure -> {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_placeholder_artwork),
-                                    contentDescription = stringResource(
-                                        R.string.additional_images_content_description,
-                                        artwork.title
-                                    ),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-
-                            RequestState.Loading -> {
-                                DefaultProgressIndicator()
-                            }
-
-                            is RequestState.Success -> {
-                                Image(
-                                    painter = painter,
-                                    contentDescription = stringResource(
-                                        R.string.additional_images_error,
-                                        artwork.title
-                                    ),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+                        contentScale = ContentScale.Crop,
+                        loading = {
+                            DefaultProgressIndicator()
+                        },
+                        error = {
+                            Image(
+                                painter = painterResource(R.drawable.ic_placeholder_artwork),
+                                contentDescription = stringResource(
+                                    R.string.artwork_image_description_error,
+                                    artwork.title
+                                ),
+                                contentScale = ContentScale.Crop
+                            )
                         }
-                    }
+                    )
                 }
             }
         }
