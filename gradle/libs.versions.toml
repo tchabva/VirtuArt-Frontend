@@ -3,9 +3,8 @@ agp = "8.13.0"
 credentials = "1.5.0"
 datastorePreferences = "1.1.7"
 googleid = "1.1.1"
-glide = "5.0.5"
 kotlin = "2.2.21"
-ksp = "2.2.10-2.0.2"
+ksp = "2.2.20-2.0.4"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -17,11 +16,11 @@ okhttpAndLoggingInterceptor = "5.3.0"
 paging = "3.3.6"
 retrofitAndGson = "3.0.0"
 navigationCompose = "2.9.5"
-composeGlide = "1.0.0-beta01"
 materialIconsExtended = "1.7.8"
 desugarJdkLibs = "2.1.5"
 hiltAndroid = "2.57.2"
 hiltNavigationCompose = "1.3.0"
+coil = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,11 +47,6 @@ logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", ver
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 # Compose Navigation
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-# Glide Compose
-compose-glide = { module = "com.github.bumptech.glide:compose", version.ref = "composeGlide" }
-# Glide Core Library
-glide = {module = "com.github.bumptech.glide:glide", version.ref = "glide"}
-glide-compiler = {module = "com.github.bumptech.glide:compiler", version.ref = "glide"}
 # Material 3 Extended Icons
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 # JDK Desugaring Libraries
@@ -61,13 +55,16 @@ desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
-#Paging
+# Paging
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 # Dagger Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+# Coil Compose
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil"}
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

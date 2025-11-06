@@ -24,10 +24,10 @@ This application is powered by the **[VirtuArt-Backend](https://github.com/tchab
 -   **Jetpack Compose**: Modern declarative UI toolkit with Material Design 3
 -   **ViewModel & StateFlow**: Lifecycle-aware data management with reactive state handling
 -   **Coroutines**: Asynchronous programming with structured concurrency
--   **Retrofit & OkHttp **: Type-safe HTTP client with advanced networking features
+-   **Retrofit & OkHttp**: Type-safe HTTP client with advanced networking features
 -   **Hilt**: Dependency injection framework for scalable architecture
 -   **Paging**: Efficient loading and display of large datasets
--   **Glide**: Image loading and caching library with Compose integration
+-   **Coil**: Image loading and caching library with Compose integration
 -   **Navigation Compose**: Type-safe navigation with deep linking support
 -   **DataStore**: Modern data storage solution for preferences
 -   **Google Identity Services**: Secure authentication with Google Sign-In

@@ -36,8 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.GlideSubcomposition
-import com.bumptech.glide.integration.compose.RequestState
+import coil3.compose.SubcomposeAsyncImage
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.domain.model.UserData
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
@@ -90,36 +89,26 @@ private fun ProfileScreenSignedIn(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Profile Picture
-        GlideSubcomposition(
+        SubcomposeAsyncImage(
             model = signedInState.currentUser?.profilePicture,
+            contentDescription = stringResource(R.string.user_profile_picture_description),
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape),
-        ) {
-            when (state) {
-                RequestState.Failure -> {
-                    Image(
-                        painter = painterResource(R.drawable.ic_placeholder_artwork),
-                        contentDescription = stringResource(R.string.user_profile_picture_description),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                RequestState.Loading -> {
-                    DefaultProgressIndicator()
-                }
-
-                is RequestState.Success -> {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        painter = painter,
-                        contentDescription = stringResource(R.string.user_profile_picture_description),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+            contentScale = ContentScale.Crop,
+            loading = {
+                DefaultProgressIndicator()
+            },
+            error = {
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    painter = painter,
+                    contentDescription = stringResource(R.string.user_profile_picture_description),
+                    contentScale = ContentScale.Crop
+                )
             }
-        }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

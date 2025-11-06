@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -12,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,11 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.GlideSubcomposition
-import com.bumptech.glide.integration.compose.RequestState
+import coil3.compose.SubcomposeAsyncImage
 import uk.techreturners.virtuart.R
 import uk.techreturners.virtuart.data.model.ExhibitionItem
-import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 
 @Composable
 fun ExhibitionArtworkItem(
@@ -49,48 +49,48 @@ fun ExhibitionArtworkItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            GlideSubcomposition(
+
+            // Artwork Image
+            SubcomposeAsyncImage(
                 model = artwork.imageUrl,
+                contentDescription = stringResource(
+                    R.string.artwork_image_description,
+                    artwork.title ?: "Unknown Artwork"
+                ),
+                loading = {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .width(40.dp)
+                            .align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                },
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            ) {
-                when (state) {
-                    RequestState.Failure -> {
-                        Image(
-                            painter = painterResource(R.drawable.ic_placeholder_artwork),
-                            contentDescription = stringResource(
-                                R.string.artwork_image_description_error,
-                                artwork.title ?: "Unknown Artwork"
-                            ),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-
-                    RequestState.Loading -> {
-                        DefaultProgressIndicator()
-                    }
-
-                    is RequestState.Success -> {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            painter = painter,
-                            contentDescription = stringResource(
-                                R.string.artwork_image_description,
-                                artwork.title ?: "Unknown Artwork"
-                            ),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop,
+                error = {
+                    Image(
+                        painter = painterResource(R.drawable.ic_placeholder_artwork),
+                        contentDescription = stringResource(
+                            R.string.artwork_image_description_error,
+                            artwork.title ?: "Unknown Artwork"
+                        ),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(150.dp)
+                    )
                 }
-            }
+            )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                // Artwork Title
                 Text(
                     text = artwork.title ?: "",
                     style = MaterialTheme.typography.titleMedium,
@@ -98,7 +98,7 @@ fun ExhibitionArtworkItem(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-
+                // Artwork Artist
                 if (!artwork.artist.isNullOrBlank()) {
                     Text(
                         text = artwork.artist,
@@ -106,7 +106,7 @@ fun ExhibitionArtworkItem(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
+                // Artwork Date
                 if (!artwork.date.isNullOrBlank()) {
                     Text(
                         text = artwork.date,
@@ -114,17 +114,16 @@ fun ExhibitionArtworkItem(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
+                // Artwork Source
                 Text(
                     text = stringResource(R.string.source_colon_text, artwork.source),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium
                 )
-
             }
 
-            // Will show the show the Dialog with to confirm
+            // Shows Delete Artwork Confirmation Dialog
             IconButton(onClick = {
                 onShowDeleteDialog(
                     artwork.apiId,
