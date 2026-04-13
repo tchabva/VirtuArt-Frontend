@@ -3,8 +3,11 @@ package uk.techreturners.virtuart.ui.screens.search
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import uk.techreturners.virtuart.R
 
 @Composable
 fun SearchScreen(
@@ -12,6 +15,7 @@ fun SearchScreen(
     onArtworkClick: (String, String) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
+    val currentContext by rememberUpdatedState(context)
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -22,8 +26,8 @@ fun SearchScreen(
 
                 SearchViewModel.Event.EmptySearchQuery -> {
                     Toast.makeText(
-                        context,
-                        "Please enter search criteria",
+                        currentContext,
+                        currentContext.getString(R.string.please_enter_search_criteria_txt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

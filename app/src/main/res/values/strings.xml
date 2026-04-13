@@ -104,4 +104,5 @@
     <string name="token_refresh_failed_txt">Error occurred, you have been signed out!</string>
     <string name="failed_to_update_exhibition_txt">Failed to update Exhibition</string>
     <string name="exhibition_update_failed_due_to_network_error_txt">Failed to delete artwork from exhibition due to network error</string>
+    <string name="please_enter_search_criteria_txt">Please enter search criteria</string>
 </resources>
