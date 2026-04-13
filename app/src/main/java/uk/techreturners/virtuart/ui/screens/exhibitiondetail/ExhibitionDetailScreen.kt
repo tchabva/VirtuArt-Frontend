@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.techreturners.virtuart.R
@@ -21,21 +23,22 @@ fun ExhibitionDetailScreen(
     onTryAgainButtonClicked: () -> Unit
 ) {
     val context = LocalContext.current
+    val currentContext by rememberUpdatedState(context)
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is ExhibitionDetailViewModel.Event.DeleteExhibitionArtworkItemFailed -> {
                     Toast.makeText(
-                        context,
-                        context.getString(R.string.failed_to_delete_artwork_from_the_exhibition),
+                        currentContext,
+                        currentContext.getString(R.string.failed_to_delete_artwork_from_the_exhibition),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
 
                 is ExhibitionDetailViewModel.Event.DeleteExhibitionArtworkItemNetworkError -> {
                     Toast.makeText(
-                        context,
+                        currentContext,
                         "Failed to delete artwork from exhibition due to network error",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -47,16 +50,16 @@ fun ExhibitionDetailScreen(
 
                 ExhibitionDetailViewModel.Event.DeleteExhibitionFailed -> {
                     Toast.makeText(
-                        context,
-                        context.getString(R.string.failed_to_delete_exhibition_toast_txt),
+                        currentContext,
+                        currentContext.getString(R.string.failed_to_delete_exhibition_toast_txt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
 
                 ExhibitionDetailViewModel.Event.DeleteExhibitionFailedNetwork -> {
                     Toast.makeText(
-                        context,
-                        context.getString(R.string.delete_exhibition_network_txt),
+                        currentContext,
+                        currentContext.getString(R.string.delete_exhibition_network_txt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -67,7 +70,7 @@ fun ExhibitionDetailScreen(
 
                 ExhibitionDetailViewModel.Event.ExhibitionDetailsUpdateFailed -> {
                     Toast.makeText(
-                        context,
+                        currentContext,
                         "Failed to update Exhibition",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -84,7 +87,7 @@ fun ExhibitionDetailScreen(
                 ExhibitionDetailViewModel.Event.ExhibitionTitleTextFieldEmpty -> {
                     Toast.makeText(
                         context,
-                        context.getString(R.string.empty_title_warning_txt),
+                        currentContext.getString(R.string.empty_title_warning_txt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -95,8 +98,8 @@ fun ExhibitionDetailScreen(
 
                 ExhibitionDetailViewModel.Event.ExhibitionDetailsUnchanged -> {
                     Toast.makeText(
-                        context,
-                        context.getString(R.string.there_are_no_changes_to_update),
+                        currentContext,
+                        currentContext.getString(R.string.there_are_no_changes_to_update),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
