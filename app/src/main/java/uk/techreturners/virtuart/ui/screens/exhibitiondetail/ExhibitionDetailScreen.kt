@@ -39,7 +39,7 @@ fun ExhibitionDetailScreen(
                 is ExhibitionDetailViewModel.Event.DeleteExhibitionArtworkItemNetworkError -> {
                     Toast.makeText(
                         currentContext,
-                        "Failed to delete artwork from exhibition due to network error",
+                        currentContext.getString(R.string.exhibition_update_failed_due_to_network_error_txt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -71,7 +71,7 @@ fun ExhibitionDetailScreen(
                 ExhibitionDetailViewModel.Event.ExhibitionDetailsUpdateFailed -> {
                     Toast.makeText(
                         currentContext,
-                        "Failed to update Exhibition",
+                        currentContext.getString(R.string.failed_to_update_exhibition_txt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
