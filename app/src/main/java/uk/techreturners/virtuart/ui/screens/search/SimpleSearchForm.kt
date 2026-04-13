@@ -4,16 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +25,7 @@ import uk.techreturners.virtuart.ui.common.DefaultSearchButton
 @Composable
 internal fun SimpleSearchForm(
     state: SearchViewModel.State.Search,
+    isSearchLoading: Boolean,
     onQueryChange: (String) -> Unit = {},
     onSearch: () -> Unit = {},
     onClear: () -> Unit = {}
@@ -69,7 +66,7 @@ internal fun SimpleSearchForm(
         DefaultSearchButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = onSearch,
-            isEnabled = !state.isSearching && !state.basicQuery.query.isNullOrBlank()
+            isEnabled = !isSearchLoading && !state.basicQuery.query.isNullOrBlank()
         )
     }
 }
@@ -79,11 +76,11 @@ internal fun SimpleSearchForm(
 private fun SimpleSearchFormPreview() {
     SimpleSearchForm(
         state = SearchViewModel.State.Search(
-            data = null,
             basicQuery = BasicSearchQuery(
                 query = "Monet"
             ),
             source = "aic"
         ),
+        isSearchLoading = false,
     )
 }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import uk.techreturners.virtuart.R
 
 @Composable
@@ -35,10 +36,20 @@ fun SearchScreen(
         }
     }
 
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val searchMetadata by viewModel.searchMetadata.collectAsStateWithLifecycle()
+    val hasActiveSearch by viewModel.hasActiveSearch.collectAsStateWithLifecycle()
+    val artworks = viewModel.searchResults.collectAsLazyPagingItems()
+
+    val searchState = when (val s = state) {
+        is SearchViewModel.State.Search -> s
+    }
 
     SearchScreenContent(
-        state = state.value,
+        state = searchState,
+        searchMetadata = searchMetadata,
+        hasActiveSearch = hasActiveSearch,
+        artworks = artworks,
         onToggleAdvancedSearch = viewModel::toggleAdvancedSearch,
         onTitleChange = viewModel::updateAdvancedSearchTitle,
         onArtistChange = viewModel::updateAdvancedSearchArtist,
@@ -52,8 +63,6 @@ fun SearchScreen(
         onBasicSearch = viewModel::onBasicSearch,
         onBasicQueryChange = viewModel::updateBasicSearch,
         onArtworkItemClick = onArtworkClick,
-        onPreviousClick = viewModel::onPreviousClick,
-        onNextClick = viewModel::onNextClick,
         toggleApiSourceDialog = viewModel::toggleShowApiSourceDialog,
         onUpdateApiSource = viewModel::updateApiSource,
         togglePageSizeDialog = viewModel::toggleShowPageSizeDialog,

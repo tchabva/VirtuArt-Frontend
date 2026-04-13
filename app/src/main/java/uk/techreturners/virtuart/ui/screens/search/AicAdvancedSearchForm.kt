@@ -15,10 +15,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -40,6 +40,7 @@ import uk.techreturners.virtuart.ui.common.DefaultSearchButton
 @Composable
 internal fun AicAdvancedSearchForm(
     state: SearchViewModel.State.Search,
+    isSearchLoading: Boolean,
     onTitleChange: (String) -> Unit,
     onArtistChange: (String) -> Unit,
     onMediumChange: (String) -> Unit,
@@ -149,7 +150,7 @@ internal fun AicAdvancedSearchForm(
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         modifier = Modifier.menuAnchor(
-                            type = MenuAnchorType.PrimaryNotEditable,
+                            type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
                             enabled = true
                         )
                     )
@@ -188,7 +189,7 @@ internal fun AicAdvancedSearchForm(
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = orderExpanded) },
                         modifier = Modifier.menuAnchor(
-                            type = MenuAnchorType.PrimaryNotEditable,
+                            type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
                             enabled = true
                         )
                     )
@@ -222,7 +223,7 @@ internal fun AicAdvancedSearchForm(
                 // Search Button
                 DefaultSearchButton(
                     onClick = onSearch,
-                    isEnabled = !state.isSearching && (
+                    isEnabled = !isSearchLoading && (
                             !state.advancedSearchQuery.title.isNullOrBlank() ||
                                     !state.advancedSearchQuery.artist.isNullOrBlank() ||
                                     !state.advancedSearchQuery.medium.isNullOrBlank() ||
@@ -255,12 +256,12 @@ internal fun AicAdvancedSearchForm(
 private fun AicAdvancedSearchFormPreview() {
     AicAdvancedSearchForm(
         state = SearchViewModel.State.Search(
-            data = null,
             advancedSearchQuery = AdvancedSearchRequest(
                 title = "name"
             ),
             source = "aic"
         ),
+        isSearchLoading = false,
         onTitleChange = {},
         onArtistChange = {},
         onMediumChange = {},

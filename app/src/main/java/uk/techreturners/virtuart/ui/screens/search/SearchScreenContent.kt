@@ -1,6 +1,7 @@
 package uk.techreturners.virtuart.ui.screens.search
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -26,9 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import uk.techreturners.virtuart.R
+import uk.techreturners.virtuart.data.model.ArtworkResult
+import uk.techreturners.virtuart.data.model.PaginatedArtworkResults
 import uk.techreturners.virtuart.ui.common.ArtworkItem
 import uk.techreturners.virtuart.ui.common.DefaultErrorScreen
 import uk.techreturners.virtuart.ui.common.DefaultNoArtworksCard
@@ -36,11 +40,13 @@ import uk.techreturners.virtuart.ui.common.DefaultPageSizeButton
 import uk.techreturners.virtuart.ui.common.DefaultProgressIndicator
 import uk.techreturners.virtuart.ui.common.DefaultSourceButton
 import uk.techreturners.virtuart.ui.common.DefaultSourceDialog
-import uk.techreturners.virtuart.ui.common.PaginationControls
 
 @Composable
 fun SearchScreenContent(
-    state: SearchViewModel.State,
+    state: SearchViewModel.State.Search,
+    searchMetadata: PaginatedArtworkResults?,
+    hasActiveSearch: Boolean,
+    artworks: LazyPagingItems<ArtworkResult>,
     onToggleAdvancedSearch: () -> Unit = {},
     onTitleChange: (String) -> Unit = {},
     onArtistChange: (String) -> Unit = {},
@@ -54,52 +60,44 @@ fun SearchScreenContent(
     onBasicSearch: () -> Unit = {},
     onBasicQueryChange: (String) -> Unit = {},
     onArtworkItemClick: (String, String) -> Unit = { _, _ -> },
-    onPreviousClick: () -> Unit,
-    onNextClick: () -> Unit,
     toggleApiSourceDialog: () -> Unit = {},
     onUpdateApiSource: (String) -> Unit,
     togglePageSizeDialog: () -> Unit,
     onUpdatePageSize: (Int) -> Unit,
-    onReturnToSearchClicked: () -> Unit
+    onReturnToSearchClicked: () -> Unit,
 ) {
-    when (state) {
-        is SearchViewModel.State.Error, is SearchViewModel.State.NetworkError -> {
-            DefaultErrorScreen(
-                buttonText = stringResource(R.string.return_to_search),
-                onClick = onReturnToSearchClicked
-            )
-        }
-
-        is SearchViewModel.State.Search -> {
-            SearchScreenSearch(
-                state = state,
-                onToggleAdvancedSearch = onToggleAdvancedSearch,
-                onTitleChange = onTitleChange,
-                onArtistChange = onArtistChange,
-                onMediumChange = onMediumChange,
-                onCategoryChange = onCategoryChange,
-                onSortByChange = onSortByChange,
-                onSortOrderChange = onSortOrderChange,
-                onAdvancedSearch = onAdvancedSearch,
-                onClearAdvancedSearch = onClearAdvancedSearch,
-                onClearBasicSearch = onClearBasicSearch,
-                onBasicSearch = onBasicSearch,
-                onBasicQueryChange = onBasicQueryChange,
-                onArtworkItemClick = onArtworkItemClick,
-                onPreviousClick = onPreviousClick,
-                onNextClick = onNextClick,
-                toggleApiSourceDialog = toggleApiSourceDialog,
-                onUpdateApiSource = onUpdateApiSource,
-                togglePageSizeDialog = togglePageSizeDialog,
-                onUpdatePageSize = onUpdatePageSize,
-            )
-        }
-    }
+    SearchScreenSearch(
+        state = state,
+        searchMetadata = searchMetadata,
+        hasActiveSearch = hasActiveSearch,
+        artworks = artworks,
+        onToggleAdvancedSearch = onToggleAdvancedSearch,
+        onTitleChange = onTitleChange,
+        onArtistChange = onArtistChange,
+        onMediumChange = onMediumChange,
+        onCategoryChange = onCategoryChange,
+        onSortByChange = onSortByChange,
+        onSortOrderChange = onSortOrderChange,
+        onAdvancedSearch = onAdvancedSearch,
+        onClearAdvancedSearch = onClearAdvancedSearch,
+        onClearBasicSearch = onClearBasicSearch,
+        onBasicSearch = onBasicSearch,
+        onBasicQueryChange = onBasicQueryChange,
+        onArtworkItemClick = onArtworkItemClick,
+        toggleApiSourceDialog = toggleApiSourceDialog,
+        onUpdateApiSource = onUpdateApiSource,
+        togglePageSizeDialog = togglePageSizeDialog,
+        onUpdatePageSize = onUpdatePageSize,
+        onReturnToSearchClicked = onReturnToSearchClicked,
+    )
 }
 
 @Composable
 private fun SearchScreenSearch(
     state: SearchViewModel.State.Search,
+    searchMetadata: PaginatedArtworkResults?,
+    hasActiveSearch: Boolean,
+    artworks: LazyPagingItems<ArtworkResult>,
     onToggleAdvancedSearch: () -> Unit,
     onTitleChange: (String) -> Unit,
     onArtistChange: (String) -> Unit,
@@ -113,20 +111,20 @@ private fun SearchScreenSearch(
     onBasicSearch: () -> Unit,
     onBasicQueryChange: (String) -> Unit,
     onArtworkItemClick: (String, String) -> Unit = { _, _ -> },
-    onPreviousClick: () -> Unit,
-    onNextClick: () -> Unit,
     toggleApiSourceDialog: () -> Unit,
     onUpdateApiSource: (String) -> Unit,
     togglePageSizeDialog: () -> Unit,
-    onUpdatePageSize: (Int) -> Unit
-
+    onUpdatePageSize: (Int) -> Unit,
+    onReturnToSearchClicked: () -> Unit,
 ) {
+    val isSearchLoading =
+        hasActiveSearch && artworks.loadState.refresh is LoadState.Loading
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Header Row
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -174,6 +172,7 @@ private fun SearchScreenSearch(
         if (state.showAdvancedSearch) {
             AicAdvancedSearchForm(
                 state = state,
+                isSearchLoading = isSearchLoading,
                 onTitleChange = onTitleChange,
                 onArtistChange = onArtistChange,
                 onMediumChange = onMediumChange,
@@ -188,6 +187,7 @@ private fun SearchScreenSearch(
         } else {
             SimpleSearchForm(
                 state = state,
+                isSearchLoading = isSearchLoading,
                 onQueryChange = onBasicQueryChange,
                 onSearch = onBasicSearch,
                 onClear = onClearBasicSearch
@@ -196,97 +196,78 @@ private fun SearchScreenSearch(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        if (state.data == null) {
-            val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
-                stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
-                else -> stringResource(R.string.unknown)
+        when {
+            !hasActiveSearch -> {
+                SearchIdleHint(state = state)
             }
-            Text(
-                text = stringResource(R.string.source_museum_text, source),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(16.dp))
 
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.enter_search_terms_txt),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
+            artworks.loadState.refresh is LoadState.Error -> {
+                DefaultErrorScreen(
+                    buttonText = stringResource(R.string.return_to_search),
+                    onClick = onReturnToSearchClicked
                 )
             }
-        } else if (state.data.data.isEmpty()) {
-            val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
-                stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
-                else -> stringResource(R.string.unknown)
-            }
-            Text(
-                text = stringResource(R.string.found_no_results_src_txt, source),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            DefaultNoArtworksCard()
-        } else {
-            val source = when (state.source) {
-                stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
-                stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
-                else -> stringResource(R.string.unknown)
-            }
-            Text(
-                text = stringResource(
-                    R.string.found_results_from_the_src_txt,
-                    state.data.totalItems,
-                    source
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Search Results
-            if (state.isSearching) {
+            artworks.loadState.refresh is LoadState.Loading && artworks.itemCount == 0 -> {
                 DefaultProgressIndicator()
-            } else {
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Adaptive(150.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalItemSpacing = 8.dp,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    items(state.data.data) { artwork ->
-                        ArtworkItem(
-                            artwork = artwork,
-                            onClick = onArtworkItemClick
-                        )
+            }
+
+            searchMetadata != null && searchMetadata.totalItems == 0 -> {
+                SearchResultsHeader(
+                    state = state,
+                    totalItems = 0,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                DefaultNoArtworksCard()
+            }
+
+            else -> {
+                val totalItems = searchMetadata?.totalItems ?: artworks.itemCount
+                SearchResultsHeader(
+                    state = state,
+                    totalItems = totalItems,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (artworks.itemCount == 0) {
+                    DefaultProgressIndicator()
+                } else {
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Adaptive(150.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalItemSpacing = 8.dp,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        items(
+                            count = artworks.itemCount,
+                        ) { index ->
+                            val artwork = artworks[index]
+                            if (artwork != null) {
+                                ArtworkItem(
+                                    artwork = artwork,
+                                    onClick = onArtworkItemClick,
+                                )
+                            }
+                        }
+
+                        if (artworks.loadState.append is LoadState.Loading) {
+                            item(span = StaggeredGridItemSpan.FullLine) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                ) {
+                                    DefaultProgressIndicator()
+                                }
+                            }
+                        }
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            PaginationControls(
-                totalPages = state.data.totalPages,
-                currentPage = state.data.currentPage,
-                hasNext = state.data.hasNext,
-                hasPrevious = state.data.hasPrevious,
-                onPreviousClick = onPreviousClick,
-                onNextClick = onNextClick,
-            )
         }
     }
 
-    // Source Dialog,
     if (state.showApiSource) {
         DefaultSourceDialog(
             onDismiss = toggleApiSourceDialog,
@@ -295,7 +276,6 @@ private fun SearchScreenSearch(
         )
     }
 
-    // Page Size Dialog
     if (state.showPageSize) {
         PageSizeDialog(
             onDismiss = togglePageSizeDialog,
@@ -305,31 +285,56 @@ private fun SearchScreenSearch(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun SearchScreenSearchPreview() {
-    SearchScreenSearch(
-        state = SearchViewModel.State.Search(
-            showAdvancedSearch = true,
-            source = "cma"
-        ),
-        onToggleAdvancedSearch = {},
-        onTitleChange = {},
-        onArtistChange = {},
-        onMediumChange = {},
-        onCategoryChange = {},
-        onSortByChange = {},
-        onSortOrderChange = {},
-        onAdvancedSearch = {},
-        onClearAdvancedSearch = {},
-        onClearBasicSearch = {},
-        onBasicSearch = {},
-        onBasicQueryChange = {},
-        onPreviousClick = {},
-        onNextClick = {},
-        toggleApiSourceDialog = {},
-        onUpdateApiSource = {},
-        togglePageSizeDialog = {},
-        onUpdatePageSize = {},
+private fun SearchIdleHint(state: SearchViewModel.State.Search) {
+    val source = when (state.source) {
+        stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
+        stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
+        else -> stringResource(R.string.unknown)
+    }
+    Text(
+        text = stringResource(R.string.source_museum_text, source),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(R.string.enter_search_terms_txt),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+@Composable
+private fun SearchResultsHeader(
+    state: SearchViewModel.State.Search,
+    totalItems: Int,
+) {
+    val source = when (state.source) {
+        stringResource(R.string.aic) -> stringResource(R.string.aic_full_name)
+        stringResource(R.string.cma) -> stringResource(R.string.cma_full_name)
+        else -> stringResource(R.string.unknown)
+    }
+    val text = if (totalItems == 0) {
+        stringResource(R.string.found_no_results_src_txt, source)
+    } else {
+        stringResource(
+            R.string.found_results_from_the_src_txt,
+            totalItems,
+            source
+        )
+    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
