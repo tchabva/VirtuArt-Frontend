@@ -3,6 +3,8 @@ package uk.techreturners.virtuart.ui.screens.artworks
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -16,6 +18,7 @@ fun ArtworksScreen(
     val state = viewModel.state.collectAsStateWithLifecycle()
     val artworks = viewModel.artworks.collectAsLazyPagingItems()
     val context = LocalContext.current
+    val currentContext by rememberUpdatedState(context)
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -25,7 +28,7 @@ fun ArtworksScreen(
                 }
 
                 ArtworksViewModel.Event.TokenRefreshFailed -> {
-                    tokenRefreshFailed(context)
+                    tokenRefreshFailed(currentContext)
                 }
             }
         }
