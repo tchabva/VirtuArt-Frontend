@@ -22,18 +22,21 @@ class SearchViewModel @Inject constructor(
     private val artworksRepository: SearchRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
-
     //TODO fix pagination bug
-
     private val _state: MutableStateFlow<State> = MutableStateFlow(
         State.Search(
             source = authRepository.source.value
         )
     )
+
     val state: StateFlow<State> = _state
 
     private val _events: MutableSharedFlow<Event> = MutableSharedFlow()
     val events: SharedFlow<Event> = _events
+
+    private suspend fun emitEvent(event: Event) {
+        _events.emit(event)
+    }
 
     fun onBasicSearch() {
         viewModelScope.launch {
@@ -398,10 +401,6 @@ class SearchViewModel @Inject constructor(
             source = authRepository.source.value
         )
         Log.i(TAG, "Return to Search Button clicked")
-    }
-
-    private suspend fun emitEvent(event: Event) {
-        _events.emit(event)
     }
 
     sealed interface State {
