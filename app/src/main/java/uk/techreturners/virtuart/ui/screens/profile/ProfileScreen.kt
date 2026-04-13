@@ -3,6 +3,8 @@ package uk.techreturners.virtuart.ui.screens.profile
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
@@ -15,20 +17,21 @@ fun ProfileScreen(
 ) {
 
     val context = LocalContext.current
+    val currentContext by rememberUpdatedState(context)
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 ProfileViewModel.Event.OnSignInFailed -> {
-                    onSignInFailed(context)
+                    onSignInFailed(currentContext)
                 }
 
                 ProfileViewModel.Event.OnSignInSuccessful -> {
-                    onSignInSuccessful(context)
+                    onSignInSuccessful(currentContext)
                 }
 
                 ProfileViewModel.Event.OnSignOutSuccessful -> {
-                    onSignOutSuccessful(context)
+                    onSignOutSuccessful(currentContext)
                 }
             }
         }
